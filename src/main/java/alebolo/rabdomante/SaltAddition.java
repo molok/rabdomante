@@ -15,4 +15,10 @@ public class SaltAddition {
     public double cloruroMg() { return grams * salt.cloruroPerc() * 10 ; }
     public double magnesioMg() { return 0; }
     public double bicarbonatiMg() { return 0; }
+    public double grams() { return grams; }
+    public SaltProfile profile() { return salt; }
+
+    public String toString() {
+        return String.format("%.2f g %s", grams, salt.toString());
+    }
 }

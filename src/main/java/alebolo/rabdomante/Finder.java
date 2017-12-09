@@ -2,9 +2,8 @@ package alebolo.rabdomante;
 
 import org.javatuples.Pair;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Finder {
     static double diffCoeff(Water target, Water candidate) {
@@ -16,13 +15,48 @@ public class Finder {
                Math.abs(target.cloruroMg() - candidate.cloruroMg());
     }
 
-    public static Water closest(Water target, List<Water> candidates) {
-        return candidates.stream()
+    public static List<Water> top(int n, Water target, List<Water> waters, List<SaltAddition> salts) {
+        Set<Water> candidates = new HashSet<>();
+
+        for (Water w : waters) {
+            candidates.addAll(saltsCombinations(w, salts));
+        }
+
+        List<Water> res = candidates.stream()
                 .map(c -> new Pair<>(c, diffCoeff(target, c)))
                 .sorted(Comparator.comparingDouble(Pair::getValue1))
-                .findFirst()
                 .map(pair -> pair.getValue0())
-                .get(); /* oh yeah */
+                .limit(n)
+                .collect(Collectors.toList());
+
+        return res;
+    }
+
+    public static Water closest(Water target, List<Water> waters, List<SaltAddition> salts) {
+        return top(1, target, waters, salts).get(0);
+    }
+
+    public static Water closest(Water target, List<Water> waters) {
+        return closest(target, waters, new ArrayList<>());
+    }
+
+    private static List<Water> saltsCombinations(Water w, List<SaltAddition> salts) {
+        List<Water> res = new ArrayList<>();
+        res.add(w);
+        for (SaltAddition s : salts) {
+
+            List<Water> added = new ArrayList<>();
+
+            for (Water wx : res) {
+                double grams = s.grams();
+                while (grams >= 0) {
+                    added.add(Modifier.add(wx, new SaltAddition(grams, s.profile())));
+                    grams -= 0.1;
+                }
+            }
+            res.addAll(added);
+        }
+        return res;
     }
 }
 
@@ -34,14 +68,16 @@ class WaterProfile {
     private final double bicarbonati;
     private final double solfato;
     private final double cloruro;
+    private final String name;
 
-    WaterProfile(double calcio, double magnesio, double sodio, double bicarbonati, double solfato, double cloruro) {
+    WaterProfile(double calcio, double magnesio, double sodio, double bicarbonati, double solfato, double cloruro, String name) {
         this.calcio = calcio;
         this.magnesio = magnesio;
         this.sodio = sodio;
         this.bicarbonati = bicarbonati;
         this.solfato = solfato;
         this.cloruro = cloruro;
+        this.name = name;
     }
 
     public double calcioMgPerL() { return calcio; }
@@ -70,7 +106,7 @@ class WaterProfile {
 
     @Override
     public String toString() {
-        return "WaterProfile{" +
+        return "WaterProfile ("+name+"){" +
                 "calcio=" + calcio +
                 ", magnesio=" + magnesio +
                 ", sodioPerc=" + sodio +
@@ -79,4 +115,6 @@ class WaterProfile {
                 ", cloruro=" + cloruro +
                 '}';
     }
+
+    public String name() { return name; }
 }

@@ -12,6 +12,7 @@ public class Water {
     private final double bicarbonati;
     private final double solfato;
     private final double cloruro;
+    private final String name;
 
     public Water(double liters, WaterProfile profile) {
         this(liters,profile.calcioMgPerL() * liters
@@ -19,7 +20,7 @@ public class Water {
         , profile.sodioMgPerL() * liters
         , profile.bicarbonatiMgPerL() * liters
         , profile.solfatoMgPerL() * liters
-        , profile.cloruroMgPerL() * liters);
+        , profile.cloruroMgPerL() * liters, profile.name());
     }
 
     public static class Builder {
@@ -30,6 +31,7 @@ public class Water {
         private double bicarbonati = 0;
         private double solfato = 0;
         private double cloruro = 0;
+        private String name;
 
         Builder(double liters) {
             this.liters = liters;
@@ -41,13 +43,14 @@ public class Water {
         public Builder bicarbonati(double bicarbonati) { this.bicarbonati = bicarbonati; return this; }
         public Builder solfato(double solfato) { this.solfato = solfato; return this; }
         public Builder cloruro(double cloruro) { this.cloruro = cloruro; return this; }
+        public Builder cloruro(String name) { this.name = name; return this; }
 
         public Water build() {
-            return new Water(liters, calcio, magnesio, sodio, bicarbonati, solfato, cloruro);
+            return new Water(liters, calcio, magnesio, sodio, bicarbonati, solfato, cloruro, name);
         }
     }
 
-    public Water(double liters, double calcio, double magnesio, double sodio, double bicarbonati, double solfato, double cloruro) {
+    public Water(double liters, double calcio, double magnesio, double sodio, double bicarbonati, double solfato, double cloruro, String name) {
         this.liters = liters;
         this.calcio = calcio;
         this.magnesio = magnesio;
@@ -55,6 +58,7 @@ public class Water {
         this.bicarbonati = bicarbonati;
         this.solfato = solfato;
         this.cloruro = cloruro;
+        this.name = name;
     }
 
     public WaterProfile profile() {
@@ -63,7 +67,7 @@ public class Water {
                 sodioMg() / liters,
                 bicarbonatiMg() / liters,
                 solfatoMg() / liters,
-                cloruroMg() / liters);
+                cloruroMg() / liters, name);
     }
 
     public double calcioMg() { return calcio; }
@@ -90,20 +94,21 @@ public class Water {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(liters, calcio, magnesio, sodio, bicarbonati, solfato, cloruro);
     }
 
+    public String name() { return String.format("%.2f l of %s water", liters, profile().name()); }
+
     @Override
     public String toString() {
-        return "Water{" +
-                "liters=" + liters +
-                ", calcio=" + calcio +
-                ", magnesio=" + magnesio +
-                ", sodio=" + sodio +
-                ", bicarbonati=" + bicarbonati +
-                ", solfato=" + solfato +
-                ", cloruro=" + cloruro +
+        return "Water (" + name +") {" +
+                "liters=" + String.format("%.2f", liters) +
+                ", calcio=" + String.format("%.2f", calcio) +
+                ", magnesio=" + String.format("%.2f", magnesio) +
+                ", sodio=" + String.format("%.2f", sodio) +
+                ", bicarbonati=" + String.format("%.2f", bicarbonati) +
+                ", solfato=" + String.format("%.2f", solfato) +
+                ", cloruro=" + String.format("%.2f", cloruro) +
                 '}';
     }
 
@@ -114,6 +119,6 @@ public class Water {
                 , this.sodio + water.sodio
                 , this.bicarbonati + water.bicarbonati
                 , this.solfato + water.solfato
-                , this.cloruro + water.cloruro);
+                , this.cloruro + water.cloruro, this.name + ", " + water.name());
     }
 }

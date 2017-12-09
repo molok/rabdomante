@@ -1,13 +1,18 @@
 package alebolo.rabdomante;
 
 public class Modifier {
-    public static Water add(Water water, SaltAddition saltAddition) {
-        return new Water(water.liters(),
-                water.calcioMg() + saltAddition.calcioMg(),
-                water.magnesioMg() + saltAddition.magnesioMg(),
-                water.sodioMg() + saltAddition.sodioMg(),
-                water.bicarbonatiMg() + saltAddition.bicarbonatiMg(),
-                water.solfatoMg() + saltAddition.solfatoMg(),
-                water.cloruroMg() + saltAddition.cloruroMg());
+    public static Water add(Water water, SaltAddition... saltAdditions) {
+        Water res = new Water(water.liters(), water.profile());
+        for (SaltAddition saltAddition : saltAdditions) {
+            res = new Water(res.liters(),
+                    res.calcioMg() + saltAddition.calcioMg(),
+                    res.magnesioMg() + saltAddition.magnesioMg(),
+                    res.sodioMg() + saltAddition.sodioMg(),
+                    res.bicarbonatiMg() + saltAddition.bicarbonatiMg(),
+                    res.solfatoMg() + saltAddition.solfatoMg(),
+                    res.cloruroMg() + saltAddition.cloruroMg(), res.name() + ", " +saltAddition);
+        }
+
+        return res;
     }
 }
