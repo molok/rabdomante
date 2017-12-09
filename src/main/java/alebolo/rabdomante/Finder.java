@@ -15,6 +15,12 @@ public class Finder {
                Math.abs(target.cloruroMg() - candidate.cloruroMg());
     }
     public static List<Water> top(int n, Water target, List<Water> waters, List<SaltAddition> salts) {
+//        for (Water w : waters) {
+//            Water x = new Water.Builder(0).build();
+//            while (x.liters() < target.liters()) {
+//
+//            }
+//        }
         return waters.parallelStream()
                 .flatMap(w -> saltsCombinations(w, salts).stream())
                 .map(c -> new Pair<>(c, diffCoeff(target, c)))

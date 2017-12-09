@@ -1,7 +1,6 @@
 package alebolo.rabdomante;
 
 import org.assertj.core.data.Offset;
-import org.javatuples.Pair;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,11 +45,11 @@ public class TestFinder {
 
     @Test public void add() {
         assertThat(new Water(1, distilled)
-                        .add(new Water(1, distilled)))
-                .isEqualTo(new Water(2, distilled));
+                        .add(new Water(1, distilled)).isSameAs(
+                new Water(2, distilled))).isTrue();
 
-        assertThat(new Water(1, sanBernarndo).add(new Water(0, distilled)))
-                .isEqualTo(new Water(1, sanBernarndo));
+        assertThat(new Water(1, sanBernarndo).add(new Water(0, distilled))
+                .isSameAs(new Water(1, sanBernarndo))).isTrue();
     }
 
     @Test public void findSame() {
@@ -58,8 +57,8 @@ public class TestFinder {
                                   Arrays.asList(
                                             new Water(1, sanBernarndo),
                                             new Water(1, eva),
-                                            new Water(1, target) )))
-                .isEqualTo(new Water(1, target));
+                                            new Water(1, target) ))
+                .isSameAs(new Water(1, target))).isTrue();
     }
 
     @Test public void findClosest() {
@@ -75,9 +74,9 @@ public class TestFinder {
     @Test public void additions() {
         assertThat(
                 Modifier.add(new Water(1, distilled),
-                        new SaltAddition(0.5, gypsum), new SaltAddition(0.5, gypsum))
-        ).isEqualTo(Modifier.add(new Water(1, distilled),
-                new SaltAddition(1, gypsum)));
+                        new SaltAddition(0.5, gypsum), new SaltAddition(0.5, gypsum)).isSameAs(
+        (Modifier.add(new Water(1, distilled),
+                new SaltAddition(1, gypsum))))).isTrue();
     }
 
     @Test public void findClosestReal() {
@@ -122,10 +121,10 @@ public class TestFinder {
         Water res = Finder.closest(
                 target,
                 Arrays.asList(new Water(1, distilled)),
-                Arrays.asList(new SaltAddition(100, gypsum), new SaltAddition(100, tableSalt)));
+                Arrays.asList(new SaltAddition(10, gypsum), new SaltAddition(10, tableSalt)));
 
         log.warn("res:"+res);
-        assertThat(res).isEqualTo(target);
+        assertThat(res.isSameAs(target)).isTrue();
     }
 
     @Test public void waterContent() {
@@ -145,8 +144,9 @@ public class TestFinder {
         assertThat(waterCorrected.solfatoMg()).isEqualTo(558);
 
         Water doubleCorr = Modifier.add(waterCorrected, new SaltAddition(1.0, tableSalt));
-        assertThat(doubleCorr).isEqualTo(
-                new Water(1, 232.8, 0, 393.4, 0, 558, 606.6, "test"));
+        assertThat(doubleCorr.isSameAs(
+                new Water(1, 232.8, 0, 393.4, 0, 558, 606.6, "test")))
+                .isTrue();
     }
 
     @Test public void profile() {

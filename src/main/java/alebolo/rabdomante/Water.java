@@ -23,6 +23,16 @@ public class Water {
         , profile.cloruroMgPerL() * liters, profile.name());
     }
 
+    public boolean isSameAs(Water water) {
+        return DoubleMath.fuzzyCompare(water.liters, liters, 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.calcio, calcio, 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.magnesio, magnesio, 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.sodio, sodio, 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.bicarbonati, bicarbonati, 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.solfato, solfato, 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.cloruro, cloruro, 0.001) == 0;
+    }
+
     public static class Builder {
         private double liters = 0;
         private double calcio = 0;
@@ -77,25 +87,6 @@ public class Water {
     public double solfatoMg() { return solfato; }
     public double cloruroMg() { return cloruro; }
     public double liters() { return liters; }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Water water = (Water) o;
-        return DoubleMath.fuzzyCompare(water.liters, liters, 0.001) == 0 &&
-                DoubleMath.fuzzyCompare(water.calcio, calcio, 0.001) == 0 &&
-                DoubleMath.fuzzyCompare(water.magnesio, magnesio, 0.001) == 0 &&
-                DoubleMath.fuzzyCompare(water.sodio, sodio, 0.001) == 0 &&
-                DoubleMath.fuzzyCompare(water.bicarbonati, bicarbonati, 0.001) == 0 &&
-                DoubleMath.fuzzyCompare(water.solfato, solfato, 0.001) == 0 &&
-                DoubleMath.fuzzyCompare(water.cloruro, cloruro, 0.001) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(liters, calcio, magnesio, sodio, bicarbonati, solfato, cloruro);
-    }
 
     public String name() { return String.format("%.2f l of %s water", liters, profile().name()); }
 
