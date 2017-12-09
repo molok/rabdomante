@@ -5,8 +5,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -152,5 +151,85 @@ public class TestFinder {
     @Test public void profile() {
         assertThat(new Water(1, sanBernarndo).profile()).isEqualTo(sanBernarndo);
         assertThat(new Water(2.5, sanBernarndo).profile()).isEqualTo(sanBernarndo);
+    }
+
+    @Test public void combinazioni() {
+        Water a = new Water.Builder(2).name("a").build();
+        Water b = new Water.Builder(2).name("b").build();
+        Water c = new Water.Builder(2).name("c").build();
+//        Water c = new Water.Builder(3).name("c").build();
+
+        List<List<Water>> res = allCombinations(2, Arrays.asList(a, b, c));
+
+        for (List<Water> lw : res)  { if (lw.size() > 0) {System.out.println("RES:"+ printList(lw));} }
+    }
+
+    public List<List<Water>> allCombinations(double n, List<Water> ws) {
+        List<Water> elements = ws.stream()
+            .flatMap(w -> splitIntoOneLiterElements(w).stream())
+            .collect(Collectors.toList());
+
+        ArrayList<List<Water>> x = new ArrayList<>();
+        x.add(new ArrayList<>());
+
+        List<List<Water>> combinations = combinations(new ArrayList<>(), x, n, elements);
+
+
+        for (List<Water> comb : combinations) {
+            comb.sort(Comparator.comparing(Water::name));
+        }
+
+        // togliamo duplicati
+        return new ArrayList<>(new HashSet<>(combinations));
+    }
+
+    private String printLList(List<List<Water>> list) {
+        StringBuilder sb = new StringBuilder();
+        for (List<Water> lw : list)  {
+            sb.append(printList(lw));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    private String printList(List<Water> lw) {
+        return lw.stream().map(e -> e.name()).collect(Collectors.joining(", "));
+    }
+
+    private List<List<Water>> combinations(
+            List<Water> curr,
+            List<List<Water>> solutions,
+            double target,
+            List<Water> elements) {
+//        log.debug("target {}, elements {}, curr {}, solutions {}", target, printList(elements), printList(curr), printLList(solutions));
+
+        if (target == 0) {
+//            log.debug("adding curr {} to solutions {}", printList(curr), printLList(solutions));
+            solutions.add(curr);
+            return solutions;
+        } else if (target < 0 || elements.size() == 0) {
+            /* non ho trovato niente */
+            ArrayList<List<Water>> lists = new ArrayList<>();
+            lists.add(new ArrayList<>());
+            return lists;
+        } else {
+            List<List<Water>> res = new ArrayList<>();
+
+            res.addAll(combinations(curr, solutions, target, elements.subList(1, elements.size())));
+
+            List<Water> x = new ArrayList<>(curr);
+            x.add(elements.get(0));
+            res.addAll(combinations(x, solutions, target - 1, elements.subList(1, elements.size())));
+
+            return res;
+        }
+    }
+
+    private List<Water> splitIntoOneLiterElements(Water w) {
+        ArrayList<Water> res = new ArrayList<>();
+        for (int i = 0; i < w.liters(); i++) {
+            res.add(new Water(1, w.profile()));
+        }
+        return res;
     }
 }

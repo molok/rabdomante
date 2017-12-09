@@ -58,6 +58,8 @@ public class Water {
         public Water build() {
             return new Water(liters, calcio, magnesio, sodio, bicarbonati, solfato, cloruro, name);
         }
+
+        public Builder name(String name) { this.name = name; return this; }
     }
 
     public Water(double liters, double calcio, double magnesio, double sodio, double bicarbonati, double solfato, double cloruro, String name) {
@@ -88,7 +90,28 @@ public class Water {
     public double cloruroMg() { return cloruro; }
     public double liters() { return liters; }
 
-    public String name() { return String.format("%.2f l of %s water", liters, profile().name()); }
+    public String name() { return String.format("%.1f %s", liters, profile().name()); }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Water water = (Water) o;
+        return Double.compare(water.liters, liters) == 0 &&
+                Double.compare(water.calcio, calcio) == 0 &&
+                Double.compare(water.magnesio, magnesio) == 0 &&
+                Double.compare(water.sodio, sodio) == 0 &&
+                Double.compare(water.bicarbonati, bicarbonati) == 0 &&
+                Double.compare(water.solfato, solfato) == 0 &&
+                Double.compare(water.cloruro, cloruro) == 0 &&
+                Objects.equals(name, water.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(liters, calcio, magnesio, sodio, bicarbonati, solfato, cloruro, name);
+    }
 
     @Override
     public String toString() {
@@ -104,12 +127,20 @@ public class Water {
     }
 
     public Water add(Water water) {
+        return add(water, this.name + ", " + water.name());
+    }
+
+    public Water duplicate() {
+        return add(new Water.Builder(0).build(), this.name);
+    }
+
+    public Water add(Water water, String newName) {
         return new Water(this.liters + water.liters
                 , this.calcio + water.calcio
                 , this.magnesio + water.magnesio
                 , this.sodio + water.sodio
                 , this.bicarbonati + water.bicarbonati
                 , this.solfato + water.solfato
-                , this.cloruro + water.cloruro, this.name + ", " + water.name());
+                , this.cloruro + water.cloruro, newName);
     }
 }
