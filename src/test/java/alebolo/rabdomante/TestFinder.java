@@ -3,10 +3,14 @@ package alebolo.rabdomante;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestFinder {
     final WaterProfile sanBernarndo = new WaterProfile(9.5, 0.6, 0.6, 30.2, 2.3, 0.7);
+    final WaterProfile eva = new WaterProfile(10.2 , 4, 0.28, 48, 1.7, 0.18);
     final WaterProfile target = new WaterProfile(50, 10, 33, 142, 57, 44);
     final WaterProfile distilled = new WaterProfile(0, 0, 0, 0, 0, 0);
     final SaltProfile gypsum = new SaltProfile(0, 0, 23.28, 55.8);
@@ -20,9 +24,37 @@ public class TestFinder {
     }
 
     @Test public void compare() {
-        assertThat(Finder.diffCoeff(target, target)).isEqualTo(0);
-        assertThat(Finder.diffCoeff(sanBernarndo, sanBernarndo)).isEqualTo(0);
-        assertThat(Finder.diffCoeff(target, sanBernarndo)).isGreaterThan(0);
+        assertThat(Finder.diffCoeff(new Water(1, target), new Water(1, target))).isEqualTo(0);
+        assertThat(Finder.diffCoeff(new Water(1, sanBernarndo), new Water(1, sanBernarndo))).isEqualTo(0);
+        assertThat(Finder.diffCoeff(new Water(1, target), new Water(1, sanBernarndo))).isGreaterThan(0);
+    }
+
+    @Test public void add() {
+        assertThat(new Water(1, distilled)
+                        .add(new Water(1, distilled)))
+                .isEqualTo(new Water(2, distilled));
+
+        assertThat(new Water(1, sanBernarndo).add(new Water(0, distilled)))
+                .isEqualTo(new Water(1, sanBernarndo));
+    }
+
+    @Test public void findSame() {
+        assertThat(Finder.closest(new Water(1, target),
+                                  Arrays.asList(
+                                            new Water(1, sanBernarndo),
+                                            new Water(1, eva),
+                                            new Water(1, target) )))
+                .isEqualTo(new Water(1, target));
+    }
+
+    @Test public void findClosest() {
+        Water target = new Water.Builder(1).calcio(100).solfato(200).build();
+        Water closest = new Water.Builder(1).calcio(99).solfato(199).build();
+        Water nocigar = new Water.Builder(1).calcio(90).solfato(190).build();
+        Water verydifferent = new Water.Builder(1).calcio(199).solfato(299).build();
+
+        assertThat(Finder.closest(target, Arrays.asList(closest, nocigar, verydifferent)))
+                   .isEqualTo(closest);
     }
 
     @Test public void waterContent() {

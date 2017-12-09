@@ -1,15 +1,28 @@
 package alebolo.rabdomante;
 
+import org.javatuples.Pair;
+
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 public class Finder {
-    static double diffCoeff(WaterProfile target, WaterProfile candidate) {
-        return Math.abs(target.calcioMgPerL() - candidate.calcioMgPerL()) +
-               Math.abs(target.magnesioMgPerL() - candidate.magnesioMgPerL()) +
-               Math.abs(target.sodioMgPerL() - candidate.sodioMgPerL()) +
-               Math.abs(target.bicarbonatiMgPerL() - candidate.bicarbonatiMgPerL()) +
-               Math.abs(target.solfatoMgPerL() - candidate.solfatoMgPerL()) +
-               Math.abs(target.cloruroMgPerL() - candidate.cloruroMgPerL());
+    static double diffCoeff(Water target, Water candidate) {
+        return Math.abs(target.calcioMg() - candidate.calcioMg()) +
+               Math.abs(target.magnesioMg() - candidate.magnesioMg()) +
+               Math.abs(target.sodioMg() - candidate.sodioMg()) +
+               Math.abs(target.bicarbonatiMg() - candidate.bicarbonatiMg()) +
+               Math.abs(target.solfatoMg() - candidate.solfatoMg()) +
+               Math.abs(target.cloruroMg() - candidate.cloruroMg());
+    }
+
+    public static Water closest(Water target, List<Water> candidates) {
+        return candidates.stream()
+                .map(c -> new Pair<>(c, diffCoeff(target, c)))
+                .sorted(Comparator.comparingDouble(Pair::getValue1))
+                .findFirst()
+                .map(pair -> pair.getValue0())
+                .get(); /* oh yeah */
     }
 }
 

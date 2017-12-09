@@ -22,6 +22,31 @@ public class Water {
         , profile.cloruroMgPerL() * liters);
     }
 
+    public static class Builder {
+        private double liters = 0;
+        private double calcio = 0;
+        private double magnesio = 0;
+        private double sodio = 0;
+        private double bicarbonati = 0;
+        private double solfato = 0;
+        private double cloruro = 0;
+
+        Builder(double liters) {
+            this.liters = liters;
+        }
+
+        public Builder calcio(double calcio) { this.calcio = calcio; return this; }
+        public Builder magnesio(double magnesio) { this.magnesio = magnesio; return this; }
+        public Builder sodio(double sodio) { this.sodio = sodio; return this; }
+        public Builder bicarbonati(double bicarbonati) { this.bicarbonati = bicarbonati; return this; }
+        public Builder solfato(double solfato) { this.solfato = solfato; return this; }
+        public Builder cloruro(double cloruro) { this.cloruro = cloruro; return this; }
+
+        public Water build() {
+            return new Water(liters, calcio, magnesio, sodio, bicarbonati, solfato, cloruro);
+        }
+    }
+
     public Water(double liters, double calcio, double magnesio, double sodio, double bicarbonati, double solfato, double cloruro) {
         this.liters = liters;
         this.calcio = calcio;
@@ -80,5 +105,15 @@ public class Water {
                 ", solfato=" + solfato +
                 ", cloruro=" + cloruro +
                 '}';
+    }
+
+    public Water add(Water water) {
+        return new Water(this.liters + water.liters
+                , this.calcio + water.calcio
+                , this.magnesio + water.magnesio
+                , this.sodio + water.sodio
+                , this.bicarbonati + water.bicarbonati
+                , this.solfato + water.solfato
+                , this.cloruro + water.cloruro);
     }
 }
