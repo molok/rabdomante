@@ -4,6 +4,7 @@ import org.javatuples.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 public class Finder {
     static double diffCoeff(Water target, Water candidate) {
@@ -44,14 +45,13 @@ public class Finder {
         List<Water> res = new ArrayList<>();
         res.add(w);
         for (SaltAddition s : salts) {
-
             List<Water> added = new ArrayList<>();
 
             for (Water wx : res) {
                 double grams = s.grams();
                 while (grams >= 0) {
                     added.add(Modifier.add(wx, new SaltAddition(grams, s.profile())));
-                    grams -= 0.1;
+                    grams -= 0.01;
                 }
             }
             res.addAll(added);

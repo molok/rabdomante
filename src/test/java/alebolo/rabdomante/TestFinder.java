@@ -91,18 +91,16 @@ public class TestFinder {
        Water sanbern = new Water(10, sanBernarndo);
        Water dolomiti = new Water(10, 23.8, 8.7, 1.3, 94.6, 22, 1.1, "dolomiti");
 
-//       Water res = Finder.closest(new Water(10, 50, 10, 33, 142, 57, 44, "black medium")
-//        , Arrays.asList(levissima, boario, eva, santanna, norda, vera, vitasnella, sanbern, dolomiti),
-//                Arrays.asList(new SaltAddition(10, gypsum), new SaltAddition(10, tableSalt)));
-//
-//        log.warn("res:"+res);
-
-        Water black_medium = new Water(10, 50, 10, 33, 142, 57, 44, "black medium");
-        List<Water> xxx = Finder.top(10, black_medium
-                , Arrays.asList(levissima, boario, eva, santanna, norda, vera, vitasnella, sanbern, dolomiti),
-                Arrays.asList(new SaltAddition(10, gypsum), new SaltAddition(10, tableSalt)));
-        log.warn("res:" + xxx.stream()
-                        .map(w -> "delta: " + String.format("%.2f", Finder.diffCoeff(black_medium, w))
+        Water blackMediumTarget = new Water(10, 50, 10, 33, 142, 57, 44, "black medium");
+        List<Water> xxx = Finder.top(100, blackMediumTarget
+                , Arrays.asList(levissima,
+                        boario,
+                        eva, santanna, norda,
+                        vera,
+                        vitasnella, sanbern, dolomiti),
+                Arrays.asList(new SaltAddition(3, gypsum), new SaltAddition(3, tableSalt)));
+        log.warn("res:\n" + xxx.stream()
+                        .map(w -> "delta: " + String.format("%.2f", Finder.diffCoeff(blackMediumTarget, w))
                                 + "  = " + w.toString())
                 .collect(Collectors.joining("\n")));
     }
