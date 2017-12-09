@@ -92,13 +92,18 @@ public class TestFinder {
        Water dolomiti = new Water(10, 23.8, 8.7, 1.3, 94.6, 22, 1.1, "dolomiti");
 
         Water blackMediumTarget = new Water(10, 50, 10, 33, 142, 57, 44, "black medium");
-        List<Water> xxx = Finder.top(100, blackMediumTarget
+        long startTime = System.currentTimeMillis();
+        // 5978
+        List<Water> xxx = Finder.top2(100, blackMediumTarget
                 , Arrays.asList(levissima,
                         boario,
                         eva, santanna, norda,
                         vera,
                         vitasnella, sanbern, dolomiti),
                 Arrays.asList(new SaltAddition(3, gypsum), new SaltAddition(3, tableSalt)));
+
+        System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
+
         log.warn("res:\n" + xxx.stream()
                         .map(w -> "delta: " + String.format("%.2f", Finder.diffCoeff(blackMediumTarget, w))
                                 + "  = " + w.toString())

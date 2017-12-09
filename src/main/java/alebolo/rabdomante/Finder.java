@@ -4,7 +4,6 @@ import org.javatuples.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 public class Finder {
     static double diffCoeff(Water target, Water candidate) {
@@ -14,6 +13,15 @@ public class Finder {
                Math.abs(target.bicarbonatiMg() - candidate.bicarbonatiMg()) +
                Math.abs(target.solfatoMg() - candidate.solfatoMg()) +
                Math.abs(target.cloruroMg() - candidate.cloruroMg());
+    }
+    public static List<Water> top2(int n, Water target, List<Water> waters, List<SaltAddition> salts) {
+        return waters.parallelStream()
+                .flatMap(w -> saltsCombinations(w, salts).stream())
+                .map(c -> new Pair<>(c, diffCoeff(target, c)))
+                .sorted(Comparator.comparingDouble(Pair::getValue1))
+                .map(pair -> pair.getValue0())
+                .limit(n)
+                .collect(Collectors.toList());
     }
 
     public static List<Water> top(int n, Water target, List<Water> waters, List<SaltAddition> salts) {
@@ -45,18 +53,21 @@ public class Finder {
         List<Water> res = new ArrayList<>();
         res.add(w);
         for (SaltAddition s : salts) {
-            List<Water> added = new ArrayList<>();
-
-            for (Water wx : res) {
-                double grams = s.grams();
-                while (grams >= 0) {
-                    added.add(Modifier.add(wx, new SaltAddition(grams, s.profile())));
-                    grams -= 0.01;
-                }
-            }
-            res.addAll(added);
+            res.addAll(saltAddition(res, s));
         }
         return res;
+    }
+
+    private static List<Water> saltAddition(List<Water> res, SaltAddition s) {
+        List<Water> added = new ArrayList<>();
+        for (Water wx : res) {
+            double grams = s.grams();
+            while (grams >= 0) {
+                added.add(Modifier.add(wx, new SaltAddition(grams, s.profile())));
+                grams -= 0.01;
+            }
+        }
+        return added;
     }
 }
 
