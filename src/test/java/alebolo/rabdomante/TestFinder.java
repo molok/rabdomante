@@ -93,8 +93,7 @@ public class TestFinder {
 
         Water blackMediumTarget = new Water(10, 50, 10, 33, 142, 57, 44, "black medium");
         long startTime = System.currentTimeMillis();
-        // 5978
-        List<Water> xxx = Finder.top2(100, blackMediumTarget
+        List<Water> xxx = Finder.top(100, blackMediumTarget
                 , Arrays.asList(levissima,
                         boario,
                         eva, santanna, norda,

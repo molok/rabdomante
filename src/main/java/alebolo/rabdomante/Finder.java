@@ -14,7 +14,7 @@ public class Finder {
                Math.abs(target.solfatoMg() - candidate.solfatoMg()) +
                Math.abs(target.cloruroMg() - candidate.cloruroMg());
     }
-    public static List<Water> top2(int n, Water target, List<Water> waters, List<SaltAddition> salts) {
+    public static List<Water> top(int n, Water target, List<Water> waters, List<SaltAddition> salts) {
         return waters.parallelStream()
                 .flatMap(w -> saltsCombinations(w, salts).stream())
                 .map(c -> new Pair<>(c, diffCoeff(target, c)))
@@ -22,23 +22,6 @@ public class Finder {
                 .map(pair -> pair.getValue0())
                 .limit(n)
                 .collect(Collectors.toList());
-    }
-
-    public static List<Water> top(int n, Water target, List<Water> waters, List<SaltAddition> salts) {
-        Set<Water> candidates = new HashSet<>();
-
-        for (Water w : waters) {
-            candidates.addAll(saltsCombinations(w, salts));
-        }
-
-        List<Water> res = candidates.stream()
-                .map(c -> new Pair<>(c, diffCoeff(target, c)))
-                .sorted(Comparator.comparingDouble(Pair::getValue1))
-                .map(pair -> pair.getValue0())
-                .limit(n)
-                .collect(Collectors.toList());
-
-        return res;
     }
 
     public static Water closest(Water target, List<Water> waters, List<SaltAddition> salts) {
