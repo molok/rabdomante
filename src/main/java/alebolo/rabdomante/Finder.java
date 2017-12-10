@@ -1,6 +1,7 @@
 package alebolo.rabdomante;
 
 import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import org.javatuples.Pair;
 
@@ -65,12 +66,31 @@ public class Finder {
         }
     }
 
+    public static List<Water> combineWaters(double targetLiters, List<Water> ws1, List<Water> ws2) {
+        /* per adesso supportiamo solo il mixing tra due acque */
+        return Lists.cartesianProduct(ws1, ws2).stream()
+                .distinct()
+                .flatMap(xs -> combineWaters(targetLiters, xs.get(0), xs.get(1)).stream())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public static List<Water> combineWaters(double targetLiters, Water a, Water b) {
+        List<Water> mix = new ArrayList<>();
+        for (int ia = 0; ia < a.liters() && ia < targetLiters; ia++) {
+            int needed = (int) targetLiters - ia;
+            if (   b.liters() >= needed
+                    && b.composition.keySet().size() <= needed /* voglio mix di almeno 1 litro */) {
+                Water neededA = new Water(ia, a.profile());
+                Water neededb = new Water(needed, b.profile());
+                mix.add(neededA.add(neededb));
+            }
+        }
+        return mix;
+    }
 
     public static List<Water> top(int n, Water target, List<Water> waters, List<SaltAddition> salts) {
-//        List<Water> combWaters = allCombinations(target.liters(), waters).stream()
-//                .map(lw -> lw.stream().reduce((a, b) -> a.add(b)).get())
-//                .collect(Collectors.toList());
-        List<Water> combWaters = waters;
+        List<Water> combWaters = combineWaters(target.liters(), waters, waters);
 
         return combWaters.parallelStream()
                 .flatMap(w -> saltsCombinations(w, salts).stream())
@@ -104,7 +124,7 @@ public class Finder {
             double grams = s.grams();
             while (grams >= 0) {
                 added.add(Modifier.add(wx, new SaltAddition(grams, s.profile())));
-                grams -= 0.01;
+                grams -= 0.01; /* step di dedimo di grammo per ora */
             }
         }
         return added;

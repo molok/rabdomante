@@ -1,7 +1,8 @@
 package alebolo.rabdomante;
 
-import com.google.common.collect.Multiset;
+import com.google.common.collect.*;
 import org.assertj.core.data.Offset;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,13 +63,12 @@ public class TestFinder {
     }
 
     @Test public void findClosest() {
-        Water target = new Water.Builder(1).calcio(100).solfato(200).build();
-        Water closest = new Water.Builder(1).calcio(99).solfato(199).build();
-        Water nocigar = new Water.Builder(1).calcio(90).solfato(190).build();
-        Water verydifferent = new Water.Builder(1).calcio(199).solfato(299).build();
+        Water target = new Water.Builder(1).name("target").calcio(100).solfato(200).build();
+        Water closest = new Water.Builder(1).name("ok").calcio(99).solfato(199).build();
+        Water nocigar = new Water.Builder(1).name("nocigar").calcio(90).solfato(190).build();
+        Water verydifferent = new Water.Builder(1).name("diff").calcio(199).solfato(299).build();
 
-        assertThat(Finder.closest(target, Arrays.asList(closest, nocigar, verydifferent)))
-                   .isEqualTo(closest);
+        assertThat(Finder.closest(target, Arrays.asList(closest, nocigar, verydifferent)).isSameAs(closest)).isTrue();
     }
 
     @Test public void additions() {
@@ -79,6 +79,7 @@ public class TestFinder {
                 new SaltAddition(1, gypsum))))).isTrue();
     }
 
+    @Ignore
     @Test public void allCombs() {
         Water levissima = new Water(16, 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
 //        Water boario = new Water(16, 131, 40, 5, 303, 240, 4, "boario");
@@ -103,17 +104,22 @@ public class TestFinder {
     }
 
     @Test public void findClosestReal() {
-       Water levissima = new Water(17.5, 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
-       Water boario = new Water(17.5, 131, 40, 5, 303, 240, 4, "boario");
-       Water eva = new Water(17.5, 10.2, 4, 0.28, 48, 1.7, 0.17, "eva");
-       Water santanna = new Water(17.5, 10.5, 0, 0.9, 26.2, 7.8, 0, "santanna");
-       Water norda = new Water(17.5, 10.8, 3, 2.3, 52.3, 6.3, 0.6, "norda");
-       Water vera = new Water(17.5, 35, 12.6, 2, 148, 19.2, 2.6, "vera");
-       Water vitasnella = new Water(17.5, 86, 26, 3, 301, 83, 2, "vitasnella");
-       Water sanbern = new Water(17.5, sanBernarndo);
-       Water dolomiti = new Water(17.5, 23.8, 8.7, 1.3, 94.6, 22, 1.1, "dolomiti");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Water levissima = new Water(10, 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
+       Water boario = new Water(10, 131, 40, 5, 303, 240, 4, "boario");
+       Water eva = new Water(10, 10.2, 4, 0.28, 48, 1.7, 0.17, "eva");
+       Water santanna = new Water(10, 10.5, 0, 0.9, 26.2, 7.8, 0, "santanna");
+       Water norda = new Water(10, 10.8, 3, 2.3, 52.3, 6.3, 0.6, "norda");
+       Water vera = new Water(10, 35, 12.6, 2, 148, 19.2, 2.6, "vera");
+       Water vitasnella = new Water(10, 86, 26, 3, 301, 83, 2, "vitasnella");
+       Water sanbern = new Water(10, sanBernarndo);
+       Water dolomiti = new Water(10, 23.8, 8.7, 1.3, 94.6, 22, 1.1, "dolomiti");
 
-        Water blackMediumTarget = new Water(16, 50, 10, 33, 142, 57, 44, "black medium");
+        Water blackMediumTarget = new Water(10, 50, 10, 33, 142, 57, 44, "black medium");
         long startTime = System.currentTimeMillis();
         List<Water> xxx = Finder.top(100, blackMediumTarget
                 , Arrays.asList(levissima,
@@ -184,7 +190,6 @@ public class TestFinder {
         Water a = new Water.Builder(2).name("a").build();
         Water b = new Water.Builder(2).name("b").build();
         Water c = new Water.Builder(2).name("c").build();
-//        Water c = new Water.Builder(3).name("c").build();
 
         Set<Multiset<Water>> res = Finder.allCombinations(2, Arrays.asList(a, b, c));
 
@@ -194,4 +199,66 @@ public class TestFinder {
         return lw.stream().map(e -> e.name()).collect(Collectors.joining(", "));
     }
 
+    @Test public void combinations() {
+        Water a = new Water.Builder(10).name("a").build();
+        Water b = new Water.Builder(10).name("b").build();
+        Water target = new Water.Builder(10).name("b").build();
+        List<Water> mix = Finder.combineWaters(target.liters(), a, b);
+
+        mix.stream().forEach(m -> System.out.println("mix:"+m.toString()));
+    }
+
+    @Test public void testequals() {
+        Water a0 = new Water.Builder(0).name("a").build();
+        Water a1 = new Water.Builder(1).name("a").build();
+        Water a2 = new Water.Builder(1).name("a").build();
+        WaterMix ma = new WaterMix(Arrays.asList(a0, a1));
+        WaterMix mb = new WaterMix(Arrays.asList(a2));
+        assertThat(ma).isEqualByComparingTo(mb);
+        System.out.println("ma:"+ma.toString());
+    }
+
+    @Test public void mixing() {
+        Water a0 = new Water.Builder(0).name("a").build();
+        Water a1 = new Water.Builder(1).name("a").build();
+    }
+
+    @Test public void combinationOfTwo() {
+        Water target = new Water.Builder(20).name("target").magnesio(100).calcio(100).sodio(100).build();
+        List<Water> ws = Arrays.asList(
+                new Water.Builder(20).name("a").build(),
+                new Water.Builder(20).name("b").build(),
+                new Water.Builder(20).name("c").build()
+        );
+        List<Water> combinedWaters = Finder.combineWaters(target.liters(), ws, ws);
+
+        System.out.println("combined:"+combinedWaters.size());
+        combinedWaters.stream().forEach(w -> System.out.println(w.toString()));
+    }
+
+    @Test public void tostr1() {
+        Water a = new Water.Builder(5).name("a").build();
+        System.out.println(a.toString());
+    }
+
+    @Test public void tostr2() {
+        Water a = new Water.Builder(5).name("a").build();
+        Water b = new Water.Builder(5).name("b").build();
+        Water anb = a.add(b);
+        System.out.println(anb.toString());
+    }
+
+    @Test public void aggComp() {
+        Water a = new Water.Builder(5).name("a").build();
+        Water b = new Water.Builder(5).name("b").build();
+        Water c = new Water.Builder(5).name("c").build();
+        Water d = new Water.Builder(5).name("c").build();
+        System.out.println(a.add(b).add(c).add(d).aggregateComposition(1., new HashMap<>()));
+    }
+
+    @Test public void tostrfff() {
+        Water a = new Water.Builder(2).name("a").build();
+        System.out.println(a.toString());
+        System.out.println(a.add(a).toString());
+    }
 }
