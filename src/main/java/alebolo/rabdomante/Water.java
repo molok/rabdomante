@@ -159,6 +159,14 @@ public class Water implements Comparable<Water>{
                 , this.cloruro + water.cloruro, newName);
     }
 
+    public String composition() {
+        return
+        aggregateComposition(1., new HashMap<>()).entrySet().stream()
+                .map(e -> String.format("%sL of %s", numberFormat.format(liters * e.getValue()), e.getKey()))
+                .reduce((a, b) -> a + ", " + b)
+                .orElseThrow(() -> new RuntimeException("mybad"));
+    }
+
     public Map<String, Double> aggregateComposition(Double currFraction, Map<String, Double> acc) {
         if (this.composition.size() == 0) {
             acc.put(this.profile().name(), currFraction + acc.getOrDefault(this.profile().name(), 0.));
@@ -170,11 +178,4 @@ public class Water implements Comparable<Water>{
         return acc;
     }
 
-    public String composition() {
-        return
-        aggregateComposition(1., new HashMap<>()).entrySet().stream()
-                .map(e -> String.format("%sL of %s", numberFormat.format(liters * e.getValue()), e.getKey()))
-                .reduce((a, b) -> a + ", " + b)
-                .orElseThrow(() -> new RuntimeException("mybad"));
-    }
 }

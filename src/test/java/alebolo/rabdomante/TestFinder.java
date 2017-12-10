@@ -248,6 +248,17 @@ public class TestFinder {
         System.out.println(anb.toString());
     }
 
+    @Test public void xmixing() {
+//        Water water = new Water.Builder(5).name("a").build()
+//                    .add(     new Water.Builder(5).name("b").build()
+//                         .add(new Water.Builder(1).name("a").build().add(new Water.Builder(5).name("c").build())));
+        Water sb = new Water.Builder(1).name("san benedetto").build();
+        Water add1 = sb.add(sb);
+        System.out.println(add1.composition());
+        Water add = sb.add(add1);
+        System.out.println(add.composition());
+    }
+
     @Test public void aggComp() {
         Water a = new Water.Builder(5).name("a").build();
         Water b = new Water.Builder(5).name("b").build();
