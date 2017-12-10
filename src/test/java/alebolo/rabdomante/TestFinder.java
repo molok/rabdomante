@@ -1,5 +1,6 @@
 package alebolo.rabdomante;
 
+import com.google.common.collect.Multiset;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -78,25 +79,51 @@ public class TestFinder {
                 new SaltAddition(1, gypsum))))).isTrue();
     }
 
-    @Test public void findClosestReal() {
-       Water levissima = new Water(10, 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
-       Water boario = new Water(10, 131, 40, 5, 303, 240, 4, "boario");
-       Water eva = new Water(10, 10.2, 4, 0.28, 48, 1.7, 0.17, "eva");
-       Water santanna = new Water(10, 10.5, 0, 0.9, 26.2, 7.8, 0, "santanna");
-       Water norda = new Water(10, 10.8, 3, 2.3, 52.3, 6.3, 0.6, "norda");
-       Water vera = new Water(10, 35, 12.6, 2, 148, 19.2, 2.6, "vera");
-       Water vitasnella = new Water(10, 86, 26, 3, 301, 83, 2, "vitasnella");
-       Water sanbern = new Water(10, sanBernarndo);
-       Water dolomiti = new Water(10, 23.8, 8.7, 1.3, 94.6, 22, 1.1, "dolomiti");
+    @Test public void allCombs() {
+        Water levissima = new Water(16, 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
+//        Water boario = new Water(16, 131, 40, 5, 303, 240, 4, "boario");
+        Water eva = new Water(16, 10.2, 4, 0.28, 48, 1.7, 0.17, "eva");
+//        Water santanna = new Water(16, 10.5, 0, 0.9, 26.2, 7.8, 0, "santanna");
+//        Water norda = new Water(16, 10.8, 3, 2.3, 52.3, 6.3, 0.6, "norda");
+        Water vera = new Water(16, 35, 12.6, 2, 148, 19.2, 2.6, "vera");
+//        Water vitasnella = new Water(16, 86, 26, 3, 301, 83, 2, "vitasnella");
+//        Water sanbern = new Water(16, sanBernarndo);
+        Water dolomiti = new Water(16, 23.8, 8.7, 1.3, 94.6, 22, 1.1, "dolomiti");
 
-        Water blackMediumTarget = new Water(10, 50, 10, 33, 142, 57, 44, "black medium");
+        Water blackMediumTarget = new Water(16, 50, 10, 33, 142, 57, 44, "black medium");
+
+        Finder.allCombinations(blackMediumTarget.liters(), Arrays.asList(levissima,
+//                        boario,
+                        eva,
+//                        santanna, norda,
+                        vera,
+//                        vitasnella, sanbern,
+                        dolomiti
+                ));
+    }
+
+    @Test public void findClosestReal() {
+       Water levissima = new Water(17.5, 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
+       Water boario = new Water(17.5, 131, 40, 5, 303, 240, 4, "boario");
+       Water eva = new Water(17.5, 10.2, 4, 0.28, 48, 1.7, 0.17, "eva");
+       Water santanna = new Water(17.5, 10.5, 0, 0.9, 26.2, 7.8, 0, "santanna");
+       Water norda = new Water(17.5, 10.8, 3, 2.3, 52.3, 6.3, 0.6, "norda");
+       Water vera = new Water(17.5, 35, 12.6, 2, 148, 19.2, 2.6, "vera");
+       Water vitasnella = new Water(17.5, 86, 26, 3, 301, 83, 2, "vitasnella");
+       Water sanbern = new Water(17.5, sanBernarndo);
+       Water dolomiti = new Water(17.5, 23.8, 8.7, 1.3, 94.6, 22, 1.1, "dolomiti");
+
+        Water blackMediumTarget = new Water(16, 50, 10, 33, 142, 57, 44, "black medium");
         long startTime = System.currentTimeMillis();
         List<Water> xxx = Finder.top(100, blackMediumTarget
                 , Arrays.asList(levissima,
                         boario,
-                        eva, santanna, norda,
+                        eva,
+                        santanna, norda,
                         vera,
-                        vitasnella, sanbern, dolomiti),
+                        vitasnella, sanbern,
+                        dolomiti
+                ),
                 Arrays.asList(new SaltAddition(3, gypsum), new SaltAddition(3, tableSalt)));
 
         System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
@@ -159,77 +186,12 @@ public class TestFinder {
         Water c = new Water.Builder(2).name("c").build();
 //        Water c = new Water.Builder(3).name("c").build();
 
-        List<List<Water>> res = allCombinations(2, Arrays.asList(a, b, c));
+        Set<Multiset<Water>> res = Finder.allCombinations(2, Arrays.asList(a, b, c));
 
-        for (List<Water> lw : res)  { if (lw.size() > 0) {System.out.println("RES:"+ printList(lw));} }
+        for (Collection<Water> lw : res)  { if (lw.size() > 0) {System.out.println("RES:"+ printList(lw));} }
     }
-
-    public List<List<Water>> allCombinations(double n, List<Water> ws) {
-        List<Water> elements = ws.stream()
-            .flatMap(w -> splitIntoOneLiterElements(w).stream())
-            .collect(Collectors.toList());
-
-        ArrayList<List<Water>> x = new ArrayList<>();
-        x.add(new ArrayList<>());
-
-        List<List<Water>> combinations = combinations(new ArrayList<>(), x, n, elements);
-
-
-        for (List<Water> comb : combinations) {
-            comb.sort(Comparator.comparing(Water::name));
-        }
-
-        // togliamo duplicati
-        return new ArrayList<>(new HashSet<>(combinations));
-    }
-
-    private String printLList(List<List<Water>> list) {
-        StringBuilder sb = new StringBuilder();
-        for (List<Water> lw : list)  {
-            sb.append(printList(lw));
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    private String printList(List<Water> lw) {
+    private String printList(Collection<Water> lw) {
         return lw.stream().map(e -> e.name()).collect(Collectors.joining(", "));
     }
 
-    private List<List<Water>> combinations(
-            List<Water> curr,
-            List<List<Water>> solutions,
-            double target,
-            List<Water> elements) {
-//        log.debug("target {}, elements {}, curr {}, solutions {}", target, printList(elements), printList(curr), printLList(solutions));
-
-        if (target == 0) {
-//            log.debug("adding curr {} to solutions {}", printList(curr), printLList(solutions));
-            solutions.add(curr);
-            return solutions;
-        } else if (target < 0 || elements.size() == 0) {
-            /* non ho trovato niente */
-            ArrayList<List<Water>> lists = new ArrayList<>();
-            lists.add(new ArrayList<>());
-            return lists;
-        } else {
-            List<List<Water>> res = new ArrayList<>();
-
-            res.addAll(combinations(curr, solutions, target, elements.subList(1, elements.size())));
-
-            List<Water> x = new ArrayList<>(curr);
-            x.add(elements.get(0));
-            res.addAll(combinations(x, solutions, target - 1, elements.subList(1, elements.size())));
-
-            return res;
-        }
-    }
-
-    private List<Water> splitIntoOneLiterElements(Water w) {
-        ArrayList<Water> res = new ArrayList<>();
-        for (int i = 0; i < w.liters(); i++) {
-            res.add(new Water(1, w.profile()));
-        }
-        return res;
-    }
 }
