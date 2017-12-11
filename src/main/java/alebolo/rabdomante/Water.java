@@ -1,6 +1,5 @@
 package alebolo.rabdomante;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +21,7 @@ public class Water implements IWater {
 
      */
 
-    public Water(double liters, WaterProfile profile) {
+    public Water(double liters, Profile profile) {
         this(liters,profile.calcioMgPerL() * liters
         , profile.magnesioMgPerL() * liters
         , profile.sodioMgPerL() * liters
@@ -51,7 +50,6 @@ public class Water implements IWater {
     public double liters() { return liters; }
 
     @Override public List<SourceRatio> sources() { return Arrays.asList(new SourceRatio(profile(), 1.)); }
-    @Override public List<Water> composition() { return new ArrayList<>(); }
 
     public String name() { return name; }
 
@@ -89,7 +87,7 @@ public class Water implements IWater {
     }
 
     public IWater add(IWater water) {
-        return WaterMix.create(Arrays.asList(this, water));
+        return null;//WaterMix.create(Arrays.asList(this, water));
     }
 
     public static class Builder {

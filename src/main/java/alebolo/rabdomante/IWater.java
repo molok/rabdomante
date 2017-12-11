@@ -16,16 +16,16 @@ public interface IWater {
 
      default boolean isSameAs(IWater water) {
           return DoubleMath.fuzzyCompare(water.liters(), this.liters(), 0.001) == 0 &&
-                  DoubleMath.fuzzyCompare(water.calcioMg(), this.calcioMg(), 0.001) == 0 &&
-                  DoubleMath.fuzzyCompare(water.magnesioMg(), this.magnesioMg(), 0.001) == 0 &&
-                  DoubleMath.fuzzyCompare(water.sodioMg(), this.sodioMg(), 0.001) == 0 &&
-                  DoubleMath.fuzzyCompare(water.bicarbonatiMg(), this.bicarbonatiMg(), 0.001) == 0 &&
-                  DoubleMath.fuzzyCompare(water.solfatoMg(), this.solfatoMg(), 0.001) == 0 &&
-                  DoubleMath.fuzzyCompare(water.cloruroMg(), this.cloruroMg(), 0.001) == 0;
+                 DoubleMath.fuzzyCompare(water.calcioMg(), this.calcioMg(), 0.001) == 0 &&
+                 DoubleMath.fuzzyCompare(water.magnesioMg(), this.magnesioMg(), 0.001) == 0 &&
+                 DoubleMath.fuzzyCompare(water.sodioMg(), this.sodioMg(), 0.001) == 0 &&
+                 DoubleMath.fuzzyCompare(water.bicarbonatiMg(), this.bicarbonatiMg(), 0.001) == 0 &&
+                 DoubleMath.fuzzyCompare(water.solfatoMg(), this.solfatoMg(), 0.001) == 0 &&
+                 DoubleMath.fuzzyCompare(water.cloruroMg(), this.cloruroMg(), 0.001) == 0;
      }
 
-    default WaterProfile profile() {
-        return new WaterProfile(calcioMg() / liters(),
+    default Profile profile() {
+        return new Profile(calcioMg() / liters(),
                 magnesioMg() / liters(),
                 sodioMg() / liters(),
                 bicarbonatiMg() / liters(),
@@ -35,13 +35,13 @@ public interface IWater {
 
 
     class SourceRatio {
-         private final WaterProfile profile;
+         private final Profile profile;
          private final double ratio;
-         public SourceRatio(WaterProfile profile, double ratio) {
+         public SourceRatio(Profile profile, double ratio) {
              this.profile = profile;
              this.ratio = ratio;
          }
-         WaterProfile profile() { return profile; }
+         Profile profile() { return profile; }
          double ratio() { return ratio(); }
 
          @Override public boolean equals(Object o) {

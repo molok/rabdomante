@@ -15,10 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TestFinder {
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    final WaterProfile sanBernarndo = new WaterProfile(9.5, 0.6, 0.6, 30.2, 2.3, 0.7, "sanbernardo");
-    final WaterProfile eva = new WaterProfile(10.2 , 4, 0.28, 48, 1.7, 0.18, "eva");
-    final WaterProfile target = new WaterProfile(50, 10, 33, 142, 57, 44, "target");
-    final WaterProfile distilled = new WaterProfile(0, 0, 0, 0, 0, 0, "distilled");
+    final Profile sanBernarndo = new Profile(9.5, 0.6, 0.6, 30.2, 2.3, 0.7, "sanbernardo");
+    final Profile eva = new Profile(10.2 , 4, 0.28, 48, 1.7, 0.18, "evaProfile");
+    final Profile target = new Profile(50, 10, 33, 142, 57, 44, "target");
+    final Profile distilled = new Profile(0, 0, 0, 0, 0, 0, "distilled");
     final SaltProfile gypsum = new SaltProfile(0, 0, 23.28, 55.8, "gypsum");
     final SaltProfile tableSalt = new SaltProfile(39.34, 60.66, 0, 0, "tableSalt");
 
@@ -83,7 +83,7 @@ public class TestFinder {
     @Test public void allCombs() {
         Water levissima = new Water(16, 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
 //        Water boario = new Water(16, 131, 40, 5, 303, 240, 4, "boario");
-        Water eva = new Water(16, 10.2, 4, 0.28, 48, 1.7, 0.17, "eva");
+        Water eva = new Water(16, 10.2, 4, 0.28, 48, 1.7, 0.17, "evaProfile");
 //        Water santanna = new Water(16, 10.5, 0, 0.9, 26.2, 7.8, 0, "santanna");
 //        Water norda = new Water(16, 10.8, 3, 2.3, 52.3, 6.3, 0.6, "norda");
         Water vera = new Water(16, 35, 12.6, 2, 148, 19.2, 2.6, "vera");
@@ -111,7 +111,7 @@ public class TestFinder {
         }
         Water levissima = new Water(10, 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
        Water boario = new Water(10, 131, 40, 5, 303, 240, 4, "boario");
-       Water eva = new Water(10, 10.2, 4, 0.28, 48, 1.7, 0.17, "eva");
+       Water eva = new Water(10, 10.2, 4, 0.28, 48, 1.7, 0.17, "evaProfile");
        Water santanna = new Water(10, 10.5, 0, 0.9, 26.2, 7.8, 0, "santanna");
        Water norda = new Water(10, 10.8, 3, 2.3, 52.3, 6.3, 0.6, "norda");
        Water vera = new Water(10, 35, 12.6, 2, 148, 19.2, 2.6, "vera");
@@ -160,7 +160,7 @@ public class TestFinder {
     }
 
     @Test public void waterContent() {
-        WaterProfile profile = new WaterProfile(10, 0, 0, 0, 0, 0, "profile");
+        Profile profile = new Profile(10, 0, 0, 0, 0, 0, "profile");
         assertThat(new Water(1, profile).calcioMg()).isEqualTo(10);
     }
 
