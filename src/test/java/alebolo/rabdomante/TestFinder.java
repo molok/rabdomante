@@ -199,73 +199,73 @@ public class TestFinder {
         return lw.stream().map(e -> e.name()).collect(Collectors.joining(", "));
     }
 
-    @Test public void combinations() {
-        Water a = new Water.Builder(10).name("a").build();
-        Water b = new Water.Builder(10).name("b").build();
-        Water target = new Water.Builder(10).name("b").build();
-        List<Water> mix = Finder.combineWaters(target.liters(), a, b);
+//    @Test public void combinations() {
+//        Water a = new Water.Builder(10).name("a").build();
+//        Water b = new Water.Builder(10).name("b").build();
+//        Water target = new Water.Builder(10).name("b").build();
+//        List<Water> mix = Finder.combineWaters(target.liters(), a, b);
+//
+//        mix.stream().forEach(m -> System.out.println("mix:"+m.toString()));
+//    }
 
-        mix.stream().forEach(m -> System.out.println("mix:"+m.toString()));
-    }
-
-    @Test public void testequals() {
-        Water a0 = new Water.Builder(0).name("a").build();
-        Water a1 = new Water.Builder(1).name("a").build();
-        Water a2 = new Water.Builder(1).name("a").build();
-        WaterMix ma = new WaterMix(Arrays.asList(a0, a1));
-        WaterMix mb = new WaterMix(Arrays.asList(a2));
-        assertThat(ma).isEqualByComparingTo(mb);
-        System.out.println("ma:"+ma.toString());
-    }
+//    @Test public void testequals() {
+//        Water a0 = new Water.Builder(0).name("a").build();
+//        Water a1 = new Water.Builder(1).name("a").build();
+//        Water a2 = new Water.Builder(1).name("a").build();
+//        WaterMix ma = new WaterMix(Arrays.asList(a0, a1));
+//        WaterMix mb = new WaterMix(Arrays.asList(a2));
+//        assertThat(ma).isEqualByComparingTo(mb);
+//        System.out.println("ma:"+ma.toString());
+//    }
 
     @Test public void mixing() {
         Water a0 = new Water.Builder(0).name("a").build();
         Water a1 = new Water.Builder(1).name("a").build();
     }
 
-    @Test public void combinationOfTwo() {
-        Water target = new Water.Builder(20).name("target").magnesio(100).calcio(100).sodio(100).build();
-        List<Water> ws = Arrays.asList(
-                new Water.Builder(20).name("a").build(),
-                new Water.Builder(20).name("b").build(),
-                new Water.Builder(20).name("c").build()
-        );
-        List<Water> combinedWaters = Finder.combineWaters(target.liters(), ws, ws);
-
-        System.out.println("combined:"+combinedWaters.size());
-        combinedWaters.stream().forEach(w -> System.out.println(w.toString()));
-    }
+//    @Test public void combinationOfTwo() {
+//        Water target = new Water.Builder(20).name("target").magnesio(100).calcio(100).sodio(100).build();
+//        List<Water> ws = Arrays.asList(
+//                new Water.Builder(20).name("a").build(),
+//                new Water.Builder(20).name("b").build(),
+//                new Water.Builder(20).name("c").build()
+//        );
+//        List<Water> combinedWaters = Finder.combineWaters(target.liters(), ws, ws);
+//
+//        System.out.println("combined:"+combinedWaters.size());
+//        combinedWaters.stream().forEach(w -> System.out.println(w.toString()));
+//    }
 
     @Test public void tostr1() {
         Water a = new Water.Builder(5).name("a").build();
         System.out.println(a.toString());
     }
 
-    @Test public void tostr2() {
-        Water a = new Water.Builder(5).name("a").build();
-        Water b = new Water.Builder(5).name("b").build();
-        Water anb = a.add(b);
-        System.out.println(anb.toString());
-    }
+//    @Test public void tostr2() {
+//        Water a = new Water.Builder(5).name("a").build();
+//        Water b = new Water.Builder(5).name("b").build();
+//        Water anb = a.add(b);
+//        System.out.println(anb.toString());
+//    }
 
-    @Test public void xmixing() {
+//    @Test public void xmixing() {
 //        Water water = new Water.Builder(5).name("a").build()
 //                    .add(     new Water.Builder(5).name("b").build()
 //                         .add(new Water.Builder(1).name("a").build().add(new Water.Builder(5).name("c").build())));
-        Water sb = new Water.Builder(1).name("san benedetto").build();
-        Water add1 = sb.add(sb);
-        System.out.println(add1.composition());
-        Water add = sb.add(add1);
-        System.out.println(add.composition());
-    }
+//        Water sb = new Water.Builder(1).name("san benedetto").build();
+//        Water add1 = sb.add(sb);
+//        System.out.println(add1.composition());
+//        Water add = sb.add(add1);
+//        System.out.println(add.composition());
+//    }
 
-    @Test public void aggComp() {
-        Water a = new Water.Builder(5).name("a").build();
-        Water b = new Water.Builder(5).name("b").build();
-        Water c = new Water.Builder(5).name("c").build();
-        Water d = new Water.Builder(5).name("c").build();
-        System.out.println(a.add(b).add(c).add(d).aggregateComposition(1., new HashMap<>()));
-    }
+//    @Test public void aggComp() {
+//        Water a = new Water.Builder(5).name("a").build();
+//        Water b = new Water.Builder(5).name("b").build();
+//        Water c = new Water.Builder(5).name("c").build();
+//        Water d = new Water.Builder(5).name("c").build();
+//        System.out.println(a.add(b).add(c).add(d).mixRatio(1., new HashMap<>()));
+//    }
 
     @Test public void tostrfff() {
         Water a = new Water.Builder(2).name("a").build();
