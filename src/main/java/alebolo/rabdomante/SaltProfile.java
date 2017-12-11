@@ -22,6 +22,15 @@ public class SaltProfile {
     public double calcioPerc() { return calcio; }
     public double cloruroPerc() { return cloruro;}
     public double solfatoPerc() { return solfato;}
+    public String name() { return name; }
 
-    public String toString() { return name; }
+    @Override public String toString() {
+        return "SaltProfile{" +
+                "sodio=" + sodio +
+                ", cloruro=" + cloruro +
+                ", calcio=" + calcio +
+                ", solfato=" + solfato +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

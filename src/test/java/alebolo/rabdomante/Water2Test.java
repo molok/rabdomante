@@ -61,11 +61,11 @@ public class Water2Test {
     @Test public void merge_with_salts() {
         Water2 eva_e_sale = new Water2( 10,
                 new Recipe(Arrays.asList(new ProfileRatio(TestUtils.evaProfile, 1.)),
-                           Arrays.asList(new SaltRatio(0.1, TestUtils.tableSalt))));
+                           Arrays.asList(new SaltRatio(TestUtils.tableSalt, 0.1))));
 
         Water2 eva_e_molto_sale = new Water2( 10,
                 new Recipe(Arrays.asList(new ProfileRatio(TestUtils.evaProfile, 1.)),
-                        Arrays.asList(new SaltRatio(0.9, TestUtils.tableSalt))));
+                        Arrays.asList(new SaltRatio(TestUtils.tableSalt, 0.9))));
 
         Water2 merged = WaterMerger.merge(eva_e_sale, eva_e_molto_sale);
 

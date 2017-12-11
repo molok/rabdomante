@@ -4,7 +4,7 @@ class SaltRatio {
     private final double gramsPerL;
     private final SaltProfile salt;
 
-    public SaltRatio(double gramsPerL, SaltProfile salt) {
+    public SaltRatio(SaltProfile salt, double gramsPerL) {
         this.gramsPerL = gramsPerL;
         this.salt = salt;
     }
