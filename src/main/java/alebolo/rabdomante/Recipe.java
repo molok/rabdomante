@@ -21,6 +21,10 @@ public class Recipe {
         return new Recipe(Arrays.asList(new ProfileRatio(profile, 1.0)));
     }
 
+    public static Recipe create(Profile profile, List<SaltRatio> salts) {
+        return new Recipe(Arrays.asList(new ProfileRatio(profile, 1.0)), salts);
+    }
+
     public Recipe(List<ProfileRatio> profRatio) {
         this.profRatio = profRatio;
         this.salts = new ArrayList<>();

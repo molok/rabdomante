@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,5 +72,23 @@ public class Water2Test {
         assertThat(merged.recipe().saltsRatio().get(0).gramsPerL()).isEqualTo(0.9 * (10/20.) + 0.1 * (10/20.));
     }
 
-}
+    @Test public void multi_layer_merge() {
+        Water2 a = new Water2(10, Recipe.create(TestUtils.evaProfile,
+                                                      Arrays.asList(new SaltRatio(TestUtils.tableSalt, 100))));
+        Water2 b = new Water2(10, Recipe.create(TestUtils.evaProfile));
 
+        Water2 merge_ab = WaterMerger.merge(a, b);
+
+        Water2 c = new Water2(10, Recipe.create(TestUtils.evaProfile));
+
+        Water2 merge_abc = WaterMerger.merge(merge_ab, c);
+
+        assertThat(merge_abc.liters()).isEqualTo(30.);
+        assertThat(merge_abc.recipe()
+                            .profilesRatio()
+                            .stream().map(r -> r.profile())
+                            .collect(Collectors.toList())).containsExactly(TestUtils.evaProfile);
+
+        assertThat(merge_abc.sodioMg()).isEqualTo(1000 * (10 * 100) / 3);
+    }
+}
