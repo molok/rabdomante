@@ -7,21 +7,21 @@ public class SaltProfile {
     private final double solfato;
     private final String name;
 
-    public SaltProfile(double sodioPerc, double cloruroPerc, double calcioPerc, double solfatoPerc, String name) {
-        this.sodio = sodioPerc;
-        this.cloruro = cloruroPerc;
-        this.calcio = calcioPerc;
-        this.solfato = solfatoPerc;
+    public SaltProfile(double sodioRatio, double cloruroRatio, double calcioRatio, double solfatoRatio, String name) {
+        this.sodio = sodioRatio;
+        this.cloruro = cloruroRatio;
+        this.calcio = calcioRatio;
+        this.solfato = solfatoRatio;
         this.name = name;
-        if ((sodio + cloruro + calcio + solfato) > 100 ) {
+        if ((sodio + cloruro + calcio + solfato) > 1 ) {
             throw new RuntimeException("SaltProfile invalido");
         }
     }
 
-    public double sodioPerc() { return sodio; }
-    public double calcioPerc() { return calcio; }
-    public double cloruroPerc() { return cloruro;}
-    public double solfatoPerc() { return solfato;}
+    public double sodioRatio() { return sodio; }
+    public double calcioRatio() { return calcio; }
+    public double cloruroRatio() { return cloruro;}
+    public double solfatoRatio() { return solfato;}
     public String name() { return name; }
 
     @Override public String toString() {

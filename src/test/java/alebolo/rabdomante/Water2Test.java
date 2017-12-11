@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.withinPercentage;
 
 public class Water2Test {
+
     @Test public void no_salts_one_profile() {
         List<SaltRatio> noSalts = Arrays.asList();
         ProfileRatio profileRatio = new ProfileRatio(TestUtils.evaProfile, 1.);
@@ -69,18 +71,26 @@ public class Water2Test {
 
         Water2 merged = WaterMerger.merge(eva_e_sale, eva_e_molto_sale);
 
-        assertThat(merged.recipe().saltsRatio().get(0).gramsPerL()).isEqualTo(0.9 * (10/20.) + 0.1 * (10/20.));
+        assertThat(merged.recipe().saltsRatio().get(0).mgPerL()).isEqualTo(0.9 * (10/20.) + 0.1 * (10/20.));
     }
 
     @Test public void multi_layer_merge() {
-        Water2 a = new Water2(10, Recipe.create(TestUtils.evaProfile,
-                                                      Arrays.asList(new SaltRatio(TestUtils.tableSalt, 100))));
+        int saltMgPerL = 100;
+        Water2 a = new Water2(10,
+                                Recipe.create(TestUtils.evaProfile,
+                                              Arrays.asList(new SaltRatio(TestUtils.tableSalt, saltMgPerL))));
+
+        assertThat(a.sodioMg()).isCloseTo(TestUtils.tableSalt.sodioRatio() * saltMgPerL * a.liters(), withinPercentage(1));
+
         Water2 b = new Water2(10, Recipe.create(TestUtils.evaProfile));
 
         Water2 merge_ab = WaterMerger.merge(a, b);
 
-        Water2 c = new Water2(10, Recipe.create(TestUtils.evaProfile));
+        assertThat(merge_ab.sodioMg()).isCloseTo(TestUtils.tableSalt.sodioRatio() * saltMgPerL * a.liters(), withinPercentage(2));
 
+        Water2 c = new Water2(10,
+                              Recipe.create(TestUtils.evaProfile,
+                                      Arrays.asList(new SaltRatio(TestUtils.tableSalt, saltMgPerL))));
         Water2 merge_abc = WaterMerger.merge(merge_ab, c);
 
         assertThat(merge_abc.liters()).isEqualTo(30.);
@@ -89,6 +99,6 @@ public class Water2Test {
                             .stream().map(r -> r.profile())
                             .collect(Collectors.toList())).containsExactly(TestUtils.evaProfile);
 
-        assertThat(merge_abc.sodioMg()).isEqualTo(1000 * (10 * 100) / 3);
+        assertThat(merge_abc.sodioMg()).isCloseTo(TestUtils.tableSalt.sodioRatio() * saltMgPerL * (c.liters() + a.liters()), withinPercentage(3));
     }
 }

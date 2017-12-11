@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 public class TestFinder {
     Logger log = LoggerFactory.getLogger(this.getClass());
 

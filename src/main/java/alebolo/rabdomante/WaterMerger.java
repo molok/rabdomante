@@ -19,7 +19,7 @@ public class WaterMerger {
             salts.merge(
                     currSalt.profile().name(),
                     currSalt,
-                    (a, b) -> new SaltRatio(a.profile(), a.gramsPerL() + b.gramsPerL()) );
+                    (a, b) -> new SaltRatio(a.profile(), a.mgPerL() + b.mgPerL()) );
         }
 
         return new ArrayList<>(salts.values());
@@ -40,7 +40,7 @@ public class WaterMerger {
 
     private static List<SaltRatio> weigthedSalts(Water2 w, double totLiters) {
         return w.recipe().saltsRatio().stream()
-                .map(pr -> new SaltRatio(pr.profile(), pr.gramsPerL() * (w.liters() / totLiters)))
+                .map(pr -> new SaltRatio(pr.profile(), pr.mgPerL() * (w.liters() / totLiters)))
                 .collect(Collectors.toList());
     }
 

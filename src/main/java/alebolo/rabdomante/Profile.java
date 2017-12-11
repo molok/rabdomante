@@ -61,7 +61,7 @@ class Profile {
         return "Profile ("+name+"){" +
                 "calcio=" + calcio +
                 ", magnesio=" + magnesio +
-                ", sodioPerc=" + sodio +
+                ", sodioRatio=" + sodio +
                 ", bicarbonati=" + bicarbonati +
                 ", solfato=" + solfato +
                 ", cloruro=" + cloruro +
