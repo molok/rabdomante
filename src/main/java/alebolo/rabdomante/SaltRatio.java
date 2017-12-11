@@ -1,5 +1,7 @@
 package alebolo.rabdomante;
 
+import java.util.Objects;
+
 class SaltRatio {
     private final double mgPerL;
     private final SaltProfile salt;
@@ -19,6 +21,17 @@ class SaltRatio {
     public SaltProfile profile() { return salt; }
 
     public String toString() {
-        return String.format("%.2f g/L %s", mgPerL, salt.toString());
+        return String.format("%.2f mg/L %s", mgPerL, salt.toString());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SaltRatio saltRatio = (SaltRatio) o;
+        return Double.compare(saltRatio.mgPerL, mgPerL) == 0 &&
+                Objects.equals(salt, saltRatio.salt);
+    }
+
+    @Override public int hashCode() { return Objects.hash(mgPerL, salt); }
 }

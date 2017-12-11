@@ -59,12 +59,12 @@ class Profile {
     @Override
     public String toString() {
         return "Profile ("+name+"){" +
-                "calcio=" + calcio +
-                ", magnesio=" + magnesio +
-                ", sodioRatio=" + sodio +
-                ", bicarbonati=" + bicarbonati +
-                ", solfato=" + solfato +
-                ", cloruro=" + cloruro +
+//                "calcio=" + calcio +
+//                ", magnesio=" + magnesio +
+//                ", sodio=" + sodio +
+//                ", bicarbonati=" + bicarbonati +
+//                ", solfato=" + solfato +
+//                ", cloruro=" + cloruro +
                 '}';
     }
 

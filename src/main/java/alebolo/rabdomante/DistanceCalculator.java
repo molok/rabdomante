@@ -10,15 +10,15 @@ public class DistanceCalculator {
                     target.liters(), candidate.liters()));
         }
 
-        return diff(target, candidate, Water2::calcioMg) +
-               diff(target, candidate, Water2::magnesioMg) +
-               diff(target, candidate, Water2::sodioMg) +
-               diff(target, candidate, Water2::bicarbonatiMg) +
-               diff(target, candidate, Water2::solfatoMg) +
-               diff(target, candidate, Water2::cloruroMg);
+        return diff(target.recipe(), candidate.recipe(), Recipe::calcioMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::magnesioMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::sodioMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::bicarbonatiMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::solfatoMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::cloruroMgPerL);
     }
 
-    private static double diff(Water2 a, Water2 b, Function<Water2, Double> getter) {
+    private static double diff(Recipe a, Recipe b, Function<Recipe, Double> getter) {
         return Math.abs(getter.apply(a) - getter.apply(b));
     }
 }

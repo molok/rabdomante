@@ -16,8 +16,8 @@ class ProfileRatio {
     @Override
     public String toString() {
         return "ProfileRatio{" +
-                "profile=" + profile +
-                ", ratio=" + ratio +
+                " ratio=" + ratio +
+                ", profile=" + profile +
                 '}';
     }
 

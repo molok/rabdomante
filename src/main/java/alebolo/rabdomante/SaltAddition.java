@@ -9,10 +9,10 @@ public class SaltAddition {
         this.salt = salt;
     }
 
-    public double sodioMg() { return grams * salt.sodioRatio() * 10 ; }
-    public double calcioMg() { return grams * salt.calcioRatio() * 10 ; }
-    public double solfatoMg() { return grams * salt.solfatoRatio() * 10 ; }
-    public double cloruroMg() { return grams * salt.cloruroRatio() * 10 ; }
+    public double sodioMg() { return grams * salt.sodioRatio(); }
+    public double calcioMg() { return grams * salt.calcioRatio(); }
+    public double solfatoMg() { return grams * salt.solfatoRatio(); }
+    public double cloruroMg() { return grams * salt.cloruroRatio(); }
     public double magnesioMg() { return 0; }
     public double bicarbonatiMg() { return 0; }
     public double grams() { return grams; }

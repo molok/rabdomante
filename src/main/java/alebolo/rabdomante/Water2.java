@@ -1,6 +1,9 @@
 package alebolo.rabdomante;
 
+import com.google.common.math.DoubleMath;
+
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 public class Water2 {
     private final double liters;
@@ -25,4 +28,27 @@ public class Water2 {
     public double solfatoMg() { return liters * recipe.solfatoMgPerL(); }
     public double cloruroMg() { return liters * recipe.cloruroMgPerL();  }
     public double liters() { return liters; }
+
+    public boolean isSameAs(Water2 water) {
+        return DoubleMath.fuzzyCompare(water.liters(), this.liters(), 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.calcioMg(), this.calcioMg(), 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.magnesioMg(), this.magnesioMg(), 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.sodioMg(), this.sodioMg(), 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.bicarbonatiMg(), this.bicarbonatiMg(), 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.solfatoMg(), this.solfatoMg(), 0.001) == 0 &&
+                DoubleMath.fuzzyCompare(water.cloruroMg(), this.cloruroMg(), 0.001) == 0;
+    }
+
+
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Water2 water2 = (Water2) o;
+        return Double.compare(water2.liters, liters) == 0 &&
+                Objects.equals(recipe, water2.recipe);
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(liters, recipe);
+    }
 }
