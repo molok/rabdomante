@@ -66,7 +66,7 @@ public class TestFinder {
         Water target = new Water.Builder(1).name("target").calcio(100).solfato(200).build();
         Water closest = new Water.Builder(1).name("ok").calcio(99).solfato(199).build();
         Water nocigar = new Water.Builder(1).name("nocigar").calcio(90).solfato(190).build();
-        Water verydifferent = new Water.Builder(1).name("diff").calcio(199).solfato(299).build();
+        Water verydifferent = new Water.Builder(1).name("distanceCoefficient").calcio(199).solfato(299).build();
 
         assertThat(Finder.closest(target, Arrays.asList(closest, nocigar, verydifferent)).isSameAs(closest)).isTrue();
     }

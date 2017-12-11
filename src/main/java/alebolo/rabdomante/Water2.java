@@ -18,5 +18,11 @@ public class Water2 {
 
     public Recipe recipe() { return recipe; }
 
+    public double calcioMg() { return liters * recipe.calcioMgPerL(); }
+    public double magnesioMg() { return liters * recipe.magnesioMgPerL(); }
+    public double sodioMg() { return liters * recipe.sodioMgPerL(); }
+    public double bicarbonatiMg() { return liters * recipe.bicarbonatiMgPerL(); }
+    public double solfatoMg() { return liters * recipe.solfatoMgPerL(); }
+    public double cloruroMg() { return liters * recipe.cloruroMgPerL();  }
     public double liters() { return liters; }
 }

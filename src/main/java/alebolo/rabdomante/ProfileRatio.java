@@ -30,4 +30,11 @@ class ProfileRatio {
     }
 
     @Override public int hashCode() { return Objects.hash(profile, ratio); }
+
+    public double calcioMgPerL() { return profile.calcioMgPerL() * ratio; }
+    public double magnesioMgPerL() { return profile.magnesioMgPerL() * ratio; }
+    public double sodioMgPerL() { return profile.sodioMgPerL() * ratio; }
+    public double bicarbonatiMgPerL() { return profile.bicarbonatiMgPerL() * ratio; }
+    public double solfatoMgPerL() { return profile.solfatoMgPerL() * ratio; }
+    public double cloruroMgPerL() { return profile.cloruroMgPerL() * ratio; }
 }

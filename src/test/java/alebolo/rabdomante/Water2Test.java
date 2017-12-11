@@ -9,8 +9,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Water2Test {
-    @Test
-    public void no_salts_one_profile() {
+    @Test public void no_salts_one_profile() {
         List<SaltRatio> noSalts = Arrays.asList();
         ProfileRatio profileRatio = new ProfileRatio(TestUtils.evaProfile, 1.);
         List<ProfileRatio> profRatio = Arrays.asList(profileRatio);
