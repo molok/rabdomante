@@ -58,5 +58,19 @@ public class Water2Test {
         assertThat(DoubleMath.fuzzyCompare(mergeSanb.ratio(), 5/20., 0.1)).isEqualTo(0);
     }
 
+    @Test public void merge_with_salts() {
+        Water2 eva_e_sale = new Water2( 10,
+                new Recipe(Arrays.asList(new ProfileRatio(TestUtils.evaProfile, 1.)),
+                           Arrays.asList(new SaltRatio(0.1, TestUtils.tableSalt))));
+
+        Water2 eva_e_molto_sale = new Water2( 10,
+                new Recipe(Arrays.asList(new ProfileRatio(TestUtils.evaProfile, 1.)),
+                        Arrays.asList(new SaltRatio(0.9, TestUtils.tableSalt))));
+
+        Water2 merged = WaterMerger.merge(eva_e_sale, eva_e_molto_sale);
+
+        assertThat(merged.recipe().saltsRatio().get(0).gramsPerL()).isEqualTo(0.9 * (10/20.) + 0.1 * (10/20.));
+    }
+
 }
 
