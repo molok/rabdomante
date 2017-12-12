@@ -54,6 +54,7 @@ public class Finder2 {
     }
 
     public static List<Water2> saltsCombinations(Water2 w, List<SaltAddition> salts) {
+        /* TODO valutare target per inserire sali da provare */
         List<Water2> res = new ArrayList<>();
         res.add(w);
         for (SaltAddition s : salts) {

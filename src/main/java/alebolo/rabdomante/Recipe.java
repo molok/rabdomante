@@ -1,6 +1,8 @@
 package alebolo.rabdomante;
 
-import java.text.DecimalFormat;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,12 +10,9 @@ import java.util.Objects;
 import java.util.function.ToDoubleFunction;
 
 public class Recipe {
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final List<ProfileRatio> profRatio;
     private final List<SaltRatio> salts;
-    private final static DecimalFormat df = new DecimalFormat("0.00");
-    {
-        df.applyLocalizedPattern("0.00");
-    }
 
     public Recipe(List<ProfileRatio> profRatio, List<SaltRatio> salts) {
         if (profRatio.stream().mapToDouble(r -> r.ratio()).sum() != 1.) {
@@ -41,16 +40,7 @@ public class Recipe {
 
     @Override
     public String toString() {
-        return "Recipe{"
-//                + " calcioMgPerL:" + df.format(calcioMgPerL())
-//                + ", magnesioMgPerL:" + df.format(magnesioMgPerL())
-//                + ", sodioMgPerL:" + df.format(sodioMgPerL())
-//                + ", bicarbonatiMgPerL:" + df.format(bicarbonatiMgPerL())
-//                + ", solfatoMgPerL:" + df.format(solfatoMgPerL())
-//                + ", cloruroMgPerL:" + df.format(cloruroMgPerL() )
-                + "  profRatio=" + profRatio +
-                ", , salts=" + salts +
-                '}';
+        return GSON.toJson(this);
     }
 
     private double sumWaterAndSalts(ToDoubleFunction<ProfileRatio> getterProfileRatio,

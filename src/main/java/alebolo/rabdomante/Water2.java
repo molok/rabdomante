@@ -1,6 +1,8 @@
 package alebolo.rabdomante;
 
 import com.google.common.math.DoubleMath;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.DecimalFormat;
 import java.util.Objects;
@@ -9,14 +11,16 @@ public class Water2 {
     private final double liters;
     private final Recipe recipe;
     private final static DecimalFormat fmt = new DecimalFormat("###.##");
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public Water2(double liters, Recipe recipe) {
         this.liters = liters;
         this.recipe = recipe;
     }
 
-    @Override public String toString() {
-        return String.format("%sL of %s", fmt.format(liters), recipe.toString());
+    @Override
+    public String toString() {
+        return GSON.toJson(this);
     }
 
     public Recipe recipe() { return recipe; }

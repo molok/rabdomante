@@ -1,6 +1,8 @@
 package alebolo.rabdomante;
 
 import com.google.common.math.DoubleMath;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.Objects;
 
@@ -12,6 +14,7 @@ class Profile {
     private final double solfato;
     private final double cloruro;
     private final String name;
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     Profile(double calcio, double magnesio, double sodio, double bicarbonati, double solfato, double cloruro, String name) {
         this.calcio = calcio;
@@ -58,14 +61,7 @@ class Profile {
 
     @Override
     public String toString() {
-        return "Profile ("+name+"){" +
-//                "calcio=" + calcio +
-//                ", magnesio=" + magnesio +
-//                ", sodio=" + sodio +
-//                ", bicarbonati=" + bicarbonati +
-//                ", solfato=" + solfato +
-//                ", cloruro=" + cloruro +
-                '}';
+        return GSON.toJson(this);
     }
 
     public String name() { return name; }

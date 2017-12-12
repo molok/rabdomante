@@ -1,13 +1,12 @@
 package alebolo.rabdomante;
 
-import org.assertj.core.internal.DeepDifference;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -64,6 +63,7 @@ public class Finder2Test {
     }
 
     @Test public void delta() {
+        /* calcioMgPerL:0.47, magnesioMgPerL:0.11, sodioMgPerL:0.31, bicarbonatiMgPerL:1.55, solfatoMgPerL:0.43, cloruroMgPerL:0.44 */
         System.out.println("delta:"+
             DistanceCalculator.distanceCoefficient(
                 new Water2(10,
@@ -143,8 +143,27 @@ public class Finder2Test {
 
         log.warn("\n"+blackMediumTarget.toString());
         log.warn("res:\n" + xxx.stream()
-                .map(w -> "delta: " + String.format("%.2f", DistanceCalculator.distanceCoefficient(blackMediumTarget, w))
-                        + "  = " + w.toString())
+                .map(w -> "delta " +
+                        String.format("%.2f", DistanceCalculator.distanceCoefficient(blackMediumTarget, w))
+                        + " = " + info(w) )
                 .collect(Collectors.joining("\n")));
+    }
+
+    private String info(Water2 w) {
+        String salts = w.recipe().saltsRatio().stream()
+                .map(s -> "mg/L " + String.format("%.2f", s.mgPerL()) + " " + s.profile().name())
+                .collect( Collectors.joining(", "));
+        String profiles = w.recipe().profilesRatio().stream()
+                .map(p -> "ratio " + String.format("%.2f", p.ratio()) + " profilo " + p.profile().name())
+                .collect( Collectors.joining(", "));
+
+        return profiles + ", " + salts;
+    }
+
+    @Test public void profToString() {
+        Profile p = TestUtils.target;
+        System.out.println(p.toString());
+
+        System.out.println(Recipe.create(p).toString());
     }
 }
