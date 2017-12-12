@@ -67,11 +67,12 @@ public class Finder2 {
         List<Water2> added = new ArrayList<>();
         for (Water2 wx : res) {
             double grams = s.grams();
-            while (grams >= 0) {
-                added.add( new Water2(wx.liters(),
-                               new Recipe(wx.recipe().profilesRatio(),
-                               Arrays.asList(additionToRatio(grams, s.profile(), wx)))));
-                grams -= 0.01; /* step di dedimo di grammo per ora */
+            while (grams >= 0.) {
+                List<SaltRatio> salts = new ArrayList<>();
+                salts.addAll(wx.recipe().saltsRatio());
+                salts.add(additionToRatio(grams, s.profile(), wx));
+                added.add( new Water2(wx.liters(), new Recipe(wx.recipe().profilesRatio(), salts)));
+                grams -= 0.1; /* step di dedimo di grammo per ora */
             }
         }
         return added;

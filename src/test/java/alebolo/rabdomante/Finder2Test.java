@@ -122,26 +122,37 @@ public class Finder2Test {
 
         long startTime = System.currentTimeMillis();
 
+        List<Water2> waters = Arrays.asList(
+                new Water2(10, Recipe.create(levissima)),
+                new Water2(10, Recipe.create(boario)),
+                new Water2(10, Recipe.create(eva)),
+                new Water2(10, Recipe.create(santanna)),
+                new Water2(10, Recipe.create(norda)),
+                new Water2(10, Recipe.create(vera)),
+                new Water2(10, Recipe.create(vitasnella)),
+                new Water2(10, Recipe.create(sanbern)),
+                new Water2(10, Recipe.create(dolomiti))
+//                new Water2(10,
+//                        new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
+//                                Arrays.asList(new SaltRatio(TestUtils.tableSalt, 100),
+//                                        new SaltRatio(TestUtils.gypsum, 100))))
+        );
         List<Water2> xxx = Finder2.top(10, blackMediumTarget
-                , Arrays.asList(
-                        new Water2(10, Recipe.create(levissima)),
-                        new Water2(10, Recipe.create(boario)),
-                        new Water2(10, Recipe.create(eva)),
-                        new Water2(10, Recipe.create(santanna)),
-                        new Water2(10, Recipe.create(norda)),
-                        new Water2(10, Recipe.create(vera)),
-                        new Water2(10, Recipe.create(vitasnella)),
-                        new Water2(10, Recipe.create(sanbern)),
-                        new Water2(10, Recipe.create(dolomiti))
-                ),
+                , waters,
                 Arrays.asList(
-                        new SaltAddition(1, TestUtils.gypsum),
-                        new SaltAddition(1, TestUtils.tableSalt)
+                        new SaltAddition(4, TestUtils.gypsum),
+                        new SaltAddition(4, TestUtils.tableSalt)
                 ));
 
         System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
 
         log.warn("\n"+blackMediumTarget.toString());
+
+        waters.stream().forEach(w -> {
+            log.warn("w: " + w.toString());
+            log.warn("delta w: " + DistanceCalculator.distanceCoefficient(blackMediumTarget, w)); });
+
+
         log.warn("res:\n" + xxx.stream()
                 .map(w -> "delta " +
                         String.format("%.2f", DistanceCalculator.distanceCoefficient(blackMediumTarget, w))
