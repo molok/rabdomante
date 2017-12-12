@@ -13,6 +13,12 @@ public class Recipe {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final List<ProfileRatio> profRatio;
     private final List<SaltRatio> salts;
+    private final double calcioMgPerL;
+    private final double magnesioMgPerL;
+    private final double sodioMgPerL;
+    private final double bicarbonatiMgPerL;
+    private final double solfatoMgPerL;
+    private final double cloruroMgPerL;
 
     public Recipe(List<ProfileRatio> profRatio, List<SaltRatio> salts) {
         if (profRatio.stream().mapToDouble(r -> r.ratio()).sum() != 1.) {
@@ -20,6 +26,14 @@ public class Recipe {
         }
         this.profRatio = profRatio;
         this.salts = salts;
+
+        /* li calcolo perché ci accediamo molto spesso */
+        this.calcioMgPerL = sumWaterAndSalts(ProfileRatio::calcioMgPerL, SaltRatio::calcioMgPerL);
+        this.magnesioMgPerL = sumWaterAndSalts(ProfileRatio::magnesioMgPerL, SaltRatio::magnesioMgPerL);
+        this.sodioMgPerL = sumWaterAndSalts(ProfileRatio::sodioMgPerL, SaltRatio::sodioMgPerL);
+        this.bicarbonatiMgPerL = sumWaterAndSalts(ProfileRatio::bicarbonatiMgPerL, SaltRatio::bicarbonatiMgPerL);
+        this.solfatoMgPerL = sumWaterAndSalts(ProfileRatio::solfatoMgPerL, SaltRatio::solfatoMgPerL);
+        this.cloruroMgPerL = sumWaterAndSalts(ProfileRatio::cloruroMgPerL, SaltRatio::cloruroMgPerL);
     }
 
     public static Recipe create(Profile profile) {
@@ -31,8 +45,7 @@ public class Recipe {
     }
 
     public Recipe(List<ProfileRatio> profRatio) {
-        this.profRatio = profRatio;
-        this.salts = new ArrayList<>();
+        this(profRatio, new ArrayList<>());
     }
 
     public List<ProfileRatio> profilesRatio() { return profRatio; }
@@ -49,12 +62,12 @@ public class Recipe {
              + salts.stream().mapToDouble(getterSaltRatio).sum();
     }
 
-    public double calcioMgPerL() { return sumWaterAndSalts(ProfileRatio::calcioMgPerL, SaltRatio::calcioMgPerL); }
-    public double magnesioMgPerL() { return sumWaterAndSalts(ProfileRatio::magnesioMgPerL, SaltRatio::magnesioMgPerL); }
-    public double sodioMgPerL() { return sumWaterAndSalts(ProfileRatio::sodioMgPerL, SaltRatio::sodioMgPerL); }
-    public double bicarbonatiMgPerL() { return sumWaterAndSalts(ProfileRatio::bicarbonatiMgPerL, SaltRatio::bicarbonatiMgPerL); }
-    public double solfatoMgPerL() { return sumWaterAndSalts(ProfileRatio::solfatoMgPerL, SaltRatio::solfatoMgPerL); }
-    public double cloruroMgPerL() { return sumWaterAndSalts(ProfileRatio::cloruroMgPerL, SaltRatio::cloruroMgPerL); }
+    public double calcioMgPerL() { return calcioMgPerL; }
+    public double magnesioMgPerL() { return magnesioMgPerL; }
+    public double sodioMgPerL() { return sodioMgPerL; }
+    public double bicarbonatiMgPerL() { return bicarbonatiMgPerL; }
+    public double solfatoMgPerL() { return solfatoMgPerL; }
+    public double cloruroMgPerL() { return cloruroMgPerL; }
 
     @Override public boolean equals(Object o) {
         if (this == o) return true;

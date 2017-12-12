@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 
 import java.text.DecimalFormat;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Water2 {
     private final double liters;
@@ -54,5 +55,15 @@ public class Water2 {
 
     @Override public int hashCode() {
         return Objects.hash(liters, recipe);
+    }
+
+    public String description() {
+        String salts = this.recipe().saltsRatio().stream()
+                .map(s -> String.format("%.2f", (s.mgPerL()/1000.) * liters()) + "g " + s.profile().name())
+                .collect( Collectors.joining(", "));
+        String profiles = this.recipe().profilesRatio().stream()
+                .map(p -> String.format("%.2f", p.ratio() * liters()) + "L " + p.profile().name())
+                .collect( Collectors.joining(", "));
+        return profiles + " " + salts;
     }
 }

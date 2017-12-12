@@ -40,6 +40,31 @@ public class Finder2Test {
         assertThat(res.get(0).isSameAs(sb)).isTrue();
     }
 
+    @Test public void cardin() {
+        List<Water2> ws = Arrays.asList(
+                new Water2(10, Recipe.create(levissima)),
+                new Water2(10, Recipe.create(boario)),
+                new Water2(10, Recipe.create(eva)),
+                new Water2(10, Recipe.create(santanna)),
+                new Water2(10, Recipe.create(norda)),
+                new Water2(10, Recipe.create(vera)),
+                new Water2(10, Recipe.create(vitasnella)),
+                new Water2(10, Recipe.create(sanbern)),
+                new Water2(10, Recipe.create(dolomiti))
+        );
+
+        List<Water2> res = Finder2.combineWaters(10, ws, ws);
+        assertThat(res.size()).isEqualTo(10);
+    }
+
+//    @Test public void cardSalts() {
+//        List<Water2> res = Finder2.saltsCombinations(new Water2(10, Recipe.create(dolomiti), target),
+//                Arrays.asList(new SaltAddition(10, TestUtils.tableSalt)));
+//
+//        /* 10 -> 102 */
+//        assertThat(res.size()).isEqualTo(10);
+//    }
+
     @Test public void sameWaterDeltaZero() {
         double res = DistanceCalculator.distanceCoefficient(
                 new Water2(10,
@@ -86,13 +111,13 @@ public class Finder2Test {
         System.out.println("res:" + res.toString());
     }
 
-    @Test public void saltComb() {
-        List<Water2> res = Finder2.saltAddition(
-                Arrays.asList(new Water2(10, Recipe.create(TestUtils.distilled))),
-                new SaltAddition(10, TestUtils.tableSalt));
-
-        res.stream().forEach(x -> System.out.println(x.toString()));
-    }
+//    @Test public void saltComb() {
+//        List<Water2> res = Finder2.saltAddition(
+//                Arrays.asList(new Water2(10, Recipe.create(TestUtils.distilled))),
+//                new SaltAddition(10, TestUtils.tableSalt));
+//
+//        res.stream().forEach(x -> System.out.println(x.toString()));
+//    }
 
     @Test public void distinct() {
         Profile foo = new Profile(1, 1, 1, 1, 1, 1, "foo");
@@ -131,17 +156,17 @@ public class Finder2Test {
                 new Water2(10, Recipe.create(vera)),
                 new Water2(10, Recipe.create(vitasnella)),
                 new Water2(10, Recipe.create(sanbern)),
-                new Water2(10, Recipe.create(dolomiti))
-//                new Water2(10,
-//                        new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
-//                                Arrays.asList(new SaltRatio(TestUtils.tableSalt, 100),
-//                                        new SaltRatio(TestUtils.gypsum, 100))))
+                new Water2(10, Recipe.create(dolomiti)),
+                new Water2(10,
+                        new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
+                                Arrays.asList(new SaltRatio(TestUtils.tableSalt, 70),
+                                        new SaltRatio(TestUtils.gypsum, 70))))
         );
         List<Water2> xxx = Finder2.top(10, blackMediumTarget
                 , waters,
                 Arrays.asList(
-                        new SaltAddition(4, TestUtils.gypsum),
-                        new SaltAddition(4, TestUtils.tableSalt)
+                        new SaltAddition(100, TestUtils.gypsum),
+                        new SaltAddition(100, TestUtils.tableSalt)
                 ));
 
         System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
@@ -154,21 +179,22 @@ public class Finder2Test {
 
 
         log.warn("res:\n" + xxx.stream()
-                .map(w -> "delta " +
+                .map(w -> "xdelta " +
                         String.format("%.2f", DistanceCalculator.distanceCoefficient(blackMediumTarget, w))
                         + " = " + info(w) )
                 .collect(Collectors.joining("\n")));
     }
 
     private String info(Water2 w) {
-        String salts = w.recipe().saltsRatio().stream()
-                .map(s -> "mg/L " + String.format("%.2f", s.mgPerL()) + " " + s.profile().name())
-                .collect( Collectors.joining(", "));
-        String profiles = w.recipe().profilesRatio().stream()
-                .map(p -> "ratio " + String.format("%.2f", p.ratio()) + " profilo " + p.profile().name())
-                .collect( Collectors.joining(", "));
-
-        return profiles + ", " + salts;
+        return w.description();
+//        String salts = w.recipe().saltsRatio().stream()
+//                .map(s -> "mg/L " + String.format("%.2f", s.mgPerL()) + " " + s.profile().name())
+//                .collect( Collectors.joining(", "));
+//        String profiles = w.recipe().profilesRatio().stream()
+//                .map(p -> "ratio " + String.format("%.2f", p.ratio()) + " profilo " + p.profile().name())
+//                .collect( Collectors.joining(", "));
+//
+//        return profiles + ", " + salts;
     }
 
     @Test public void profToString() {
@@ -176,5 +202,26 @@ public class Finder2Test {
         System.out.println(p.toString());
 
         System.out.println(Recipe.create(p).toString());
+    }
+
+    @Test public void sensato() {
+        Water2 target = new Water2(10., Recipe.create(new Profile(50, 10, 33, 142, 57, 44, "black medium")));
+        Water2 vera = new Water2(10, Recipe.create(this.vera));
+        Water2 ok = new Water2(10.,
+                new Recipe(Arrays.asList(new ProfileRatio(this.vera, 1.)),
+                        Arrays.asList(new SaltRatio(TestUtils.gypsum, 0.7))));
+        assertThat(Finder2.sensato(vera, 0.7, TestUtils.tableSalt, target, 100)).isTrue();
+
+        Water2 closematch = new Water2(10.,
+                new Recipe(Arrays.asList(new ProfileRatio(this.vera, 1.)),
+                        Arrays.asList(new SaltRatio(TestUtils.gypsum, 70),
+                                      new SaltRatio(TestUtils.tableSalt, 70))));
+
+        System.out.println(closematch.sodioMg()+" vs "+target.sodioMg());
+
+        System.out.println(DistanceCalculator.distanceCoefficient(target, closematch));
+        System.out.println(DistanceCalculator.distanceCoefficient(target, ok));
+        System.out.println(DistanceCalculator.distanceCoefficient(target, vera));
+        System.out.println(DistanceCalculator.distanceCoefficient(target, target));
     }
 }
