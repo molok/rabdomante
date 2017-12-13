@@ -34,10 +34,10 @@ public class Finder2 {
         return mix;
     }
 
-    public static List<Water2> top(int n, Water2 target, List<Water2> waters, List<SaltAddition> salts) {
+    public static List<Water2> top(int n, Water2 target, List<Water2> waters, List<SaltAddition> salts, double step) {
         List<Water2> combWaters = combineWaters(target.liters(), waters, waters);
         System.out.println("waters:"+combWaters.size());
-        List<Water2> water2Stream = combWaters.stream().flatMap(w -> saltsCombinations(w, salts, target).stream()).collect(Collectors.toList());
+        List<Water2> water2Stream = combWaters.stream().flatMap(w -> saltsCombinations(w, salts, target, step).stream()).collect(Collectors.toList());
         System.out.println("saltcombination:"+ water2Stream.size());
 
         return water2Stream.stream()
@@ -50,27 +50,27 @@ public class Finder2 {
                 .collect(Collectors.toList());
     }
 
-    public static Water2 closest(Water2 target, List<Water2> waters, List<SaltAddition> salts) {
-        return top(1, target, waters, salts).get(0);
+    public static Water2 closest(Water2 target, List<Water2> waters, List<SaltAddition> salts, double step) {
+        return top(1, target, waters, salts, step).get(0);
     }
 
-    public static Water2 closest(Water2 target, List<Water2> waters) {
-        return closest(target, waters, new ArrayList<>());
+    public static Water2 closest(Water2 target, List<Water2> waters, double step) {
+        return closest(target, waters, new ArrayList<>(), step);
     }
 
-    public static List<Water2> saltsCombinations(Water2 w, List<SaltAddition> salts, Water2 target) {
+    public static List<Water2> saltsCombinations(Water2 w, List<SaltAddition> salts, Water2 target, double step) {
         List<Water2> res = new ArrayList<>();
         res.add(w);
         for (SaltAddition s : salts) {
-            res.addAll(saltAddition(res, s, target));
+            res.addAll(saltAddition(res, s, target, step));
         }
         return res;
     }
 
-    public static List<Water2> saltAddition(List<Water2> ws, SaltAddition saltAddition, Water2 target) {
+    public static List<Water2> saltAddition(List<Water2> ws, SaltAddition saltAddition, Water2 target, double step) {
         List<Water2> saltedWater = new ArrayList<>();
         for (Water2 w : ws) {
-            for (double saltAdditionGrams = saltAddition.grams(); saltAdditionGrams >= 0 ; saltAdditionGrams -= 0.1) {
+            for (double saltAdditionGrams = saltAddition.grams(); saltAdditionGrams >= 0 ; saltAdditionGrams -= step) {
 //                System.out.println("provo con g" + saltAdditionGrams);
                 if (sensato(w, saltAdditionGrams, saltAddition.profile(), target, 100)) {
                     saltedWater.add(

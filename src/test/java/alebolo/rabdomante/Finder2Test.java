@@ -29,14 +29,14 @@ public class Finder2Test {
     Profile sanbern = TestUtils.sanBernarndo;
 
     @Test public void closest() {
-        Water2 res = Finder2.closest(sb, Arrays.asList(sb2, distilled));
+        Water2 res = Finder2.closest(sb, Arrays.asList(sb2, distilled), 0.1);
         assertThat(res).isEqualTo(sb);
     }
 
     @Test public void top() {
 //        List<SaltAddition> salts = Arrays.asList(new SaltAddition(1, TestUtils.tableSalt));
         List<Water2> waters = Arrays.asList(sb2, distilled);
-        List<Water2> res = Finder2.top(10, sb, waters, Arrays.asList());
+        List<Water2> res = Finder2.top(10, sb, waters, Arrays.asList(), 0.1);
         assertThat(res.get(0).isSameAs(sb)).isTrue();
     }
 
@@ -104,7 +104,7 @@ public class Finder2Test {
         Water2 res = Finder2.closest(
                 target,
                 Arrays.asList(new Water2(10, Recipe.create(TestUtils.distilled))),
-                Arrays.asList(new SaltAddition(10, TestUtils.tableSalt)));
+                Arrays.asList(new SaltAddition(10, TestUtils.tableSalt)), 0.1);
 
         System.out.println("delta:"+ DistanceCalculator.distanceCoefficient(target, res));
         System.out.println("trg:" + target.toString());
@@ -167,7 +167,7 @@ public class Finder2Test {
                 Arrays.asList(
                         new SaltAddition(100, TestUtils.gypsum),
                         new SaltAddition(100, TestUtils.tableSalt)
-                ));
+                ), 1);
 
         System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
 
