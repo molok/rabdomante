@@ -10,31 +10,30 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withinPercentage;
 
-public class Water2Test {
-
+public class WaterTest {
     @Test public void no_salts_one_profile() {
-        List<SaltRatio> noSalts = Arrays.asList();
+        List<MineralRatio> noSalts = Arrays.asList();
         ProfileRatio profileRatio = new ProfileRatio(TestUtils.evaProfile, 1.);
         List<ProfileRatio> profRatio = Arrays.asList(profileRatio);
 
-        Water2 w = new Water2( 10, new Recipe(profRatio, noSalts));
+        Water w = new Water( 10, new Recipe(profRatio, noSalts));
 
         System.out.println(w.toString());
     }
 
     @Test public void easy_merge() {
         ProfileRatio profileRatio = new ProfileRatio(TestUtils.evaProfile, 1.);
-        Water2 w1 = new Water2( 10, new Recipe(Arrays.asList(profileRatio), Arrays.asList()));
-        Water2 w2 = new Water2( 5, new Recipe(Arrays.asList(profileRatio), Arrays.asList()));
+        Water w1 = new Water( 10, new Recipe(Arrays.asList(profileRatio), Arrays.asList()));
+        Water w2 = new Water( 5, new Recipe(Arrays.asList(profileRatio), Arrays.asList()));
 
-        Water2 merge = WaterMerger.merge(w1, w2);
+        Water merge = WaterMixer.merge(w1, w2);
         assertThat(merge.recipe().profilesRatio()).containsExactly(profileRatio);
         assertThat(merge.liters()).isEqualTo(w1.liters() + w2.liters());
     }
 
     @Test public void merge_correct_ratio() {
-        Water2 eva = new Water2( 10, new Recipe(Arrays.asList(new ProfileRatio(TestUtils.evaProfile, 1.)), Arrays.asList()));
-        Water2 sanbernardo = new Water2(
+        Water eva = new Water( 10, new Recipe(Arrays.asList(new ProfileRatio(TestUtils.evaProfile, 1.)), Arrays.asList()));
+        Water sanbernardo = new Water(
                 10,
                 new Recipe(
                         Arrays.asList(
@@ -42,7 +41,7 @@ public class Water2Test {
                                 new ProfileRatio(TestUtils.evaProfile, 0.5)),
                         Arrays.asList()));
 
-        Water2 merge = WaterMerger.merge(eva, sanbernardo);
+        Water merge = WaterMixer.merge(eva, sanbernardo);
 
         assertThat(merge.recipe().profilesRatio().size()).isEqualTo(2);
 
@@ -60,38 +59,24 @@ public class Water2Test {
         assertThat(DoubleMath.fuzzyCompare(mergeSanb.ratio(), 5/20., 0.1)).isEqualTo(0);
     }
 
-    @Test public void merge_with_salts() {
-        Water2 eva_e_sale = new Water2( 10,
-                new Recipe(Arrays.asList(new ProfileRatio(TestUtils.evaProfile, 1.)),
-                           Arrays.asList(new SaltRatio(TestUtils.tableSalt, 0.1))));
-
-        Water2 eva_e_molto_sale = new Water2( 10,
-                new Recipe(Arrays.asList(new ProfileRatio(TestUtils.evaProfile, 1.)),
-                        Arrays.asList(new SaltRatio(TestUtils.tableSalt, 0.9))));
-
-        Water2 merged = WaterMerger.merge(eva_e_sale, eva_e_molto_sale);
-
-        assertThat(merged.recipe().saltsRatio().get(0).mgPerL()).isEqualTo(0.9 * (10/20.) + 0.1 * (10/20.));
-    }
-
     @Test public void multi_layer_merge() {
         int saltMgPerL = 100;
-        Water2 a = new Water2(10,
+        Water a = new Water(10,
                                 Recipe.create(TestUtils.evaProfile,
-                                              Arrays.asList(new SaltRatio(TestUtils.tableSalt, saltMgPerL))));
+                                              Arrays.asList(new MineralRatio(MineralProfile.TABLE_SALT, saltMgPerL))));
 
-        assertThat(a.sodioMg()).isCloseTo(TestUtils.tableSalt.sodioRatio() * saltMgPerL * a.liters(), withinPercentage(1));
+        assertThat(a.sodioMg()).isCloseTo(MineralProfile.TABLE_SALT.sodioRatio() * saltMgPerL * a.liters(), withinPercentage(1));
 
-        Water2 b = new Water2(10, Recipe.create(TestUtils.evaProfile));
+        Water b = new Water(10, Recipe.create(TestUtils.evaProfile));
 
-        Water2 merge_ab = WaterMerger.merge(a, b);
+        Water merge_ab = WaterMixer.merge(a, b);
 
-        assertThat(merge_ab.sodioMg()).isCloseTo(TestUtils.tableSalt.sodioRatio() * saltMgPerL * a.liters(), withinPercentage(2));
+        assertThat(merge_ab.sodioMg()).isCloseTo(MineralProfile.TABLE_SALT.sodioRatio() * saltMgPerL * a.liters(), withinPercentage(2));
 
-        Water2 c = new Water2(10,
+        Water c = new Water(10,
                               Recipe.create(TestUtils.evaProfile,
-                                      Arrays.asList(new SaltRatio(TestUtils.tableSalt, saltMgPerL))));
-        Water2 merge_abc = WaterMerger.merge(merge_ab, c);
+                                      Arrays.asList(new MineralRatio(MineralProfile.TABLE_SALT, saltMgPerL))));
+        Water merge_abc = WaterMixer.merge(merge_ab, c);
 
         assertThat(merge_abc.liters()).isEqualTo(30.);
         assertThat(merge_abc.recipe()
@@ -99,6 +84,6 @@ public class Water2Test {
                             .stream().map(r -> r.profile())
                             .collect(Collectors.toList())).containsExactly(TestUtils.evaProfile);
 
-        assertThat(merge_abc.sodioMg()).isCloseTo(TestUtils.tableSalt.sodioRatio() * saltMgPerL * (c.liters() + a.liters()), withinPercentage(3));
+        assertThat(merge_abc.sodioMg()).isCloseTo(MineralProfile.TABLE_SALT.sodioRatio() * saltMgPerL * (c.liters() + a.liters()), withinPercentage(3));
     }
 }

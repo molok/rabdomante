@@ -4,16 +4,13 @@ import com.google.common.math.DoubleMath;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.ToDoubleFunction;
 
 public class Recipe {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final List<ProfileRatio> profRatio;
-    private final List<SaltRatio> salts;
+    private final Map<String, MineralRatio> salts;
     private final double calcioMgPerL;
     private final double magnesioMgPerL;
     private final double sodioMgPerL;
@@ -21,27 +18,35 @@ public class Recipe {
     private final double solfatoMgPerL;
     private final double cloruroMgPerL;
 
-    public Recipe(List<ProfileRatio> profRatio, List<SaltRatio> salts) {
+    public Recipe(List<ProfileRatio> profRatio, List<MineralRatio> salts) {
         if (DoubleMath.fuzzyCompare(profRatio.stream().mapToDouble(r -> r.ratio()).sum(), 1., 0.1) != 0) {
             throw new Defect("ratio non consistenti, trovato:"+ profRatio.stream().mapToDouble(r -> r.ratio()).sum() + ", "+ Arrays.toString(profRatio.toArray()));
         }
         this.profRatio = profRatio;
-        this.salts = salts;
+        this.salts = mergeDuplicates(salts);
 
         /* li calcolo perché ci accediamo molto spesso */
-        this.calcioMgPerL = sumWaterAndSalts(ProfileRatio::calcioMgPerL, SaltRatio::calcioMgPerL);
-        this.magnesioMgPerL = sumWaterAndSalts(ProfileRatio::magnesioMgPerL, SaltRatio::magnesioMgPerL);
-        this.sodioMgPerL = sumWaterAndSalts(ProfileRatio::sodioMgPerL, SaltRatio::sodioMgPerL);
-        this.bicarbonatiMgPerL = sumWaterAndSalts(ProfileRatio::bicarbonatiMgPerL, SaltRatio::bicarbonatiMgPerL);
-        this.solfatoMgPerL = sumWaterAndSalts(ProfileRatio::solfatoMgPerL, SaltRatio::solfatoMgPerL);
-        this.cloruroMgPerL = sumWaterAndSalts(ProfileRatio::cloruroMgPerL, SaltRatio::cloruroMgPerL);
+        this.calcioMgPerL = sumWaterAndSalts(ProfileRatio::calcioMgPerL, MineralRatio::calcioMgPerL);
+        this.magnesioMgPerL = sumWaterAndSalts(ProfileRatio::magnesioMgPerL, MineralRatio::magnesioMgPerL);
+        this.sodioMgPerL = sumWaterAndSalts(ProfileRatio::sodioMgPerL, MineralRatio::sodioMgPerL);
+        this.bicarbonatiMgPerL = sumWaterAndSalts(ProfileRatio::bicarbonatiMgPerL, MineralRatio::bicarbonatiMgPerL);
+        this.solfatoMgPerL = sumWaterAndSalts(ProfileRatio::solfatoMgPerL, MineralRatio::solfatoMgPerL);
+        this.cloruroMgPerL = sumWaterAndSalts(ProfileRatio::cloruroMgPerL, MineralRatio::cloruroMgPerL);
+    }
+
+    private Map<String, MineralRatio> mergeDuplicates(List<MineralRatio> salts) {
+        Map<String,MineralRatio> res = new HashMap<>();
+        for (MineralRatio s : salts) {
+            res.merge(s.profile().name(), s, (s1, s2) -> new MineralRatio(s.profile(), s1.mgPerL()+s2.mgPerL()));
+        }
+        return res;
     }
 
     public static Recipe create(Profile profile) {
         return new Recipe(Arrays.asList(new ProfileRatio(profile, 1.0)));
     }
 
-    public static Recipe create(Profile profile, List<SaltRatio> salts) {
+    public static Recipe create(Profile profile, List<MineralRatio> salts) {
         return new Recipe(Arrays.asList(new ProfileRatio(profile, 1.0)), salts);
     }
 
@@ -50,7 +55,7 @@ public class Recipe {
     }
 
     public List<ProfileRatio> profilesRatio() { return profRatio; }
-    public List<SaltRatio> saltsRatio() { return salts; }
+    public Collection<MineralRatio> saltsRatio() { return salts.values(); }
 
     @Override
     public String toString() {
@@ -58,9 +63,9 @@ public class Recipe {
     }
 
     private double sumWaterAndSalts(ToDoubleFunction<ProfileRatio> getterProfileRatio,
-                                    ToDoubleFunction<SaltRatio> getterSaltRatio) {
+                                    ToDoubleFunction<MineralRatio> getterSaltRatio) {
         return profRatio.stream().mapToDouble(getterProfileRatio).sum()
-             + salts.stream().mapToDouble(getterSaltRatio).sum();
+             + salts.values().stream().mapToDouble(getterSaltRatio).sum();
     }
 
     public double calcioMgPerL() { return calcioMgPerL; }

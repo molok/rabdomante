@@ -3,7 +3,7 @@ package alebolo.rabdomante;
 import java.util.function.Function;
 
 public class DistanceCalculator {
-    public static double distanceCoefficient(Water2 target, Water2 candidate) {
+    public static double distanceCoefficient(Water target, Water candidate) {
         if (target.liters() != candidate.liters()) {
             throw new Defect(String.format(
                     "bisogna confrontare a parità di litri, trovato %f e %f",

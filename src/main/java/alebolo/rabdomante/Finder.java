@@ -1,107 +1,56 @@
 package alebolo.rabdomante;
 
-import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multiset;
 import org.javatuples.Pair;
 
-import javax.swing.plaf.multi.MultiScrollBarUI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.abs;
+
 public class Finder {
-    static double diffCoeff(Water target, Water candidate) {
-        return Math.abs(target.calcioMg() - candidate.calcioMg()) +
-               Math.abs(target.magnesioMg() - candidate.magnesioMg()) +
-               Math.abs(target.sodioMg() - candidate.sodioMg()) +
-               Math.abs(target.bicarbonatiMg() - candidate.bicarbonatiMg()) +
-               Math.abs(target.solfatoMg() - candidate.solfatoMg()) +
-               Math.abs(target.cloruroMg() - candidate.cloruroMg());
-    }
-
-    private static List<Water> splitIntoOneLiterElements(Water w) {
-        ArrayList<Water> res = new ArrayList<>();
-        for (int i = 0; i < w.liters(); i++) {
-            res.add(new Water(1, w.profile()));
-        }
-        return res;
-    }
-
-    public static Set<Multiset<Water>> allCombinations(double target, List<Water> waters) {
-        List<Water> elements = waters.stream()
-                .flatMap(w -> splitIntoOneLiterElements(w).stream())
+    public static List<Water> combineWaters(double targetLiters, List<Water> ws1, List<Water> ws2) {
+        /* per adesso supportiamo solo il mixing tra due acque */
+        return Lists.cartesianProduct(ws1, ws2).stream()
+                .distinct()
+                .flatMap(xs -> combineWaters(targetLiters, xs.get(0), xs.get(1)).stream())
+                .distinct()
                 .collect(Collectors.toList());
-
-        Set<Multiset<Water>> x = new HashSet<>();
-        x.add(HashMultiset.create());
-
-        return combinations(HashMultiset.create(), x, target, elements);
     }
-
-
-    private static Set<Multiset<Water>> combinations(
-            Multiset<Water> curr,
-            Set<Multiset<Water>> solutions,
-            double target,
-            List<Water> elements) {
-
-        if (target == 0) {
-            solutions.add(curr);
-            return new HashSet<>(HashMultiset.create(solutions));
-        } else if (target < 0 || elements.size() == 0) {
-            /* non ho trovato niente */
-            Set<Multiset<Water>> lists = new HashSet<>();
-            lists.add(HashMultiset.create());
-            return lists;
-        } else {
-            Set<Multiset<Water>> res = new HashSet<>();
-
-            res.addAll(combinations(curr, solutions, target, elements.subList(1, elements.size())));
-
-            Multiset<Water> x = HashMultiset.create(curr);
-            x.add(elements.get(0));
-            res.addAll(combinations(x, solutions, target - 1, elements.subList(1, elements.size())));
-
-            return res;
+    public static List<Water> combineWaters(double targetLiters, Water a, Water b) {
+        List<Water> mix = new ArrayList<>();
+        int increment = Math.max(1, (int) targetLiters / 10); /* andiamo a scaglioni di 10% per gestire i volumi */
+        for (int ia = increment; ia < a.liters() && ia < targetLiters; ia += increment) {
+            int needed = (int) targetLiters - ia;
+            if (b.liters() >= needed) {
+                mix.add(WaterMixer.merge(
+                        new Water(ia, a.recipe()),
+                        new Water(needed, b.recipe())));
+            }
         }
+        return mix;
     }
 
-//    public static List<Water> combineWaters(double targetLiters, List<IWater> ws1, List<IWater> ws2) {
-//        /* per adesso supportiamo solo il mixing tra due acque */
-//        return Lists.cartesianProduct(ws1, ws2).stream()
-//                .distinct()
-//                .flatMap(xs -> combineWaters(targetLiters, xs.get(0), xs.get(1)).stream())
-//                .distinct()
-//                .collect(Collectors.toList());
-//    }
-//    public static List<Water> combineWaters(double targetLiters, Water a, Water b) {
-//        List<Water> mix = new ArrayList<>();
-//        for (int ia = 0; ia < a.liters() && ia < targetLiters; ia++) {
-//            int needed = (int) targetLiters - ia;
-//            if (   b.liters() >= needed
-//                    && b.composition.keySet().size() <= needed /* voglio mix di almeno 1 litro */) {
-//                Water neededA = new Water(ia, a.profile());
-//                Water neededb = new Water(needed, b.profile());
-//                mix.add(neededA.add(neededb));
-//            }
-//        }
-//        return mix;
-//    }
+    public static List<Water> top(int n, Water target, List<Water> availableWaters, List<MineralAddition> availableSalts) {
+        List<Water> combWaters = combineWaters(target.liters(), availableWaters, availableWaters);
+        System.out.println("waters:"+combWaters.size());
 
-    public static List<Water> top(int n, Water target, List<Water> waters, List<SaltAddition> salts) {
-//        List<Water> combWaters = combineWaters(target.liters(), waters, waters);
-        List<Water> combWaters = waters;
+        List<Water> salted = combWaters.stream().flatMap(w -> saltsCombinations(w, availableSalts, target).stream()).collect(Collectors.toList());
+        System.out.println("saltcombination:"+ salted.size());
 
-        return combWaters.parallelStream()
-                .flatMap(w -> saltsCombinations(w, salts).stream())
-                .map(c -> new Pair<>(c, diffCoeff(target, c)))
+        return salted.stream()
+                .distinct()
+                .map(c -> new Pair<>(c, DistanceCalculator.distanceCoefficient(target, c)))
                 .sorted(Comparator.comparingDouble(Pair::getValue1))
                 .map(pair -> pair.getValue0())
+                .distinct()
                 .limit(n)
                 .collect(Collectors.toList());
     }
 
-    public static Water closest(Water target, List<Water> waters, List<SaltAddition> salts) {
+    public static Water closest(Water target, List<Water> waters, List<MineralAddition> salts) {
         return top(1, target, waters, salts).get(0);
     }
 
@@ -109,24 +58,66 @@ public class Finder {
         return closest(target, waters, new ArrayList<>());
     }
 
-    private static List<Water> saltsCombinations(Water w, List<SaltAddition> salts) {
+    public static List<Water> saltsCombinations(Water w, List<MineralAddition> salts, Water target) {
         List<Water> res = new ArrayList<>();
         res.add(w);
-        for (SaltAddition s : salts) {
-            res.addAll(saltAddition(res, s));
+        for (MineralAddition s : salts) {
+            res.addAll(saltAddition(res, s, target));
         }
         return res;
     }
 
-    private static List<Water> saltAddition(List<Water> res, SaltAddition s) {
-        List<Water> added = new ArrayList<>();
-        for (Water wx : res) {
-            double grams = s.grams();
-            while (grams >= 0) {
-                added.add(Modifier.add(wx, new SaltAddition(grams, s.profile())));
-                grams -= 0.01; /* step di dedimo di grammo per ora */
+    public static List<Water> saltAddition(List<Water> ws, MineralAddition mineralAddition, Water target) {
+        double step = 0.01 * target.liters();
+        List<Water> saltedWater = new ArrayList<>();
+        for (Water w : ws) {
+            for (double mineraAdditionGrams = mineralAddition.grams();
+                 mineraAdditionGrams >= 0.;
+                 mineraAdditionGrams -= step)
+            {
+                if (sensato(mineraAdditionGrams, w, mineralAddition.profile(), 100, target.recipe())) {
+                    saltedWater.add(
+                            new Water(
+                                    w.liters(),
+                                    new Recipe(w.recipe().profilesRatio(),
+                                               salts(mineralAddition, w, mineraAdditionGrams))));
+                }
             }
         }
-        return added;
+        return saltedWater;
+    }
+
+    private static List<MineralRatio> salts(MineralAddition s, Water wx, double totGrams) {
+        List<MineralRatio> salts = new ArrayList<>();
+        salts.addAll(wx.recipe().saltsRatio());
+        salts.add(additionToRatio(totGrams, s.profile(), wx));
+        return salts;
+    }
+
+    public static boolean sensato(double grams, Water candidate, MineralProfile saltProf, int thresholdMgPerL, Recipe targetRecipe) {
+        final double G_TO_MG_PER_L = 1000 * grams / candidate.liters();
+
+        double deltaCloruro = abs(targetRecipe.cloruroMgPerL() - (candidate.recipe().cloruroMgPerL() + (saltProf.cloruroRatio()* G_TO_MG_PER_L)));
+        double deltaSodio = abs(targetRecipe.sodioMgPerL() - (candidate.recipe().sodioMgPerL() + ((saltProf.sodioRatio() * G_TO_MG_PER_L))));
+        double deltaCalcio = abs(targetRecipe.calcioMgPerL() - (candidate.recipe().calcioMgPerL() + ((saltProf.calcioRatio() * G_TO_MG_PER_L))));
+        double deltaSolfato = abs(targetRecipe.solfatoMgPerL() - (candidate.recipe().solfatoMgPerL() + ((saltProf.solfatoRatio() * G_TO_MG_PER_L))));
+        double deltaMagnesium = abs(targetRecipe.magnesioMgPerL() - (candidate.recipe().magnesioMgPerL() + ((saltProf.magnesiumRatio() * G_TO_MG_PER_L))));
+        double deltaBicarbonate = abs(targetRecipe.bicarbonatiMgPerL() - (candidate.recipe().bicarbonatiMgPerL() + ((saltProf.bicarbonateRatio() * G_TO_MG_PER_L))));
+
+        return ( !alteraProfilo(saltProf.cloruroRatio()) || deltaCloruro < thresholdMgPerL)
+            && ( !alteraProfilo(saltProf.sodioRatio()) || deltaSodio < thresholdMgPerL)
+            && ( !alteraProfilo(saltProf.calcioRatio()) || deltaCalcio < thresholdMgPerL)
+            && ( !alteraProfilo(saltProf.solfatoRatio()) || deltaSolfato < thresholdMgPerL)
+            && ( !alteraProfilo(saltProf.magnesiumRatio()) || deltaMagnesium < thresholdMgPerL)
+            && ( !alteraProfilo(saltProf.bicarbonateRatio()) || deltaBicarbonate < thresholdMgPerL);
+    }
+
+    /* se il sale non altera il profilo non lo prendo in considerazione */
+    private static boolean alteraProfilo(double v) {
+        return v != 0.;
+    }
+
+    private static MineralRatio additionToRatio(double grams, MineralProfile mineralProfile, Water wx) {
+        return new MineralRatio(mineralProfile, 1000 * (grams / wx.liters()));
     }
 }

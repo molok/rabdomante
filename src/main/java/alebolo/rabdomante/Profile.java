@@ -15,6 +15,7 @@ class Profile {
     private final double cloruro;
     private final String name;
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private final int hashCode;
 
     Profile(double calcio, double magnesio, double sodio, double bicarbonati, double solfato, double cloruro, String name) {
         this.calcio = calcio;
@@ -24,6 +25,7 @@ class Profile {
         this.solfato = solfato;
         this.cloruro = cloruro;
         this.name = name;
+        this.hashCode = Objects.hash(calcio, magnesio, sodio, bicarbonati, solfato, cloruro); /* tutto immutabile, no problem */
     }
 
     public double calcioMgPerL() { return calcio; }
@@ -54,10 +56,7 @@ class Profile {
                 Double.compare(that.cloruro, cloruro) == 0;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(calcio, magnesio, sodio, bicarbonati, solfato, cloruro);
-    }
+    @Override public int hashCode() { return hashCode; }
 
     @Override
     public String toString() {
