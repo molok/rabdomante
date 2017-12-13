@@ -3,9 +3,7 @@ package alebolo.rabdomante;
 import com.google.common.collect.Lists;
 import org.javatuples.Pair;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
@@ -67,24 +65,33 @@ public class Finder {
         return res;
     }
 
-    public static List<Water> saltAddition(List<Water> ws, MineralAddition mineralAddition, Water target) {
+    private static List<Water> saltAddition(List<Water> ws, MineralAddition mineralAddition, Water target) {
         double step = 0.01 * target.liters();
-        List<Water> saltedWater = new ArrayList<>();
+        Water currentBest = null;
         for (Water w : ws) {
             for (double mineraAdditionGrams = mineralAddition.grams();
                  mineraAdditionGrams >= 0.;
                  mineraAdditionGrams -= step)
             {
                 if (sensato(mineraAdditionGrams, w, mineralAddition.profile(), 100, target.recipe())) {
-                    saltedWater.add(
-                            new Water(
-                                    w.liters(),
-                                    new Recipe(w.recipe().profilesRatio(),
-                                               salts(mineralAddition, w, mineraAdditionGrams))));
+                    Water e = new Water(
+                            w.liters(),
+                            new Recipe(w.recipe().profilesRatio(),
+                                    salts(mineralAddition, w, mineraAdditionGrams)));
+
+                    /* usiamo logica greedy che sembra sufficientemente efficace per ragioni prestazionali */
+                    if (better(target, currentBest, e)) { currentBest = e; }
                 }
             }
         }
-        return saltedWater;
+        return currentBest == null ? new ArrayList<>() : Arrays.asList(currentBest);
+    }
+
+    private static boolean better(Water target, Water currentBest, Water candidate) {
+        return DistanceCalculator.distanceCoefficient(target, candidate)
+            < (currentBest == null
+                ? Double.MAX_VALUE
+                : DistanceCalculator.distanceCoefficient(target, currentBest));
     }
 
     private static List<MineralRatio> salts(MineralAddition s, Water wx, double totGrams) {
