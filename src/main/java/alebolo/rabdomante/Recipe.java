@@ -1,5 +1,6 @@
 package alebolo.rabdomante;
 
+import com.google.common.math.DoubleMath;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -21,8 +22,8 @@ public class Recipe {
     private final double cloruroMgPerL;
 
     public Recipe(List<ProfileRatio> profRatio, List<SaltRatio> salts) {
-        if (profRatio.stream().mapToDouble(r -> r.ratio()).sum() != 1.) {
-            throw new Defect("ratio non consistenti:"+ Arrays.toString(profRatio.toArray()));
+        if (DoubleMath.fuzzyCompare(profRatio.stream().mapToDouble(r -> r.ratio()).sum(), 1., 0.1) != 0) {
+            throw new Defect("ratio non consistenti, trovato:"+ profRatio.stream().mapToDouble(r -> r.ratio()).sum() + ", "+ Arrays.toString(profRatio.toArray()));
         }
         this.profRatio = profRatio;
         this.salts = salts;

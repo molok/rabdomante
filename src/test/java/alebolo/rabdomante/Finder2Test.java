@@ -141,28 +141,28 @@ public class Finder2Test {
 //        }
 
         Water2 blackMediumTarget =
-                new Water2(10,
+                new Water2(100,
                         Recipe.create(
                                 new Profile(50, 10, 33, 142, 57, 44, "black medium")));
 
         long startTime = System.currentTimeMillis();
 
         List<Water2> waters = Arrays.asList(
-                new Water2(10, Recipe.create(levissima)),
-                new Water2(10, Recipe.create(boario)),
-                new Water2(10, Recipe.create(eva)),
-                new Water2(10, Recipe.create(santanna)),
-                new Water2(10, Recipe.create(norda)),
-                new Water2(10, Recipe.create(vera)),
-                new Water2(10, Recipe.create(vitasnella)),
-                new Water2(10, Recipe.create(sanbern)),
-                new Water2(10, Recipe.create(dolomiti)),
-                new Water2(10,
+                new Water2(100, Recipe.create(levissima)),
+                new Water2(100, Recipe.create(boario)),
+                new Water2(100, Recipe.create(eva)),
+                new Water2(100, Recipe.create(santanna)),
+                new Water2(100, Recipe.create(norda)),
+                new Water2(100, Recipe.create(vera)),
+                new Water2(100, Recipe.create(vitasnella)),
+                new Water2(100, Recipe.create(sanbern)),
+                new Water2(100, Recipe.create(dolomiti)),
+                new Water2(100,
                         new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
                                 Arrays.asList(new SaltRatio(TestUtils.tableSalt, 70),
                                         new SaltRatio(TestUtils.gypsum, 70))))
         );
-        List<Water2> xxx = Finder2.top(10, blackMediumTarget
+        List<Water2> xxx = Finder2.top(100, blackMediumTarget
                 , waters,
                 Arrays.asList(
                         new SaltAddition(100, TestUtils.gypsum),

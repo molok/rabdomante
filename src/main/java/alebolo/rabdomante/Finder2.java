@@ -22,7 +22,8 @@ public class Finder2 {
     }
     public static List<Water2> combineWaters(double targetLiters, Water2 a, Water2 b) {
         List<Water2> mix = new ArrayList<>();
-        for (int ia = 0; ia < a.liters() && ia < targetLiters; ia++) {
+        int increment = (int) targetLiters / 10; /* andiamo a scaglioni di 10% per gestire i volumi */
+        for (int ia = 0; ia < a.liters() && ia < targetLiters; ia+=increment) {
             int needed = (int) targetLiters - ia;
             if (b.liters() >= needed) {
                 mix.add(WaterMerger.merge(
@@ -58,7 +59,6 @@ public class Finder2 {
     }
 
     public static List<Water2> saltsCombinations(Water2 w, List<SaltAddition> salts, Water2 target) {
-        /* TODO valutare target per inserire sali da provare */
         List<Water2> res = new ArrayList<>();
         res.add(w);
         for (SaltAddition s : salts) {
