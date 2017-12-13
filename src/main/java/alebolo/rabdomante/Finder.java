@@ -35,7 +35,7 @@ public class Finder {
         List<Water> combWaters = combineWaters(target.liters(), availableWaters, availableWaters);
         System.out.println("waters:"+combWaters.size());
 
-        List<Water> salted = combWaters.stream().flatMap(w -> saltsCombinations(w, availableSalts, target).stream()).collect(Collectors.toList());
+        List<Water> salted = combWaters.parallelStream().flatMap(w -> saltsCombinations(w, availableSalts, target).stream()).collect(Collectors.toList());
         System.out.println("saltcombination:"+ salted.size());
 
         return salted.stream()
@@ -56,11 +56,34 @@ public class Finder {
         return closest(target, waters, new ArrayList<>());
     }
 
-    public static List<Water> saltsCombinations(Water w, List<MineralAddition> salts, Water target) {
+    public static <T> List<List<T>> permutate(List<T> num, int index){
+        List<List<T>> result = new ArrayList<>();
+        if(index == num.size() - 1){
+            List<T> list = new ArrayList<>();
+            list.add(num.get(index));
+            result.add(list);
+            return result;
+        }else{
+            List<List<T>> partial = permutate(num, index + 1);
+            for(List<T> list: partial){
+                for(int i = 0; i <= list.size(); i++){
+                    List<T> tmp = new ArrayList<>(list);
+                    tmp.add(i, num.get(index));
+                    result.add(tmp);
+                }
+            }
+            return result;
+        }
+    }
+
+    public static List<Water> saltsCombinations(Water w, List<MineralAddition> xsalts, Water target) {
+        /* usiamo algoritmo greedy sul singolo mineral ma proviamo tutte le permutazioni dell'ordine */
         List<Water> res = new ArrayList<>();
         res.add(w);
-        for (MineralAddition s : salts) {
-            res.addAll(saltAddition(res, s, target));
+        for(List<MineralAddition> salts : permutate(xsalts, 0)) {
+            for (MineralAddition s : salts) {
+                res.addAll(saltAddition(res, s, target));
+            }
         }
         return res;
     }

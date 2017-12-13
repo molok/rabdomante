@@ -37,7 +37,9 @@ public class Recipe {
     private Map<String, MineralRatio> mergeDuplicates(List<MineralRatio> salts) {
         Map<String,MineralRatio> res = new HashMap<>();
         for (MineralRatio s : salts) {
-            res.merge(s.profile().name(), s, (s1, s2) -> new MineralRatio(s.profile(), s1.mgPerL()+s2.mgPerL()));
+            if (s.mgPerL() > 0.) {
+                res.merge(s.profile().name(), s, (s1, s2) -> new MineralRatio(s.profile(), s1.mgPerL() + s2.mgPerL()));
+            }
         }
         return res;
     }

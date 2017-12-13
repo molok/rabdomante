@@ -4,8 +4,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -127,10 +129,14 @@ public class FinderTest {
         List<Water> xxx = Finder.top(1000, blackMediumTarget
                 , waters,
                 Arrays.asList(
+                        new MineralAddition(1000, MineralProfile.CALCIUM_CHLORIDE),
+                        new MineralAddition(1000, MineralProfile.BAKING_SODA),
                         new MineralAddition(1000, MineralProfile.GYPSUM),
                         new MineralAddition(1000, MineralProfile.TABLE_SALT),
-                        new MineralAddition(1000, MineralProfile.BAKING_SODA),
-                        new MineralAddition(1000, MineralProfile.CALCIUM_CHLORIDE)
+                        new MineralAddition(1000, MineralProfile.ESPOM_SALT),
+                        new MineralAddition(1000, MineralProfile.MAGNESIUM_CHLORIDE),
+                        new MineralAddition(1000, MineralProfile.CHALK),
+                        new MineralAddition(1000, MineralProfile.PICKLING_LIME)
                 ));
 
         System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
@@ -176,4 +182,12 @@ public class FinderTest {
         System.out.println(DistanceCalculator.distanceCoefficient(target, vera));
         System.out.println(DistanceCalculator.distanceCoefficient(target, target));
     }
+
+    @Test public void permutations() {
+        List<Integer> x = Arrays.asList(1,2,3, 4, 5, 6, 7, 8);
+
+        System.out.println(Finder.permutate(x, 0).size());
+    }
+
+
 }
