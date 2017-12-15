@@ -23,23 +23,50 @@ public class Diet {
     private static void diet() {
 
         Model model = new Model("acqua");
-        int nWaters = 3;
         int[][] wMinerals =
-         /* D, LV, VR*/
-        { { 0, 10, 20}, /*calcio*/
-          { 0, 10, 20}  /*magnesio*/ };
+        { { /*calcio*/
+            0,
+            10,
+            15,
+            20,
+            0,
+            11,
+            22,
+            23,
+            13,
+            12,
+        },
+          { /*magnesio*/
+              0,
+              10,
+              20,
+              20,
+              0,
+              11,
+              22,
+              23,
+              13,
+              12,
+          }  };
         int CALCIO = 0;
         int MAGNESIO = 1;
 
-        final int BATCH_SIZE_L = 2;
+        final int BATCH_SIZE_L = 20;
         int[] targetProfile = { 15,
                                 15 };
 
+        int nWaters = 10;
         IntVar[] varWaters = new IntVar[nWaters];
-
         varWaters[0] = model.intVar("distillata", 0, BATCH_SIZE_L);
         varWaters[1] = model.intVar("levissima", 0, BATCH_SIZE_L);
         varWaters[2] = model.intVar("vera", 0, BATCH_SIZE_L);
+        varWaters[3] = model.intVar("boario", 0, BATCH_SIZE_L);
+        varWaters[4] = model.intVar("eva", 0, BATCH_SIZE_L);
+        varWaters[5] = model.intVar("santanna", 0, BATCH_SIZE_L);
+        varWaters[6] = model.intVar("norda", 0, BATCH_SIZE_L);
+        varWaters[7] = model.intVar("vistasnella", 0, BATCH_SIZE_L);
+        varWaters[8] = model.intVar("dolomiti", 0, BATCH_SIZE_L);
+        varWaters[9] = model.intVar("sanbernardo", 0, BATCH_SIZE_L);
         model.sum(varWaters, "=", BATCH_SIZE_L).post();
 
         /* massimo due acque, esattamente 10L */
@@ -65,47 +92,21 @@ public class Diet {
 
         System.out.println("KOSTO " + cost.getValue());
 
+//        cost.lt(20).post();
+
         model.setObjective(Model.MINIMIZE, cost);
         Solver solver = model.getSolver();
         while(solver.solve()) {
-            System.out.print("cost:"+cost.getValue());
-            System.out.println(" varW:"+Arrays.toString(varWaters));
-            int zcalcio = 0;
-            int zmagn = 0;
-            for (int w = 0; w < nWaters; w++) {
-                int thiscalc = wMinerals[CALCIO][w] * varWaters[w].getValue();
-                int thismagn = wMinerals[MAGNESIO][w] * varWaters[w].getValue();
-                zcalcio += thiscalc;
-                zmagn += thismagn;
-//                System.out.println(String.format("d:%d, l:%d, v:%d => thiscalcio:%d, thismagn:%d"
-//                        , varWaters[0].getValue()
-//                        , varWaters[1].getValue()
-//                        , varWaters[2].getValue()
-//                        , thiscalc, thismagn ));
-            }
-            int delta = Math.abs( (targetProfile[CALCIO] * BATCH_SIZE_L) - zcalcio)
-                    +   Math.abs( (targetProfile[MAGNESIO] * BATCH_SIZE_L) - zmagn);
-            System.out.println(String.format("d:%d, l:%d, v:%d => zcalcio:%d, zmagn:%d, delta:%d\n\n"
-                    , varWaters[0].getValue()
-                    , varWaters[1].getValue()
-                    , varWaters[2].getValue()
-                    , zcalcio
-                    , zmagn
-                    , delta
-            ));
-
-
+            System.out.println("cost = " + cost.getValue() + ", solution = "+Arrays.toString(varWaters));
         }
 
 //        solver.findAllSolutions().stream().forEach(s -> System.out.println(s.toString()));
 
         // create an object that will store the best solutions and remove dominated ones
+        /* PARETO */
 //        ParetoOptimizer po = new ParetoOptimizer(Model.MINIMIZE, new IntVar[] {cost});
-//        Solver solver = model.getSolver();
 //        solver.plugMonitor(po);
-//
-//        while(solver.solve());
-//
+//        while(solver.solve()) { }
 //        List<Solution> paretoFront = po.getParetoFront();
 //        System.out.println("The pareto front has "+paretoFront.size()+" solutions : ");
 //        for(Solution s : paretoFront){
