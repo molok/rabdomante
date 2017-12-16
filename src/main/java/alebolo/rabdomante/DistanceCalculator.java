@@ -15,7 +15,8 @@ public class DistanceCalculator {
                diff(target.recipe(), candidate.recipe(), Recipe::sodioMgPerL) +
                diff(target.recipe(), candidate.recipe(), Recipe::bicarbonatiMgPerL) +
                diff(target.recipe(), candidate.recipe(), Recipe::solfatoMgPerL) +
-               diff(target.recipe(), candidate.recipe(), Recipe::cloruroMgPerL);
+               diff(target.recipe(), candidate.recipe(), Recipe::cloruroMgPerL)
+                ;
     }
 
     private static double diff(Recipe a, Recipe b, Function<Recipe, Double> getter) {

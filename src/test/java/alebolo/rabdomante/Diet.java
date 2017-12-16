@@ -4,15 +4,10 @@ import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.expression.discrete.arithmetic.ArExpression;
-import org.chocosolver.solver.objective.ParetoOptimizer;
 import org.chocosolver.solver.search.strategy.Search;
-import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 
 import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class Diet {
 
@@ -21,39 +16,18 @@ public class Diet {
     }
 
     private static void diet() {
-
         Model model = new Model("acqua");
         int[][] wMinerals =
         { { /*calcio*/
-            0,
-            10,
-            15,
-            20,
-            0,
-            11,
-            22,
-            23,
-            13,
-            12,
+            0, 10, 15, 20, 0, 11, 22, 23, 13, 12,
         },
           { /*magnesio*/
-              0,
-              10,
-              20,
-              20,
-              0,
-              11,
-              22,
-              23,
-              13,
-              12,
+              0, 10, 20, 20, 0, 11, 22, 23, 13, 12,
           }  };
         int CALCIO = 0;
         int MAGNESIO = 1;
-
         final int BATCH_SIZE_L = 20;
-        int[] targetProfile = { 15,
-                                15 };
+        int[] targetProfile = { 15, 15 };
 
         int nWaters = 10;
         IntVar[] varWaters = new IntVar[nWaters];

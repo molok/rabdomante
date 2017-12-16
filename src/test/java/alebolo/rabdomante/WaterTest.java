@@ -21,6 +21,17 @@ public class WaterTest {
         System.out.println(w.toString());
     }
 
+    @Test public void mah() {
+        WaterMixer mixer = new WaterMixer();
+
+        Profile levissima = new Profile( 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
+        Profile boario = new Profile( 131, 40, 5, 303, 240, 4, "boario");
+        Water wlevissima = new Water(5, Recipe.create(levissima));
+        Water wboario = new Water(5, Recipe.create(boario));
+        Water res = mixer.merge(wlevissima, wboario);
+        System.out.println(res.description());
+    }
+
     @Test public void easy_merge() {
         ProfileRatio profileRatio = new ProfileRatio(TestUtils.evaProfile, 1.);
         Water w1 = new Water( 10, new Recipe(Arrays.asList(profileRatio), Arrays.asList()));

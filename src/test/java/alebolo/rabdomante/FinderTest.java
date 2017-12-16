@@ -1,19 +1,18 @@
 package alebolo.rabdomante;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.withinPercentage;
 
 public class FinderTest {
+    private final Finder finder = new Finder();
     Water sb = new Water(10., Recipe.create(TestUtils.sanBernarndo));
     Water sb2 = new Water(10., Recipe.create(TestUtils.sanBernarndo));
     Water distilled = new Water(10., Recipe.create(TestUtils.distilled));
@@ -30,14 +29,15 @@ public class FinderTest {
     Profile sanbern = new Profile(9.5, 0.6, 0.6, 30.2, 2.3, 0.7, "sanbernardo");
 
     @Test public void closest() {
-        Water res = Finder.closest(sb, Arrays.asList(sb2, distilled));
+        Water res = finder.closest(sb, Arrays.asList(sb2, distilled)).get();
         assertThat(res).isEqualTo(sb);
     }
 
+    @Ignore
     @Test public void top() {
 //        List<MineralAddition> salts = Arrays.asList(new MineralAddition(1, TestUtils.tableSalt));
         List<Water> waters = Arrays.asList(sb2, distilled);
-        List<Water> res = Finder.top(10, sb, waters, Arrays.asList());
+        List<Water> res = finder.top(10, sb, waters, Arrays.asList());
         assertThat(res.get(0).isSameAs(sb)).isTrue();
     }
 
@@ -77,10 +77,10 @@ public class FinderTest {
         Water target = new Water(10,
                         Recipe.create(
                                 new Profile(0, 0, 39, 0, 0, 60, "target")));
-        Water res = Finder.closest(
+        Water res = finder.closest(
                 target,
                 Arrays.asList(new Water(10, Recipe.create(TestUtils.distilled))),
-                Arrays.asList(new MineralAddition(10, MineralProfile.TABLE_SALT)));
+                Arrays.asList(new MineralAddition(10, MineralProfile.TABLE_SALT))).get();
 
         System.out.println("delta:"+ DistanceCalculator.distanceCoefficient(target, res));
         System.out.println("trg:" + target.toString());
@@ -102,7 +102,7 @@ public class FinderTest {
 
 
     @Test public void findClosestReal() {
-        int liters = 100;
+        int liters = 10;
         Water blackMediumTarget =
                 new Water(liters,
                         Recipe.create(
@@ -119,14 +119,14 @@ public class FinderTest {
                 new Water(liters, Recipe.create(vera)),
                 new Water(liters, Recipe.create(vitasnella)),
                 new Water(liters, Recipe.create(sanbern)),
-                new Water(liters, Recipe.create(dolomiti)),
-                new Water(liters,
-                        new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
-                                Arrays.asList(
-                                        new MineralRatio(MineralProfile.TABLE_SALT, 70),
-                                        new MineralRatio(MineralProfile.GYPSUM, 70))))
+                new Water(liters, Recipe.create(dolomiti))
+//                new Water(liters,
+//                        new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
+//                                Arrays.asList(
+//                                        new MineralRatio(MineralProfile.TABLE_SALT, 70),
+//                                        new MineralRatio(MineralProfile.GYPSUM, 70))))
         );
-        List<Water> xxx = Finder.top(1000, blackMediumTarget
+        Optional<Water> xxx = finder.closest( blackMediumTarget
                 , waters,
                 Arrays.asList(
                         new MineralAddition(1000, MineralProfile.CALCIUM_CHLORIDE),
@@ -143,16 +143,19 @@ public class FinderTest {
 
         log.warn("\n"+blackMediumTarget.toString());
 
-        waters.stream().forEach(w -> {
-            log.warn("w: " + w.toString());
-            log.warn("delta w: " + DistanceCalculator.distanceCoefficient(blackMediumTarget, w)); });
+        log.warn("res:"+xxx.get().description());
+        log.warn("distance:"+DistanceCalculator.distanceCoefficient(blackMediumTarget, xxx.get()));
+
+//        waters.stream().forEach(w -> {
+//            log.warn("w: " + w.toString());
+//            log.warn("delta w: " + DistanceCalculator.distanceCoefficient(blackMediumTarget, w)); });
 
 
-        log.warn("res:\n" + xxx.stream()
-                .map(w -> "xdelta " +
-                        String.format("%.2f", DistanceCalculator.distanceCoefficient(blackMediumTarget, w))
-                        + " = " + w.description())
-                .collect(Collectors.joining("\n")));
+//        log.warn("res:\n" + xxx.stream()
+//                .map(w -> "xdelta " +
+//                        String.format("%.2f", DistanceCalculator.distanceCoefficient(blackMediumTarget, w))
+//                        + " = " + w.description())
+//                .collect(Collectors.joining("\n")));
     }
 
     @Test public void profToString() {
@@ -168,7 +171,7 @@ public class FinderTest {
         Water ok = new Water(10.,
                 new Recipe(Arrays.asList(new ProfileRatio(this.vera, 1.)),
                         Arrays.asList(new MineralRatio(MineralProfile.GYPSUM, 0.7))));
-        assertThat(Finder.sensato(0.7, vera, MineralProfile.TABLE_SALT, 100, target.recipe())).isTrue();
+        assertThat(finder.sensato(0.7, vera, MineralProfile.TABLE_SALT, 100, target.recipe())).isTrue();
 
         Water closematch = new Water(10.,
                 new Recipe(Arrays.asList(new ProfileRatio(this.vera, 1.)),
@@ -186,7 +189,7 @@ public class FinderTest {
     @Test public void permutations() {
         List<Integer> x = Arrays.asList(1,2,3, 4, 5, 6, 7, 8);
 
-        System.out.println(Finder.permutate(x, 0).size());
+        System.out.println(finder.permutate(x, 0).size());
     }
 
 

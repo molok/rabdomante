@@ -51,7 +51,8 @@ public class Core {
                                 Arrays.asList(new MineralRatio(tableSalt, 70),
                                         new MineralRatio(gypsum, 70))))
         );
-        List<Water> xxx = Finder.top(liters, blackMediumTarget
+        Finder finder = new Finder();
+        List<Water> xxx = finder.top(liters, blackMediumTarget
                 , waters,
                 Arrays.asList(
                         new MineralAddition(1000, gypsum),
