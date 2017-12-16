@@ -59,7 +59,8 @@ public class Water {
 
     public String description() {
         String salts = this.recipe().saltsRatio().stream()
-                .map(s -> String.format("%.2f", (s.mgPerL()/1000.) * liters()) + "g " + s.profile().name())
+                .map(s -> String.format("%.2f", (s.mgPerL()/1000.) * liters()) + "g " + s.profile().name()
+                        + String.format(" (%.2f mg/L)", s.mgPerL()))
                 .collect( Collectors.joining(", "));
         String profiles = this.recipe().profilesRatio().stream()
                 .map(p -> String.format("%.2f", p.ratio() * liters()) + "L " + p.profile().name())

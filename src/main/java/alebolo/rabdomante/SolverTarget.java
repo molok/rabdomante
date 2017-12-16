@@ -7,14 +7,14 @@ public class SolverTarget {
         this.water = xtarget;
     }
 
-    public int liters() { return (int) water.liters(); }
+    public double liters() { return (double) water.liters(); }
     public Water water() { return water; }
-    public int calcioMgPerL() { return toInt(water.recipe().calcioMgPerL()); }
-    public int magnesioMgPerL() { return toInt(water.recipe().magnesioMgPerL()); }
-    public int sodioMgPerL() { return toInt(water.recipe().sodioMgPerL()); }
-    public int bicarbonatiMgPerL() { return toInt(water.recipe().bicarbonatiMgPerL()); }
-    public int cloruroMgPerL() { return toInt(water.recipe().cloruroMgPerL()); }
-    public int solfatoMgPerL() { return toInt(water.recipe().solfatoMgPerL()); }
+    public double calcioMgPerL() { return toInt(water.recipe().calcioMgPerL()); }
+    public double magnesioMgPerL() { return toInt(water.recipe().magnesioMgPerL()); }
+    public double sodioMgPerL() { return toInt(water.recipe().sodioMgPerL()); }
+    public double bicarbonatiMgPerL() { return toInt(water.recipe().bicarbonatiMgPerL()); }
+    public double cloruroMgPerL() { return toInt(water.recipe().cloruroMgPerL()); }
+    public double solfatoMgPerL() { return toInt(water.recipe().solfatoMgPerL()); }
 
-    private int toInt(double v) { return (int) (100 * v); }
+    private double toInt(double v) { return (double) v; }
 }

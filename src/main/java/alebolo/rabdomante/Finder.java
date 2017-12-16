@@ -34,21 +34,28 @@ public class Finder {
     }
 
     public List<Water> top(int n, Water target, List<Water> availableWaters, List<MineralAddition> availableSalts) {
-        throw new UnsupportedOperationException("todo");
-//        List<Water> combWaters = combineWaters(target.liters(), availableWaters, availableWaters);
-//        System.out.println("waters:"+combWaters.size());
-//
-//        List<Water> salted = combWaters.parallelStream().flatMap(w -> saltsCombinations(w, availableSalts, target).stream()).collect(Collectors.toList());
-//        System.out.println("saltcombination:"+ salted.size());
-//
-//        return salted.stream()
-//                .distinct()
-//                .map(c -> new Pair<>(c, DistanceCalculator.distanceCoefficient(target, c)))
-//                .sorted(Comparator.comparingDouble(Pair::getValue1))
-//                .map(pair -> pair.getValue0())
-//                .distinct()
-//                .limit(n)
-//                .collect(Collectors.toList());
+        List<Water> combWaters = combineWaters(target.liters(), availableWaters, availableWaters);
+        System.out.println("waters:"+combWaters.size());
+
+        List<Water> salted = combWaters.parallelStream().flatMap(w -> saltsCombinations(w, availableSalts, target).stream()).collect(Collectors.toList());
+        System.out.println("saltcombination:"+ salted.size());
+
+        return salted.stream()
+                .distinct()
+                .map(c -> new Pair<>(c, DistanceCalculator.distanceCoefficient(target, c)))
+                .sorted(Comparator.comparingDouble(Pair::getValue1))
+                .map(pair -> pair.getValue0())
+                .distinct()
+                .limit(n)
+                .collect(Collectors.toList());
+    }
+
+    public Water closest2(Water target, List<Water> waters, List<MineralAddition> salts) {
+        return top(1, target, waters, salts).get(0);
+    }
+
+    public Water closest2(Water target, List<Water> waters) {
+        return closest2(target, waters, new ArrayList<>());
     }
 
     public Optional<Water> closest(Water target, List<Water> waters, List<MineralAddition> salts) {
@@ -61,12 +68,14 @@ public class Finder {
 
     public <T> List<List<T>> permutate(List<T> num, int index){
         List<List<T>> result = new ArrayList<>();
-        if(index == num.size() - 1){
+        if(num.size() == 0 ) {
+            return result;
+        } else if(index == num.size() - 1){
             List<T> list = new ArrayList<>();
             list.add(num.get(index));
             result.add(list);
             return result;
-        }else{
+        } else {
             List<List<T>> partial = permutate(num, index + 1);
             for(List<T> list: partial){
                 for(int i = 0; i <= list.size(); i++){

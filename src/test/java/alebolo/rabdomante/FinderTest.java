@@ -6,35 +6,56 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+import static alebolo.rabdomante.Profile.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.withinPercentage;
 
 public class FinderTest {
+    public static final List<MineralAddition> MINERAL_ADDITIONS = Arrays.asList(
+//            new MineralAddition(1000, MineralProfile.CALCIUM_CHLORIDE),
+//            new MineralAddition(1000, MineralProfile.BAKING_SODA),
+            new MineralAddition(1000, MineralProfile.GYPSUM),
+            new MineralAddition(1000, MineralProfile.TABLE_SALT)
+//            new MineralAddition(1000, MineralProfile.ESPOM_SALT),
+//            new MineralAddition(1000, MineralProfile.MAGNESIUM_CHLORIDE),
+//            new MineralAddition(1000, MineralProfile.CHALK),
+//            new MineralAddition(1000, MineralProfile.PICKLING_LIME)
+    );
+
+    public static final double liters = 20;
+
+    public static final List<Water> WATERS = Arrays.asList(
+//            new Water(liters, Recipe.create(levissima)),
+//            new Water(liters, Recipe.create(boario)),
+//            new Water(liters, Recipe.create(eva)),
+//            new Water(liters, Recipe.create(santanna)),
+//            new Water(liters, Recipe.create(norda)),
+            new Water(liters, Recipe.create(vera))
+//            new Water(liters, Recipe.create(vitasnella))
+//            new Water(liters, Recipe.create(sanbern))
+//            new Water(liters, Recipe.create(dolomiti))
+//                new Water(liters,
+//                        new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
+//                                Arrays.asList(
+//                                        new MineralRatio(MineralProfile.TABLE_SALT, 70),
+//                                        new MineralRatio(MineralProfile.GYPSUM, 70))))
+    );
     private final Finder finder = new Finder();
     Water sb = new Water(10., Recipe.create(TestUtils.sanBernarndo));
     Water sb2 = new Water(10., Recipe.create(TestUtils.sanBernarndo));
     Water distilled = new Water(10., Recipe.create(TestUtils.distilled));
     Logger log = LoggerFactory.getLogger(this.getClass());
-
-    Profile levissima = new Profile( 21, 1.7, 1.9, 57.1, 17, 0, "levissima");
-    Profile boario = new Profile( 131, 40, 5, 303, 240, 4, "boario");
-    Profile eva = new Profile( 10.2, 4, 0.28, 48, 1.7, 0.17, "evaProfile");
-    Profile santanna = new Profile( 10.5, 0, 0.9, 26.2, 7.8, 0, "santanna");
-    Profile norda = new Profile( 10.8, 3, 2.3, 52.3, 6.3, 0.6, "norda");
-    Profile vera = new Profile( 35, 12.6, 2, 148, 19.2, 2.6, "vera");
-    Profile vitasnella = new Profile( 86, 26, 3, 301, 83, 2, "vitasnella");
-    Profile dolomiti = new Profile(8, 8.7, 1.3, 94.6, 22, 1.1, "dolomiti");
-    Profile sanbern = new Profile(9.5, 0.6, 0.6, 30.2, 2.3, 0.7, "sanbernardo");
+    public static final Water BLACK_MEDIUM_TARGET = new Water(liters,
+            Recipe.create(
+                    new Profile(50, 10, 33, 142, 57, 44, "black medium")));
 
     @Test public void closest() {
         Water res = finder.closest(sb, Arrays.asList(sb2, distilled)).get();
         assertThat(res).isEqualTo(sb);
     }
 
-    @Ignore
-    @Test public void top() {
+    @Ignore @Test public void top() {
 //        List<MineralAddition> salts = Arrays.asList(new MineralAddition(1, TestUtils.tableSalt));
         List<Water> waters = Arrays.asList(sb2, distilled);
         List<Water> res = finder.top(10, sb, waters, Arrays.asList());
@@ -64,7 +85,6 @@ public class FinderTest {
     }
 
     @Test public void delta() {
-        /* calcioMgPerL:0.47, magnesioMgPerL:0.11, sodioMgPerL:0.31, bicarbonatiMgPerL:1.55, solfatoMgPerL:0.43, cloruroMgPerL:0.44 */
         System.out.println("delta:"+
             DistanceCalculator.distanceCoefficient(
                 new Water(10,
@@ -100,53 +120,31 @@ public class FinderTest {
         assertThat(list.stream().distinct().count()).isEqualTo(1);
     }
 
-
-    @Test public void findClosestReal() {
-        int liters = 10;
-        Water blackMediumTarget =
-                new Water(liters,
-                        Recipe.create(
-                                new Profile(50, 10, 33, 142, 57, 44, "black medium")));
-
+    @Test public void findClosestMine() {
         long startTime = System.currentTimeMillis();
-
-        List<Water> waters = Arrays.asList(
-                new Water(liters, Recipe.create(levissima)),
-                new Water(liters, Recipe.create(boario)),
-                new Water(liters, Recipe.create(eva)),
-                new Water(liters, Recipe.create(santanna)),
-                new Water(liters, Recipe.create(norda)),
-                new Water(liters, Recipe.create(vera)),
-                new Water(liters, Recipe.create(vitasnella)),
-                new Water(liters, Recipe.create(sanbern)),
-                new Water(liters, Recipe.create(dolomiti))
-//                new Water(liters,
-//                        new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
-//                                Arrays.asList(
-//                                        new MineralRatio(MineralProfile.TABLE_SALT, 70),
-//                                        new MineralRatio(MineralProfile.GYPSUM, 70))))
-        );
-        Optional<Water> xxx = finder.closest( blackMediumTarget
-                , waters,
-                Arrays.asList(
-                        new MineralAddition(1000, MineralProfile.CALCIUM_CHLORIDE),
-                        new MineralAddition(1000, MineralProfile.BAKING_SODA),
-                        new MineralAddition(1000, MineralProfile.GYPSUM),
-                        new MineralAddition(1000, MineralProfile.TABLE_SALT),
-                        new MineralAddition(1000, MineralProfile.ESPOM_SALT),
-                        new MineralAddition(1000, MineralProfile.MAGNESIUM_CHLORIDE),
-                        new MineralAddition(1000, MineralProfile.CHALK),
-                        new MineralAddition(1000, MineralProfile.PICKLING_LIME)
-                ));
+        Water xxx = finder.closest2(BLACK_MEDIUM_TARGET, WATERS, MINERAL_ADDITIONS);
 
         System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
 
-        log.warn("\n"+blackMediumTarget.toString());
+//        log.warn("\n"+ BLACK_MEDIUM_TARGET.toString());
+
+        log.warn("res:"+xxx.description());
+        log.warn("distance:"+DistanceCalculator.distanceCoefficient(BLACK_MEDIUM_TARGET, xxx));
+    }
+
+
+    @Test public void findClosestChoco() {
+        long startTime = System.currentTimeMillis();
+        Optional<Water> xxx = finder.closest(BLACK_MEDIUM_TARGET, WATERS, MINERAL_ADDITIONS);
+
+        System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
+
+//        log.warn("\n"+ BLACK_MEDIUM_TARGET.toString());
 
         log.warn("res:"+xxx.get().description());
-        log.warn("distance:"+DistanceCalculator.distanceCoefficient(blackMediumTarget, xxx.get()));
+        log.warn("distance:"+DistanceCalculator.distanceCoefficient(BLACK_MEDIUM_TARGET, xxx.get()));
 
-//        waters.stream().forEach(w -> {
+//        WATERS.stream().forEach(w -> {
 //            log.warn("w: " + w.toString());
 //            log.warn("delta w: " + DistanceCalculator.distanceCoefficient(blackMediumTarget, w)); });
 
@@ -167,14 +165,14 @@ public class FinderTest {
 
     @Test public void sensato() {
         Water target = new Water(10., Recipe.create(new Profile(50, 10, 33, 142, 57, 44, "black medium")));
-        Water vera = new Water(10, Recipe.create(this.vera));
+        Water wvera = new Water(10, Recipe.create(vera));
         Water ok = new Water(10.,
-                new Recipe(Arrays.asList(new ProfileRatio(this.vera, 1.)),
+                new Recipe(Arrays.asList(new ProfileRatio(vera, 1.)),
                         Arrays.asList(new MineralRatio(MineralProfile.GYPSUM, 0.7))));
-        assertThat(finder.sensato(0.7, vera, MineralProfile.TABLE_SALT, 100, target.recipe())).isTrue();
+        assertThat(finder.sensato(0.7, wvera, MineralProfile.TABLE_SALT, 100, target.recipe())).isTrue();
 
         Water closematch = new Water(10.,
-                new Recipe(Arrays.asList(new ProfileRatio(this.vera, 1.)),
+                new Recipe(Arrays.asList(new ProfileRatio(vera, 1.)),
                         Arrays.asList(new MineralRatio(MineralProfile.GYPSUM, 70),
                                       new MineralRatio(MineralProfile.TABLE_SALT, 70))));
 
@@ -182,7 +180,7 @@ public class FinderTest {
 
         System.out.println(DistanceCalculator.distanceCoefficient(target, closematch));
         System.out.println(DistanceCalculator.distanceCoefficient(target, ok));
-        System.out.println(DistanceCalculator.distanceCoefficient(target, vera));
+        System.out.println(DistanceCalculator.distanceCoefficient(target, wvera));
         System.out.println(DistanceCalculator.distanceCoefficient(target, target));
     }
 
