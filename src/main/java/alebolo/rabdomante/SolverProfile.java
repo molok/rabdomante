@@ -1,6 +1,6 @@
 package alebolo.rabdomante;
 
-public class SolverProfile {
+public class SolverProfile implements IMgPerL {
     private final Profile profile;
 
     public SolverProfile(Profile p) {

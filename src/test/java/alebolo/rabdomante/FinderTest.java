@@ -23,7 +23,7 @@ public class FinderTest {
 //            new MineralAddition(1000, MineralProfile.PICKLING_LIME)
     );
 
-    public static final double liters = 10;
+    public static final double liters = 20;
 
     public static final List<Water> WATERS = Arrays.asList(
 //            new Water(liters, Recipe.create(levissima)),

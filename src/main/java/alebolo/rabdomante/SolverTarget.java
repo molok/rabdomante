@@ -1,6 +1,6 @@
 package alebolo.rabdomante;
 
-public class SolverTarget {
+public class SolverTarget implements IMgPerL {
     private final Water water;
 
     public SolverTarget(Water xtarget) {

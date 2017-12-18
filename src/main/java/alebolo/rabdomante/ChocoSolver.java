@@ -2,12 +2,10 @@ package alebolo.rabdomante;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.expression.discrete.arithmetic.ArExpression;
 import org.chocosolver.solver.variables.IntVar;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ChocoSolver implements IWSolver {
@@ -52,40 +50,44 @@ public class ChocoSolver implements IWSolver {
         return Optional.ofNullable(res);
     }
 
-    private IntVar cost(List<SolverProfile> profiles, IntVar[] varWaters, Model model, SolverTarget target) {
-        IntVar sumCalcioMg = model.intVar("costCalcio", 0);
-        IntVar sumMagnesioMg = model.intVar("costMagnesio", 0);
-        IntVar sumSodioMg = model.intVar("costSodio", 0);
-        IntVar sumBicarbonatiMg = model.intVar("costBicarbonati", 0);
-        IntVar sumSolfatoMg = model.intVar("costSolfato", 0);
-        IntVar sumCloruroMg = model.intVar("costCloruro", 0);
+    private enum MineralContent {
+        calcio, magnesio, sodio, bicarbonati, solfato, cloruro;
+    }
 
-        /* creiamo funzione costo */
+    private IntVar cost(List<SolverProfile> profiles, IntVar[] varWaters, Model model, SolverTarget target) {
+        Map<MineralContent, Function<IMgPerL, Integer>> map = new HashMap<>();
+        map.put(MineralContent.calcio, x -> x.calcioMgPerL());
+        map.put(MineralContent.magnesio, x -> x.magnesioMgPerL());
+        map.put(MineralContent.sodio, x -> x.sodioMgPerL());
+        map.put(MineralContent.bicarbonati, x -> x.bicarbonatiMgPerL());
+        map.put(MineralContent.solfato, x -> x.solfatoMgPerL());
+        map.put(MineralContent.cloruro, x -> x.cloruroMgPerL());
+
+        Map<MineralContent, IntVar> mineralContentSum = new HashMap<>();
+
         for (int i = 0; i < profiles.size(); i++) {
-            SolverProfile p = profiles.get(i);
-            sumCalcioMg = sumCalcioMg.add(model.intVar(p.calcioMgPerL()).mul(varWaters[i])).intVar();
-            sumMagnesioMg = sumMagnesioMg.add(model.intVar(p.magnesioMgPerL()).mul(varWaters[i])).intVar();
-            sumSodioMg = sumSodioMg.add(model.intVar(p.sodioMgPerL()).mul(varWaters[i])).intVar();
-            sumBicarbonatiMg = sumBicarbonatiMg.add(model.intVar(p.bicarbonatiMgPerL()).mul(varWaters[i])).intVar();
-            sumSolfatoMg = sumSolfatoMg.add(model.intVar(p.solfatoMgPerL()).mul(varWaters[i])).intVar();
-            sumCloruroMg = sumCloruroMg.add(model.intVar(p.cloruroMgPerL()).mul(varWaters[i])).intVar();
+            IntVar varWater = varWaters[i];
+            SolverProfile t = profiles.get(i);
+
+            for (Map.Entry<MineralContent, Function<IMgPerL, Integer>> mc_getter : map.entrySet()) {
+                mineralContentSum.merge(
+                           mc_getter.getKey(),
+                           costAddendo(model, varWater, t, mc_getter.getKey(), mc_getter.getValue()),
+                           (IntVar aggCost, IntVar addendo) -> aggCost.add(addendo).intVar());
+            }
         }
 
-        int liters = target.liters();
-        IntVar cost = model.intVar("WaterDistance", 0)
-                    .add(distance(liters, sumCalcioMg, target.calcioMgPerL()))
-                    .add(distance(liters, sumMagnesioMg, target.magnesioMgPerL()))
-                    .add(distance(liters, sumSodioMg, target.sodioMgPerL()))
-                    .add(distance(liters, sumBicarbonatiMg, target.bicarbonatiMgPerL()))
-                    .add(distance(liters, sumSolfatoMg, target.solfatoMgPerL()))
-                    .add(distance(liters, sumCloruroMg, target.cloruroMgPerL()))
-                    .intVar();
+        IntVar cost = map.entrySet().stream()
+                .map(mc_f -> mineralContentSum.get(mc_f.getKey())
+                                              .div(target.liters())
+                                              .dist(mc_f.getValue().apply(target)).intVar())
+                .reduce(model.intVar("WaterDistance", 0), (a, b) -> a.add(b).intVar());
 
         return cost;
     }
 
-    private ArExpression distance(int targetLiters, IntVar sumMg, int targetMgPerL) {
-        return sumMg.div(targetLiters).dist(targetMgPerL);
+    private IntVar costAddendo(Model model, IntVar varWater, SolverProfile profile, MineralContent mineralContent, Function<IMgPerL, Integer> getter) {
+        return model.intVar("cost_" + mineralContent.name(), getter.apply(profile)).mul(varWater).intVar();
     }
 
     private IntVar[] watersToIntVars(List<Water> waters, Model model, int liters) {
