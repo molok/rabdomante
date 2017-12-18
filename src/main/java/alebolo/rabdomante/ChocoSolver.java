@@ -14,71 +14,72 @@ public class ChocoSolver implements IWSolver {
     WaterMixer mixer = new WaterMixer();
 
     @Override public Optional<Water> solve(Water xtarget, List<Water> waters, List<MineralAddition> minerals) {
-        Model model = new Model("waterModel");
-
-        SolverTarget target = new SolverTarget(xtarget);
-
-        /* FIXME decidere se gestire solo BaseWater oppure tutti i profili delle acque */
-        List<SolverProfile> profiles = waters.stream()
-                                    .map(w -> w.recipe().profilesRatio().get(0).profile())
-                                    .map(p -> new SolverProfile(p))
-                                    .collect(Collectors.toList());
-
-        IntVar[] varWaters = watersToIntVars(waters, model, target.liters());
-        model.sum(varWaters, "=", target.liters()).post();
-
-        IntVar[] varMineralsMgPerL = mineralsToIntVars(minerals, model);
-        IntVar cost = cost(profiles, varWaters, model, target, minerals, varMineralsMgPerL);
-
-//        model.setObjective(Model.MINIMIZE, cost);
-        Solver solver = model.getSolver();
-        Water res = null;
-        while(solver.solve()) {
-            solver.printStatistics();
-            System.out.println("cost = " + cost.getValue() + ", solution = " + Arrays.toString(varWaters) + ", " + Arrays.toString(varMineralsMgPerL));
-
-            res = null;
-            for (int i = 0; i < varWaters.length; i++) {
-                IntVar varCurr = varWaters[i];
-                if (varCurr.getValue() > 0) {
-                    Water curr = new Water(varCurr.getValue(), waters.get(i).recipe());
-                    res = res == null ? curr : mixer.merge(res, curr);
-                }
-            }
-
-            List<MineralRatio> minAdd = new ArrayList<>();
-            for (int i = 0; i < varMineralsMgPerL.length; i++) {
-                IntVar varCurr = varMineralsMgPerL[i];
-                if (varCurr.getValue() > 0) {
-                    minAdd.add(new MineralRatio(minerals.get(i).profile(), varCurr.getValue()));
-                }
-            }
-
-            res = new Water(
-                    res.liters(),
-                    new Recipe(
-                            res.recipe().profilesRatio(),
-                            new ArrayList<>(
-                                    CollectionUtils.union(
-                                            res.recipe().saltsRatio(), minAdd))));
-
-            if (res != null) {
-                System.out.println("mydistance:" +DistanceCalculator.distanceCoefficient(target.water(), res) + ", w:" +res.description());
-            }
-        }
-
-        return Optional.ofNullable(res);
+//        Model model = new Model("waterModel");
+//
+//        SolverTarget target = new SolverTarget(xtarget);
+//
+//        /* FIXME decidere se gestire solo BaseWater oppure tutti i profili delle acque */
+//        List<SolverProfile> profiles = waters.stream()
+//                                    .map(w -> w.recipe().profilesRatio().get(0).profile())
+//                                    .map(p -> new SolverProfile(p))
+//                                    .collect(Collectors.toList());
+//
+//        IntVar[] varWaters = watersToIntVars(waters, model, target.liters());
+////        model.sum(varWaters, "=", target.liters()).post();
+//
+//        IntVar[] varMineralsMgPerL = mineralsToIntVars(minerals, model);
+//        IntVar cost = cost(profiles, varWaters, model, target, minerals, varMineralsMgPerL);
+//
+////        model.setObjective(Model.MINIMIZE, cost);
+//        Solver solver = model.getSolver();
+//        Water res = null;
+//        while(solver.solve()) {
+//            solver.printStatistics();
+//            System.out.println("cost = " + cost.getValue() + ", solution = " + Arrays.toString(varWaters) + ", " + Arrays.toString(varMineralsMgPerL));
+//
+//            res = null;
+//            for (int i = 0; i < varWaters.length; i++) {
+//                IntVar varCurr = varWaters[i];
+//                if (varCurr.getValue() > 0) {
+//                    Water curr = new Water(varCurr.getValue(), waters.get(i).recipe());
+//                    res = res == null ? curr : mixer.merge(res, curr);
+//                }
+//            }
+//
+//            List<MineralRatio> minAdd = new ArrayList<>();
+//            for (int i = 0; i < varMineralsMgPerL.length; i++) {
+//                IntVar varCurr = varMineralsMgPerL[i];
+//                if (varCurr.getValue() > 0) {
+//                    minAdd.add(new MineralRatio(minerals.get(i).profile(), varCurr.getValue()));
+//                }
+//            }
+//
+//            res = new Water(
+//                    res.liters(),
+//                    new Recipe(
+//                            res.recipe().profilesRatio(),
+//                            new ArrayList<>(
+//                                    CollectionUtils.union(
+//                                            res.recipe().saltsRatio(), minAdd))));
+//
+//            if (res != null) {
+//                System.out.println("mydistance:" +DistanceCalculator.distanceCoefficient(target.water(), res) + ", w:" +res.description());
+//            }
+//        }
+//
+//        return Optional.ofNullable(res);
+        throw new UnsupportedOperationException("mi sono arreso");
     }
 
     private IntVar cost(List<SolverProfile> profiles, IntVar[] varWaters, Model model, SolverTarget target, List<MineralAddition> minerals, RealVar[] varMineralsMgPerL) {
-        RealVar wSumCalcio = model.realVar("costCalcioW", 0);
+/*        RealVar wSumCalcio = model.realVar("costCalcioW", 0);
         RealVar wSumMagnesio = model.realVar("costMagnesioW", 0);
         RealVar wSumSodio = model.realVar("costSodioW", 0);
         RealVar wSumBicarbonati = model.realVar("costBicarbonatiW", 0);
         RealVar wSumSolfato = model.realVar("costSolfatoW", 0);
         RealVar wSumCloruro = model.realVar("costCloruroW", 0);
 
-        /* creiamo funzione costo */
+        *//* creiamo funzione costo *//*
         for (int i = 0; i < profiles.size(); i++) {
             SolverProfile p = profiles.get(i);
             RealVar currLiters = model.realVar((double) varWaters[i].getValue());
@@ -116,7 +117,8 @@ public class ChocoSolver implements IWSolver {
                     .add(mSumCloruro.add(wSumCloruro.div(target.liters())).realVar().dist(target.cloruroMgPerL()))
                     .realVar();
 
-        return cost;
+        return cost;*/
+        return null;
     }
 
     private IntVar[] mineralsToIntVars(List<MineralAddition> minerals, Model model) {
