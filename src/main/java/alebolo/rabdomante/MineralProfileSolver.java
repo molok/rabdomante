@@ -1,14 +1,14 @@
 package alebolo.rabdomante;
 
-public class MineralProfileSolver {
+public class MineralProfileSolver implements IMineralRatio {
     private final MineralProfile profile;
 
     public MineralProfileSolver(MineralProfile profile) { this.profile = profile; }
-    public double calcioRatio() { return toInt(profile.calcioRatio()); }
-    public double magnesioRatio() { return toInt(profile.magnesiumRatio()); }
-    public double sodioRatio() { return toInt(profile.sodioRatio()); }
-    public double bicarbonatiRatio() { return toInt(profile.bicarbonateRatio()); }
-    public double solfatoRatio() { return toInt(profile.solfatoRatio()); }
-    public double cloruroRatio() { return toInt(profile.cloruroRatio()); }
-    private double toInt(double v) { return v; }
+    public int calcioRatio() { return toInt(profile.calcioRatio()); }
+    public int magnesioRatio() { return toInt(profile.magnesiumRatio()); }
+    public int sodioRatio() { return toInt(profile.sodioRatio()); }
+    public int bicarbonatiRatio() { return toInt(profile.bicarbonateRatio()); }
+    public int solfatoRatio() { return toInt(profile.solfatoRatio()); }
+    public int cloruroRatio() { return toInt(profile.cloruroRatio()); }
+    private int toInt(double v) { return (int) (v * 100); }
 }
