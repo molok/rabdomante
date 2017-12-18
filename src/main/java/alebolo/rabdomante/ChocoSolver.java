@@ -2,6 +2,7 @@ package alebolo.rabdomante;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.expression.discrete.arithmetic.ArExpression;
 import org.chocosolver.solver.variables.IntVar;
 
 import java.util.Arrays;
@@ -52,34 +53,39 @@ public class ChocoSolver implements IWSolver {
     }
 
     private IntVar cost(List<SolverProfile> profiles, IntVar[] varWaters, Model model, SolverTarget target) {
-        IntVar sumCalcio = model.intVar("costCalcio", 0);
-        IntVar sumMagnesio = model.intVar("costMagnesio", 0);
-        IntVar sumSodio = model.intVar("costSodio", 0);
-        IntVar sumBicarbonati = model.intVar("costBicarbonati", 0);
-        IntVar sumSolfato = model.intVar("costSolfato", 0);
-        IntVar sumCloruro = model.intVar("costCloruro", 0);
+        IntVar sumCalcioMg = model.intVar("costCalcio", 0);
+        IntVar sumMagnesioMg = model.intVar("costMagnesio", 0);
+        IntVar sumSodioMg = model.intVar("costSodio", 0);
+        IntVar sumBicarbonatiMg = model.intVar("costBicarbonati", 0);
+        IntVar sumSolfatoMg = model.intVar("costSolfato", 0);
+        IntVar sumCloruroMg = model.intVar("costCloruro", 0);
 
         /* creiamo funzione costo */
         for (int i = 0; i < profiles.size(); i++) {
             SolverProfile p = profiles.get(i);
-            sumCalcio = sumCalcio.add(model.intVar(p.calcioMgPerL()).mul(varWaters[i])).intVar();
-            sumMagnesio = sumMagnesio.add(model.intVar(p.magnesioMgPerL()).mul(varWaters[i])).intVar();
-            sumSodio = sumSodio.add(model.intVar(p.sodioMgPerL()).mul(varWaters[i])).intVar();
-            sumBicarbonati = sumBicarbonati.add(model.intVar(p.bicarbonatiMgPerL()).mul(varWaters[i])).intVar();
-            sumSolfato = sumSolfato.add(model.intVar(p.solfatoMgPerL()).mul(varWaters[i])).intVar();
-            sumCloruro = sumCloruro.add(model.intVar(p.cloruroMgPerL()).mul(varWaters[i])).intVar();
+            sumCalcioMg = sumCalcioMg.add(model.intVar(p.calcioMgPerL()).mul(varWaters[i])).intVar();
+            sumMagnesioMg = sumMagnesioMg.add(model.intVar(p.magnesioMgPerL()).mul(varWaters[i])).intVar();
+            sumSodioMg = sumSodioMg.add(model.intVar(p.sodioMgPerL()).mul(varWaters[i])).intVar();
+            sumBicarbonatiMg = sumBicarbonatiMg.add(model.intVar(p.bicarbonatiMgPerL()).mul(varWaters[i])).intVar();
+            sumSolfatoMg = sumSolfatoMg.add(model.intVar(p.solfatoMgPerL()).mul(varWaters[i])).intVar();
+            sumCloruroMg = sumCloruroMg.add(model.intVar(p.cloruroMgPerL()).mul(varWaters[i])).intVar();
         }
 
+        int liters = target.liters();
         IntVar cost = model.intVar("WaterDistance", 0)
-                    .add(sumCalcio.dist(target.calcioMgPerL() * target.liters()))
-                    .add(sumMagnesio.dist(target.magnesioMgPerL() * target.liters()))
-                    .add(sumSodio.dist(target.sodioMgPerL() * target.liters()))
-                    .add(sumBicarbonati.dist(target.bicarbonatiMgPerL() * target.liters()))
-                    .add(sumSolfato.dist(target.solfatoMgPerL() * target.liters()))
-                    .add(sumCloruro.dist(target.cloruroMgPerL() * target.liters()))
+                    .add(distance(liters, sumCalcioMg, target.calcioMgPerL()))
+                    .add(distance(liters, sumMagnesioMg, target.magnesioMgPerL()))
+                    .add(distance(liters, sumSodioMg, target.sodioMgPerL()))
+                    .add(distance(liters, sumBicarbonatiMg, target.bicarbonatiMgPerL()))
+                    .add(distance(liters, sumSolfatoMg, target.solfatoMgPerL()))
+                    .add(distance(liters, sumCloruroMg, target.cloruroMgPerL()))
                     .intVar();
 
         return cost;
+    }
+
+    private ArExpression distance(int targetLiters, IntVar sumMg, int targetMgPerL) {
+        return sumMg.div(targetLiters).dist(targetMgPerL);
     }
 
     private IntVar[] watersToIntVars(List<Water> waters, Model model, int liters) {
