@@ -7,12 +7,10 @@ public class SolverProfile {
         this.profile = p;
     }
 
-    public double calcioMgPerL() { return toInt(profile.calcioMgPerL()); }
-    public double magnesioMgPerL() { return toInt(profile.magnesioMgPerL()); }
-    public double sodioMgPerL() { return toInt(profile.sodioMgPerL()); }
-    public double bicarbonatiMgPerL() { return toInt(profile.bicarbonatiMgPerL()); }
-    public double solfatoMgPerL() { return toInt(profile.solfatoMgPerL()); }
-    public double cloruroMgPerL() { return toInt(profile.cloruroMgPerL()); }
-
-    private double toInt(double v) { return (double) v; }
+    public int calcioMgPerL() { return (int) (profile.calcioMgPerL() * 100); }
+    public int magnesioMgPerL() { return (int) (profile.magnesioMgPerL() * 100); }
+    public int sodioMgPerL() { return (int) (profile.sodioMgPerL() * 100); }
+    public int bicarbonatiMgPerL() { return (int) (profile.bicarbonatiMgPerL() * 100); }
+    public int solfatoMgPerL() { return (int) (profile.solfatoMgPerL() * 100); }
+    public int cloruroMgPerL() { return (int) (profile.cloruroMgPerL() * 100); }
 }
