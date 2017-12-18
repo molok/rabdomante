@@ -2,7 +2,7 @@ package alebolo.rabdomante;
 
 import java.util.Objects;
 
-class MineralRatio {
+class MineralRatio implements IMgPerLDouble{
     private final double mgPerL;
     private final MineralProfile salt;
     private final int hashCode;

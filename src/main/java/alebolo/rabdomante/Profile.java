@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.Objects;
 
-class Profile {
+class Profile implements IMgPerLDouble{
     private final double calcio;
     private final double magnesio;
     private final double sodio;

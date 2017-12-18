@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import java.util.*;
 import java.util.function.ToDoubleFunction;
 
-public class Recipe {
+public class Recipe implements IMgPerLDouble {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final List<ProfileRatio> profRatio;
     private final Map<String, MineralRatio> salts;
