@@ -26,6 +26,7 @@ class Profile implements IMgPerLDouble{
     public static final Profile vitasnella = new Profile( 86, 26, 3, 301, 83, 2, "vitasnella");
     public static final Profile dolomiti = new Profile(8, 8.7, 1.3, 94.6, 22, 1.1, "dolomiti");
     public static final Profile sanbern = new Profile(9.5, 0.6, 0.6, 30.2, 2.3, 0.7, "sanbernardo");
+    public static final Profile distilled = new Profile(0, 0, 0, 0, 0, 0, "distilled");
 
 
     Profile(double calcio, double magnesio, double sodio, double bicarbonati, double solfato, double cloruro, String name) {

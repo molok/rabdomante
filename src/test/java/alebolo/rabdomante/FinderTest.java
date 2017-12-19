@@ -23,7 +23,7 @@ public class FinderTest {
 //            new MineralAddition(1000, MineralProfile.PICKLING_LIME)
     );
 
-    public static final double liters = 20;
+    public static final double liters = 10;
 
     public static final List<Water> WATERS = Arrays.asList(
 //            new Water(liters, Recipe.create(levissima)),
@@ -130,6 +130,41 @@ public class FinderTest {
 
         log.warn("res:"+xxx.description());
         log.warn("distance:"+DistanceCalculator.distanceCoefficient(BLACK_MEDIUM_TARGET, xxx));
+        log.warn("\ntarget:"+ BLACK_MEDIUM_TARGET.description());
+        log.warn("\ncandidate:"+ xxx.description());
+    }
+
+    @Test public void findChocoDist() {
+//        Water target = new Water(liters,
+//                Recipe.create(
+//                        new Profile(0, 0, 0, 0, 0, 0, "distillato più sale")));
+        Water target = new Water(liters,
+                Recipe.create(
+                        new Profile(0, 0, 3.9, 0, 0, 6.0, "distillato più sale")));
+
+        List<Water> waters = Arrays.asList( new Water(liters, Recipe.create(Profile.distilled)));
+        List<MineralAddition> minerals = Arrays.asList( new MineralAddition(1000, MineralProfile.TABLE_SALT));
+        Water xxx = finder.closest(target, waters, minerals).get();
+
+        log.warn("res:"+xxx.description());
+        log.warn("distance:"+DistanceCalculator.distanceCoefficient(target, xxx));
+        log.warn("\ntarget:"+ target.description());
+        log.warn("\ncandidate:"+ xxx.description());
+    }
+
+    @Test public void findMineDist() {
+        Water target = new Water(liters,
+                Recipe.create(
+                        new Profile(0, 0, 3.9, 0, 0, 6.0, "distillato più sale")));
+
+        List<Water> waters = Arrays.asList( new Water(liters, Recipe.create(Profile.distilled)));
+        List<MineralAddition> minerals = Arrays.asList( new MineralAddition(1000, MineralProfile.TABLE_SALT));
+        Water xxx = finder.closest2(target, waters, minerals);
+
+        log.warn("res:"+xxx.description());
+        log.warn("distance:"+DistanceCalculator.distanceCoefficient(target, xxx));
+        log.warn("\ntarget:"+ target.description());
+        log.warn("\ncandidate:"+ xxx.description());
     }
 
 
@@ -139,10 +174,10 @@ public class FinderTest {
 
         System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
 
-//        log.warn("\n"+ BLACK_MEDIUM_TARGET.toString());
-
         log.warn("res:"+xxx.get().description());
         log.warn("distance:"+DistanceCalculator.distanceCoefficient(BLACK_MEDIUM_TARGET, xxx.get()));
+        log.warn("\ntarget:"+ BLACK_MEDIUM_TARGET.description());
+        log.warn("\ncandidate:"+ xxx.get().description());
 
 //        WATERS.stream().forEach(w -> {
 //            log.warn("w: " + w.toString());

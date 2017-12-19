@@ -65,6 +65,14 @@ public class Water {
         String profiles = this.recipe().profilesRatio().stream()
                 .map(p -> String.format("%.2f", p.ratio() * liters()) + "L " + p.profile().name())
                 .collect( Collectors.joining(", "));
-        return profiles + " " + salts;
+        String details =
+                " calcioMgPerL:" + String.format("%.2f mg", recipe.calcioMgPerL()) +
+                ", magnesioMgPerL:" + String.format("%.2f mg", recipe.magnesioMgPerL()) +
+                ", sodioMgPerL:" + String.format("%.2f mg", recipe.sodioMgPerL()) +
+                ", bicarbonatiMgPerL:" + String.format("%.2f mg", recipe.bicarbonatiMgPerL()) +
+                ", solfatoMgPerL:" + String.format("%.2f mg", recipe.solfatoMgPerL()) +
+                ", cloruroMgPerL:" + String.format("%.2f mg", recipe.cloruroMgPerL());
+                ;
+        return profiles + " " + salts + " {" + details + "}";
     }
 }
