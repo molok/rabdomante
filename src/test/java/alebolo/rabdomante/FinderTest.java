@@ -1,5 +1,6 @@
 package alebolo.rabdomante;
 
+import com.google.common.collect.HashMultiset;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class FinderTest {
     );
 
     /* TODO FIXME bug relativo a calcolo con litri!!! */
-    public static final double liters = 20;
+    public static final double liters = 10;
 
     public static final List<Water> WATERS = Arrays.asList(
 //            new Water(liters, Recipe.create(levissima)),
@@ -199,6 +200,12 @@ public class FinderTest {
         System.out.println(p.toString());
 
         System.out.println(Recipe.create(p).toString());
+    }
+
+    @Test public void merge() {
+        Map<String, Integer> x = new HashMap<>();
+        x.merge("foo", 10, (a,b) -> a + b);
+        assertThat(x.get("foo")).isEqualTo(10);
     }
 
     @Test public void sensato() {
