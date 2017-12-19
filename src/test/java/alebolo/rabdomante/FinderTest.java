@@ -23,7 +23,8 @@ public class FinderTest {
 //            new MineralAddition(1000, MineralProfile.PICKLING_LIME)
     );
 
-    public static final double liters = 10;
+    /* TODO FIXME bug relativo a calcolo con litri!!! */
+    public static final double liters = 20;
 
     public static final List<Water> WATERS = Arrays.asList(
 //            new Water(liters, Recipe.create(levissima)),
@@ -140,10 +141,12 @@ public class FinderTest {
 //                        new Profile(0, 0, 0, 0, 0, 0, "distillato più sale")));
         Water target = new Water(liters,
                 Recipe.create(
-                        new Profile(0, 0, 3.9, 0, 0, 6.0, "distillato più sale")));
+                        new Profile(0, 0, 0, 0, 0, 5, "distillato più sale")));
 
         List<Water> waters = Arrays.asList( new Water(liters, Recipe.create(Profile.distilled)));
-        List<MineralAddition> minerals = Arrays.asList( new MineralAddition(1000, MineralProfile.TABLE_SALT));
+        List<MineralAddition> minerals = Arrays.asList(
+                new MineralAddition(10, MineralProfile.FAKE_TABLE_SALT)
+        );
         Water xxx = finder.closest(target, waters, minerals).get();
 
         log.warn("res:"+xxx.description());
@@ -155,10 +158,10 @@ public class FinderTest {
     @Test public void findMineDist() {
         Water target = new Water(liters,
                 Recipe.create(
-                        new Profile(0, 0, 3.9, 0, 0, 6.0, "distillato più sale")));
+                        new Profile(0, 0, 5, 0, 0, 5, "distillato più sale")));
 
         List<Water> waters = Arrays.asList( new Water(liters, Recipe.create(Profile.distilled)));
-        List<MineralAddition> minerals = Arrays.asList( new MineralAddition(1000, MineralProfile.TABLE_SALT));
+        List<MineralAddition> minerals = Arrays.asList( new MineralAddition(1000, MineralProfile.FAKE_TABLE_SALT));
         Water xxx = finder.closest2(target, waters, minerals);
 
         log.warn("res:"+xxx.description());

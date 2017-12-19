@@ -2,9 +2,11 @@ package alebolo.rabdomante;
 
 public class SolverTarget implements IMgPerL {
     private final Water water;
+    private final int k;
 
-    public SolverTarget(Water xtarget) {
+    public SolverTarget(Water xtarget, int i) {
         this.water = xtarget;
+        this.k = i;
     }
 
     public int liters() { return (int) water.liters(); }
@@ -16,5 +18,5 @@ public class SolverTarget implements IMgPerL {
     public int cloruroMgPerL() { return toInt(water.recipe().cloruroMgPerL()); }
     public int solfatoMgPerL() { return toInt(water.recipe().solfatoMgPerL()); }
 
-    private int toInt(double v) { return (int) (100 * v); }
+    private int toInt(double v) { return (int) (v * k); }
 }
