@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ChocoSolver3Test {
     ChocoSolver solver = new ChocoSolver();
 
-    @Ignore
     @Test public void costWithSalts() {
         Water target = new Water(20, Recipe.create(new Profile(0, 0, 10, 0, 0, 0, "test")));
         Water cand = new Water(20, Recipe.create(Profile.distilled));
@@ -32,9 +31,10 @@ public class ChocoSolver3Test {
     }
 
     @Test public void costNoSalts() {
-        Water target = new Water(30, Recipe.create(Profile.distilled));
-        Water cand = new Water(30, Recipe.create(new Profile(0, 0, 10, 0, 0, 0, "test")));
+        Water target = new Water(2, Recipe.create(Profile.distilled));
+        Water cand = new Water(2, Recipe.create(new Profile(0, 0, 10, 0, 0, 0, "test")));
         Pair<Integer, Water> res = solver.solve2(target, Arrays.asList(cand), Arrays.asList()).get();
+//        System.out.println("result:"+cand);
         assertThat(res.getValue1().isSameAs(cand)).isTrue();
         assertThat(res.getValue0()).isEqualTo(10);
     }

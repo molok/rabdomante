@@ -10,12 +10,12 @@ public class DistanceCalculator {
                     target.liters(), candidate.liters()));
         }
 
-        return //diff(target.recipe(), candidate.recipe(), Recipe::calcioMgPerL) +
-//               diff(target.recipe(), candidate.recipe(), Recipe::magnesioMgPerL) +
-               diff(target.recipe(), candidate.recipe(), Recipe::sodioMgPerL) + 0.
-//               diff(target.recipe(), candidate.recipe(), Recipe::bicarbonatiMgPerL) +
-//               diff(target.recipe(), candidate.recipe(), Recipe::solfatoMgPerL) +
-//               diff(target.recipe(), candidate.recipe(), Recipe::cloruroMgPerL)
+        return diff(target.recipe(), candidate.recipe(), Recipe::calcioMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::magnesioMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::sodioMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::bicarbonatiMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::solfatoMgPerL) +
+               diff(target.recipe(), candidate.recipe(), Recipe::cloruroMgPerL)
                 ;
     }
 

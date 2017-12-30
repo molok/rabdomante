@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class ChocoSolver implements IWSolver {
     WaterMixer mixer = new WaterMixer();
-    int scaleUpDouble = 1000;
+    int scaleUpDouble = 1;
 
     List<Pair<String,IntVar>> toWatch = new ArrayList<>();
 
@@ -111,18 +111,18 @@ public class ChocoSolver implements IWSolver {
         System.out.println("target:"+target.toString());
         System.out.println("costSalts:"+Arrays.toString(salts.toArray(new MineralProfileSolver[]{})));
         Map<MineralContent, Pair<Function<IMgPerL, Integer>, Function<IMineralRatio, Integer>>> mineralGetters = new HashMap<>();
+        mineralGetters.put(MineralContent.sodio, new Pair<>(x -> x.sodioMgPerL(), m -> m.sodioRatio()));
         mineralGetters.put(MineralContent.calcio, new Pair<>(x -> x.calcioMgPerL(), m -> m.calcioRatio()));
         mineralGetters.put(MineralContent.magnesio, new Pair<>(x -> x.magnesioMgPerL(), m -> m.magnesioRatio()));
-        mineralGetters.put(MineralContent.sodio, new Pair<>(x -> x.sodioMgPerL(), m -> m.sodioRatio()));
         mineralGetters.put(MineralContent.bicarbonati, new Pair<>(x -> x.bicarbonatiMgPerL(), m -> m.bicarbonatiRatio()));
         mineralGetters.put(MineralContent.solfato, new Pair<>(x -> x.solfatoMgPerL(), m -> m.solfatoRatio()));
         mineralGetters.put(MineralContent.cloruro, new Pair<>(x -> x.cloruroMgPerL(), m -> m.cloruroRatio()));
 
         Map<MineralContent, IntVar> mineralContentSum = new HashMap<>();
 
-        sumWaters(profiles, varWaters, model, mineralGetters, mineralContentSum);
+        sumWaters(profiles, varWaters, model, mineralGetters, mineralContentSum, target.liters());
         toWatch.add(new Pair<>("sodiosumWater", mineralContentSum.get(MineralContent.sodio)));
-        sumSalts(model, varMineralsMgPerL, salts, mineralGetters, mineralContentSum);
+        sumSalts(model, varMineralsMgPerL, salts, mineralGetters, mineralContentSum, target.liters());
         IntVar waterDistance = getWaterDistance(model, target, mineralGetters, mineralContentSum);
         toWatch.add(new Pair<>("sodiosumTot", mineralContentSum.get(MineralContent.sodio)));
         toWatch.add(new Pair<>("KOST", waterDistance));
@@ -154,17 +154,17 @@ public class ChocoSolver implements IWSolver {
             List<SolverProfile> profiles,
             IntVar[] varWaters,
             Model model,
-            Map<MineralContent, Pair<Function<IMgPerL, Integer>, Function<IMineralRatio, Integer>>> mineralGetters,
-            Map<MineralContent, IntVar> mineralContentSum)
+            Map<MineralContent, Pair<Function<IMgPerL, Integer>, Function<IMineralRatio, Integer>>> mineralGettersMgPerL,
+            Map<MineralContent, IntVar> mineralContentSum, int liters)
     {
         for (int i = 0; i < profiles.size(); i++) {
             System.out.println("profile:"+profiles.get(i));
             IntVar varWater = varWaters[i];
             SolverProfile currProfile = profiles.get(i);
 
-            mineralGetters.forEach((mineral, getters) -> {
-                IntVar value = model.intVar("cost_" + mineral.name(), getters.getValue0().apply(currProfile)).mul(varWater).div(scaleUpDouble).intVar();
-                toWatch.add(new Pair<>("valueSumWater", value));
+            mineralGettersMgPerL.forEach((mineral, getters) -> {
+                IntVar value = model.intVar("xxx" + mineral.name(), getters.getValue0().apply(currProfile)).mul(varWater).div(scaleUpDouble).intVar();
+                toWatch.add(new Pair<>("valueSumWater_"+mineral.name(), value));
 
                 mineralContentSum.merge(
                         mineral,
@@ -178,35 +178,29 @@ public class ChocoSolver implements IWSolver {
                           IntVar[] varMineralsMgPerL,
                           List<MineralProfileSolver> salts,
                           Map<MineralContent, Pair<Function<IMgPerL, Integer>, Function<IMineralRatio, Integer>>> mineralGetters,
-                          Map<MineralContent, IntVar> mineralContentSum) {
+                          Map<MineralContent, IntVar> mineralContentSum, int liters) {
 
         for (int i = 0; i < salts.size(); i++) {
-            IntVar varMineral = varMineralsMgPerL[i];
+            IntVar varMineralMgPerL = varMineralsMgPerL[i];
             MineralProfileSolver salt = salts.get(0);
 
             for (Map.Entry<MineralContent, Pair<Function<IMgPerL, Integer>, Function<IMineralRatio, Integer>>>
-                 mineralContentGetter : mineralGetters.entrySet()) {
+                    mineralContentGetter : mineralGetters.entrySet()) {
                 MineralContent mineral = mineralContentGetter.getKey();
-                Function<IMineralRatio, Integer> getter = mineralContentGetter.getValue().getValue1();
+                Function<IMineralRatio, Integer> getterMgPerL = mineralContentGetter.getValue().getValue1();
 
-                int precision = 100;
-                IntVar varMineralMul100 = model.intScaleView(varMineral, precision);
+                int precision = 1;
+                IntVar varMineralMul100 = model.intScaleView(varMineralMgPerL, precision);
 
-                IntVar mgPerL = model.intVar("mCost_" + mineral.name(), getter.apply(salt)).mul(varMineralMul100).div(precision).intVar();
+                IntVar mgPerL = model.intVar("mineral_mg_" + mineral.name(), getterMgPerL.apply(salt)).mul(liters).mul(varMineralMul100).div(precision).intVar();
 
-                toWatch.add(new Pair<>("mCost_" + mineral.name(), mgPerL));
+                toWatch.add(new Pair<>("mineral_mg_" + mineral.name(), mgPerL));
 
                 mineralContentSum.merge(
                         mineral,
                         mgPerL,
                         (IntVar aggCost, IntVar addendo) -> (aggCost.add(addendo)).intVar());
             }
-//            mineralGetters.forEach((MineralContent mineral, Pair<Function<IMgPerL, Integer>, Function<IMineralRatio, Integer>> mineralContentGetters) ->
-//                    mineralContentSum.merge(
-//                            mineral,
-//                            model.intVar("mCost_" + mineral.name(), mineralContentGetters.getValue1().apply(salt)).mul(varMineral).intVar(),
-//                            (IntVar aggCost, IntVar addendo) -> aggCost.add(addendo).intVar()));
-
         }
     }
 
