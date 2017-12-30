@@ -92,8 +92,8 @@ public class Finder {
         /* usiamo algoritmo greedy sul singolo mineral ma proviamo tutte le permutazioni dell'ordine */
         List<Water> res = new ArrayList<>();
         res.add(w);
-        for(List<MineralAddition> salts : permutate(xsalts, 0)) {
-            for (MineralAddition s : salts) {
+        for(List<MineralAddition> saltsPermutation : permutate(xsalts, 0)) {
+            for (MineralAddition s : saltsPermutation) {
                 res.addAll(saltAddition(res, s, target));
             }
         }
@@ -108,7 +108,7 @@ public class Finder {
                  mineraAdditionGrams >= 0.;
                  mineraAdditionGrams -= step)
             {
-                if (sensato(mineraAdditionGrams, w, mineralAddition.profile(), 100, target.recipe())) {
+                if (sensato(mineraAdditionGrams, w, mineralAddition.profile(), 10, target.recipe())) {
                     Water e = new Water(
                             w.liters(),
                             new Recipe(w.recipe().profilesRatio(),

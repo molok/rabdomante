@@ -14,8 +14,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.withinPercentage;
 
 public class FinderTest {
     public static final List<MineralAddition> MINERAL_ADDITIONS = Arrays.asList(
-//            new MineralAddition(1000, MineralProfile.CALCIUM_CHLORIDE),
-//            new MineralAddition(1000, MineralProfile.BAKING_SODA),
+            new MineralAddition(1000, MineralProfile.CALCIUM_CHLORIDE),
+            new MineralAddition(1000, MineralProfile.BAKING_SODA),
             new MineralAddition(1000, MineralProfile.GYPSUM),
             new MineralAddition(1000, MineralProfile.TABLE_SALT)
 //            new MineralAddition(1000, MineralProfile.ESPOM_SALT),
@@ -28,15 +28,15 @@ public class FinderTest {
     public static final double liters = 20;
 
     public static final List<Water> WATERS = Arrays.asList(
-//            new Water(liters, Recipe.create(levissima)),
+            new Water(liters, Recipe.create(levissima)),
 //            new Water(liters, Recipe.create(boario)),
 //            new Water(liters, Recipe.create(eva)),
 //            new Water(liters, Recipe.create(santanna)),
 //            new Water(liters, Recipe.create(norda)),
-            new Water(liters, Recipe.create(vera))
-//            new Water(liters, Recipe.create(vitasnella))
-//            new Water(liters, Recipe.create(sanbern))
-//            new Water(liters, Recipe.create(dolomiti))
+//            new Water(liters, Recipe.create(vera)),
+//            new Water(liters, Recipe.create(vitasnella)),
+            new Water(liters, Recipe.create(sanbern)),
+            new Water(liters, Recipe.create(dolomiti))
 //                new Water(liters,
 //                        new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
 //                                Arrays.asList(
@@ -128,12 +128,27 @@ public class FinderTest {
 
         System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
 
-//        log.warn("\n"+ BLACK_MEDIUM_TARGET.toString());
-
         log.warn("res:"+xxx.description());
         log.warn("distance:"+DistanceCalculator.distanceCoefficient(BLACK_MEDIUM_TARGET, xxx));
         log.warn("\ntarget:"+ BLACK_MEDIUM_TARGET.description());
         log.warn("\ncandidate:"+ xxx.description());
+    }
+
+
+    @Test public void findClosestChoco() {
+        /*
+        res:6,00L dolomiti, 14,00L levissima 1,40g calcium chloride (70,00 mg/L), 2,00g baking soda (100,00 mg/L), 1,40g gypsum (70,00 mg/L) { calcioMgPerL:58,67 mg, magnesioMgPerL:3,80 mg, sodioMgPerL:29,09 mg, bicarbonatiMgPerL:140,98 mg, solfatoMgPerL:57,56 mg, cloruroMgPerL:45,05 mg}
+        distance:21.415999996426805
+         */
+        long startTime = System.currentTimeMillis();
+        Optional<Water> xxx = finder.closest(BLACK_MEDIUM_TARGET, WATERS, MINERAL_ADDITIONS);
+
+        System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
+
+        log.warn("res:"+xxx.get().description());
+        log.warn("distance:"+DistanceCalculator.distanceCoefficient(BLACK_MEDIUM_TARGET, xxx.get()));
+        log.warn("\ntarget:"+ BLACK_MEDIUM_TARGET.description());
+        log.warn("\ncandidate:"+ xxx.get().description());
     }
 
     @Test public void findChocoDist() {
@@ -190,31 +205,6 @@ public class FinderTest {
         log.warn("\ntarget:"+ target.description());
         log.warn("\ncandidate:"+ xxx.description());
     }
-
-
-    @Test public void findClosestChoco() {
-        long startTime = System.currentTimeMillis();
-        Optional<Water> xxx = finder.closest(BLACK_MEDIUM_TARGET, WATERS, MINERAL_ADDITIONS);
-
-        System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
-
-        log.warn("res:"+xxx.get().description());
-        log.warn("distance:"+DistanceCalculator.distanceCoefficient(BLACK_MEDIUM_TARGET, xxx.get()));
-        log.warn("\ntarget:"+ BLACK_MEDIUM_TARGET.description());
-        log.warn("\ncandidate:"+ xxx.get().description());
-
-//        WATERS.stream().forEach(w -> {
-//            log.warn("w: " + w.toString());
-//            log.warn("delta w: " + DistanceCalculator.distanceCoefficient(blackMediumTarget, w)); });
-
-
-//        log.warn("res:\n" + xxx.stream()
-//                .map(w -> "xdelta " +
-//                        String.format("%.2f", DistanceCalculator.distanceCoefficient(blackMediumTarget, w))
-//                        + " = " + w.description())
-//                .collect(Collectors.joining("\n")));
-    }
-
     @Test public void profToString() {
         Profile p = TestUtils.target;
         System.out.println(p.toString());

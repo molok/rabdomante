@@ -5,11 +5,48 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
+import static alebolo.rabdomante.Profile.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ChocoSolver3Test {
     ChocoSolver solver = new ChocoSolver();
+
+    public static double liters = 10;
+
+    public static final Water BLACK_MEDIUM_TARGET = new Water(liters,
+            Recipe.create(
+                    new Profile(50, 10, 33, 142, 57, 44, "black medium")));
+
+    public static final List<Water> WATERS = Arrays.asList(
+            new Water(liters, Recipe.create(levissima)),
+            new Water(liters, Recipe.create(boario))
+//            new Water(liters, Recipe.create(eva)),
+//            new Water(liters, Recipe.create(santanna)),
+//            new Water(liters, Recipe.create(norda)),
+//            new Water(liters, Recipe.create(vera)),
+//            new Water(liters, Recipe.create(vitasnella)),
+//            new Water(liters, Recipe.create(sanbern))
+//            new Water(liters, Recipe.create(dolomiti))
+    );
+
+    public static final List<MineralAddition> MINERAL_ADDITIONS = Arrays.asList(
+            new MineralAddition(1, MineralProfile.CALCIUM_CHLORIDE),
+            new MineralAddition(1, MineralProfile.BAKING_SODA),
+            new MineralAddition(1, MineralProfile.GYPSUM),
+            new MineralAddition(1, MineralProfile.TABLE_SALT));
+
+    @Test public void costAndStuff() {
+        Water target = BLACK_MEDIUM_TARGET;
+        List<Water> w = WATERS;
+        Pair<Integer, Water> res = solver.solve2(target, w, MINERAL_ADDITIONS).get();
+        /* candidate:6,00L dolomiti, 14,00L levissima 1,40g calcium chloride (70,00 mg/L), 2,00g baking soda (100,00 mg/L), 1,40g gypsum (70,00 mg/L)
+        { calcioMgPerL:58,67 mg, magnesioMgPerL:3,80 mg, sodioMgPerL:29,09 mg, bicarbonatiMgPerL:140,98 mg, solfatoMgPerL:57,56 mg, cloruroMgPerL:45,05 mg} */
+        System.out.println("res:"+res.getValue1());
+        assertThat(res.getValue0()).isLessThanOrEqualTo(50);
+    }
 
     @Test public void costWithSalts() {
         Water target = new Water(20, Recipe.create(new Profile(0, 0, 10, 0, 0, 0, "test")));
