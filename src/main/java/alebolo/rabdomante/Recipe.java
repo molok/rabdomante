@@ -57,7 +57,7 @@ public class Recipe implements IMgPerLDouble {
     }
 
     public List<ProfileRatio> profilesRatio() { return profRatio; }
-    public Collection<MineralRatio> saltsRatio() { return salts.values(); }
+    public List<MineralRatio> saltsRatio() { return new ArrayList<>(salts.values()); }
 
     @Override
     public String toString() {

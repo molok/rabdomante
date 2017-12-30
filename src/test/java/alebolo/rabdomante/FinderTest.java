@@ -25,7 +25,7 @@ public class FinderTest {
     );
 
     /* TODO FIXME bug relativo a calcolo con litri!!! */
-    public static final double liters = 10;
+    public static final double liters = 20;
 
     public static final List<Water> WATERS = Arrays.asList(
 //            new Water(liters, Recipe.create(levissima)),
@@ -142,11 +142,31 @@ public class FinderTest {
 //                        new Profile(0, 0, 0, 0, 0, 0, "distillato più sale")));
         Water target = new Water(liters,
                 Recipe.create(
-                        new Profile(0, 0, 0, 0, 0, 5, "distillato più sale")));
+                        new Profile(0, 0, 0, 0, 0, 0, "distillato più sale")));
 
         List<Water> waters = Arrays.asList( new Water(liters, Recipe.create(Profile.distilled)));
         List<MineralAddition> minerals = Arrays.asList(
                 new MineralAddition(10, MineralProfile.FAKE_TABLE_SALT)
+        );
+        Water xxx = finder.closest(target, waters, minerals).get();
+
+        log.warn("res:"+xxx.description());
+        log.warn("distance:"+DistanceCalculator.distanceCoefficient(target, xxx));
+        log.warn("\ntarget:"+ target.description());
+        log.warn("\ncandidate:"+ xxx.description());
+    }
+
+    @Test public void findChocoDist2() {
+//        Water target = new Water(liters,
+//                Recipe.create(
+//                        new Profile(0, 0, 0, 0, 0, 0, "distillato più sale")));
+        Water target = new Water(liters,
+                Recipe.create(
+                        new Profile(0, 0, 10, 0, 0, 0, "distillato più sale")));
+
+        List<Water> waters = Arrays.asList( new Water(liters, Recipe.create(Profile.distilled)));
+        List<MineralAddition> minerals = Arrays.asList(
+//                new MineralAddition(10, MineralProfile.FAKE_TABLE_SALT)
         );
         Water xxx = finder.closest(target, waters, minerals).get();
 

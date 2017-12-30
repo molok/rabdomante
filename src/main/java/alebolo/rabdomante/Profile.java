@@ -40,6 +40,8 @@ class Profile implements IMgPerLDouble{
         this.hashCode = Objects.hash(calcio, magnesio, sodio, bicarbonati, solfato, cloruro); /* tutto immutabile, no problem */
     }
 
+
+
     public double calcioMgPerL() { return calcio; }
     public double magnesioMgPerL() { return magnesio; }
     public double sodioMgPerL() { return sodio; }

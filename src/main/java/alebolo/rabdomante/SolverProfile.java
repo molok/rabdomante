@@ -19,4 +19,12 @@ public class SolverProfile implements IMgPerL {
     private int getAnInt(double v) {
         return (int) (v * k);
     }
+
+    @Override
+    public String toString() {
+        return "SolverProfile{" +
+                "profile=" + profile +
+                ", k=" + k +
+                '}';
+    }
 }

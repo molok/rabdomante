@@ -22,4 +22,12 @@ public class SolverTarget implements IMgPerL {
     public int solfatoMgPerL() { return toInt(water.recipe().solfatoMgPerL()); }
 
     private int toInt(double v) { return (int) (v * k); }
+
+    @Override
+    public String toString() {
+        return "SolverTarget{" +
+                "water=" + water +
+                ", k=" + k +
+                '}';
+    }
 }

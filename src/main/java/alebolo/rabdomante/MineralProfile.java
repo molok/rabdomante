@@ -20,7 +20,7 @@ public class MineralProfile {
     public final static MineralProfile CHALK = new Builder().name("chalk").calcioRatio(0.4005).bicarbonateRatio(1.2198).build();
     public final static MineralProfile PICKLING_LIME = new Builder().name("pickling lime").calcioRatio(0.541).bicarbonateRatio(1.6455).build();
 
-    public final static MineralProfile FAKE_TABLE_SALT = new MineralProfile.Builder().name("tableSalt").sodioRatio(1).build();
+    public final static MineralProfile FAKE_TABLE_SALT = new MineralProfile.Builder().name("fakeTableSalt").sodioRatio(1).build();
 
     private MineralProfile(double sodioRatio, double cloruroRatio, double calcioRatio, double solfatoRatio, String name, double magnesiumRatio, double bicarbonateRatio) {
         this.sodio = sodioRatio;
