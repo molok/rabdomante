@@ -28,15 +28,31 @@ public class ChocoSolver3Test {
                 Recipe.create(
                         new Profile(0, 0, 0, 0, 0, 0, "distil"),
                         Arrays.asList(new MineralRatio(MineralProfile.FAKE_TABLE_SALT, 1.))));
-        Pair<Integer, Water> res = solver.solve2(target, Arrays.asList(cand), Arrays.asList()).get();
+        Pair<Integer, Water> __ = solver.solve2(target, Arrays.asList(cand), Arrays.asList()).get();
     }
 
     @Test public void costNoSalts() {
-        Water target = new Water(20, Recipe.create(Profile.distilled));
-        Water cand = new Water(20, Recipe.create(new Profile(0, 0, 10, 0, 0, 0, "test")));
+        Water target = new Water(30, Recipe.create(Profile.distilled));
+        Water cand = new Water(30, Recipe.create(new Profile(0, 0, 10, 0, 0, 0, "test")));
         Pair<Integer, Water> res = solver.solve2(target, Arrays.asList(cand), Arrays.asList()).get();
         assertThat(res.getValue1().isSameAs(cand)).isTrue();
         assertThat(res.getValue0()).isEqualTo(10);
+    }
+
+    @Test public void costNoSalts2() {
+        Water target = new Water(30, Recipe.create(Profile.distilled));
+        Water cand = new Water(30, Recipe.create(new Profile(0, 0, 20, 0, 0, 0, "test")));
+        Pair<Integer, Water> res = solver.solve2(target, Arrays.asList(cand), Arrays.asList()).get();
+        assertThat(res.getValue1().isSameAs(cand)).isTrue();
+        assertThat(res.getValue0()).isEqualTo(20);
+    }
+
+    @Test public void costNoSaltsSodioAndCalcio() {
+        Water target = new Water(30, Recipe.create(Profile.distilled));
+        Water cand = new Water(30, Recipe.create(new Profile(30, 0, 10, 0, 0, 0, "test")));
+        Pair<Integer, Water> res = solver.solve2(target, Arrays.asList(cand), Arrays.asList()).get();
+        assertThat(res.getValue1().isSameAs(cand)).isTrue();
+        assertThat(res.getValue0()).isEqualTo(40);
     }
 
     @Test public void cost0() {
