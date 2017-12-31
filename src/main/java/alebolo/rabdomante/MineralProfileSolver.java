@@ -12,4 +12,5 @@ public class MineralProfileSolver implements IMineralRatio {
     public int solfatoRatio() { return toInt(profile.solfatoRatio()); }
     public int cloruroRatio() { return toInt(profile.cloruroRatio()); }
     private int toInt(double v) { return (int) (v * k); }
+    public String name() { return profile.name(); }
 }

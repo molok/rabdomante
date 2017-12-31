@@ -21,8 +21,9 @@ public class ChocoSolver3Test {
                     new Profile(50, 10, 33, 142, 57, 44, "black medium")));
 
     public static final List<Water> WATERS = Arrays.asList(
-            new Water(liters, Recipe.create(levissima)),
-            new Water(liters, Recipe.create(boario))
+//            new Water(liters, Recipe.create(levissima)),
+//            new Water(liters, Recipe.create(boario)),
+            new Water(liters, Recipe.create(distilled))
 //            new Water(liters, Recipe.create(eva)),
 //            new Water(liters, Recipe.create(santanna)),
 //            new Water(liters, Recipe.create(norda)),
@@ -33,17 +34,49 @@ public class ChocoSolver3Test {
     );
 
     public static final List<MineralAddition> MINERAL_ADDITIONS = Arrays.asList(
-            new MineralAddition(1, MineralProfile.CALCIUM_CHLORIDE),
-            new MineralAddition(1, MineralProfile.BAKING_SODA),
-            new MineralAddition(1, MineralProfile.GYPSUM),
-            new MineralAddition(1, MineralProfile.TABLE_SALT));
+            new MineralAddition(10, MineralProfile.CALCIUM_CHLORIDE),
+            new MineralAddition(10, MineralProfile.BAKING_SODA),
+            new MineralAddition(10, MineralProfile.GYPSUM),
+            new MineralAddition(10, MineralProfile.TABLE_SALT)
+    );
+
+    @Test public void findClosestMine() {
+        Finder finder = new Finder();
+        long startTime = System.currentTimeMillis();
+        Water xxx = finder.closest2(BLACK_MEDIUM_TARGET, WATERS, MINERAL_ADDITIONS);
+
+        System.out.println("Execution took " + (System.currentTimeMillis() - startTime) + "ms");
+
+        System.out.println("res:"+xxx.description());
+        System.out.println("distance:"+DistanceCalculator.distanceCoefficient(BLACK_MEDIUM_TARGET, xxx));
+        System.out.println("\ntarget:"+ BLACK_MEDIUM_TARGET.description());
+        System.out.println("\ncandidate:"+ xxx.description());
+    }
 
     @Test public void costAndStuff() {
         Water target = BLACK_MEDIUM_TARGET;
         List<Water> w = WATERS;
         Pair<Integer, Water> res = solver.solve2(target, w, MINERAL_ADDITIONS).get();
+
+        /*
+        cost = 47, solution = [levissima = 7, boario = 3], [tableSalt mg/L = 71]
+mydistance:47.7272, w:3,00L boario, 7,00L levissima 0,71g tableSalt (71,00 mg/L)
+{ calcioMgPerL:54,00 mg, magnesioMgPerL:13,19 mg, sodioMgPerL:30,76 mg, bicarbonatiMgPerL:130,87 mg, solfatoMgPerL:83,90 mg, cloruroMgPerL:44,27 mg}
+         */
+
+
         /* candidate:6,00L dolomiti, 14,00L levissima 1,40g calcium chloride (70,00 mg/L), 2,00g baking soda (100,00 mg/L), 1,40g gypsum (70,00 mg/L)
         { calcioMgPerL:58,67 mg, magnesioMgPerL:3,80 mg, sodioMgPerL:29,09 mg, bicarbonatiMgPerL:140,98 mg, solfatoMgPerL:57,56 mg, cloruroMgPerL:45,05 mg} */
+
+        /*
+         candidate:6,00L boario, 14,00L levissima 1,40g tableSalt (70,00 mg/L)
+        { calcioMgPerL:54,00 mg, magnesioMgPerL:13,19 mg, sodioMgPerL:30,37 mg, bicarbonatiMgPerL:130,87 mg, solfatoMgPerL:83,90 mg, cloruroMgPerL:43,66 mg}
+         */
+
+        /*
+        mydistance:115.275, w:5,00L boario, 15,00L levissima
+        { calcioMgPerL:48,50 mg, magnesioMgPerL:11,28 mg, sodioMgPerL:2,68 mg, bicarbonatiMgPerL:118,58 mg, solfatoMgPerL:72,75 mg, cloruroMgPerL:1,00 mg}
+         */
         System.out.println("res:"+res.getValue1());
         assertThat(res.getValue0()).isLessThanOrEqualTo(50);
     }

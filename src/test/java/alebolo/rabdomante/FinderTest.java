@@ -14,10 +14,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.withinPercentage;
 
 public class FinderTest {
     public static final List<MineralAddition> MINERAL_ADDITIONS = Arrays.asList(
-            new MineralAddition(1000, MineralProfile.CALCIUM_CHLORIDE),
-            new MineralAddition(1000, MineralProfile.BAKING_SODA),
-            new MineralAddition(1000, MineralProfile.GYPSUM),
-            new MineralAddition(1000, MineralProfile.TABLE_SALT)
+//            new MineralAddition(1000, MineralProfile.CALCIUM_CHLORIDE),
+//            new MineralAddition(1000, MineralProfile.BAKING_SODA),
+            new MineralAddition(10, MineralProfile.GYPSUM),
+            new MineralAddition(10, MineralProfile.TABLE_SALT)
 //            new MineralAddition(1000, MineralProfile.ESPOM_SALT),
 //            new MineralAddition(1000, MineralProfile.MAGNESIUM_CHLORIDE),
 //            new MineralAddition(1000, MineralProfile.CHALK),
@@ -29,14 +29,14 @@ public class FinderTest {
 
     public static final List<Water> WATERS = Arrays.asList(
             new Water(liters, Recipe.create(levissima)),
-//            new Water(liters, Recipe.create(boario)),
+            new Water(liters, Recipe.create(boario))
 //            new Water(liters, Recipe.create(eva)),
 //            new Water(liters, Recipe.create(santanna)),
 //            new Water(liters, Recipe.create(norda)),
 //            new Water(liters, Recipe.create(vera)),
 //            new Water(liters, Recipe.create(vitasnella)),
-            new Water(liters, Recipe.create(sanbern)),
-            new Water(liters, Recipe.create(dolomiti))
+//            new Water(liters, Recipe.create(sanbern)),
+//            new Water(liters, Recipe.create(dolomiti))
 //                new Water(liters,
 //                        new Recipe(Arrays.asList(new ProfileRatio(vera, 1.0)),
 //                                Arrays.asList(
