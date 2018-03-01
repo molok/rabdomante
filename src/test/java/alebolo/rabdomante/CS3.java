@@ -49,44 +49,22 @@ public class CS3 {
 
     @Test public void x() {
         Model model = new Model("waterModel");
-        int targetL = 10;
-
-        Map<Water, IntVar> wvs = new HashMap<>();
-        waters.stream()
-              .map(w -> new HashMap.SimpleImmutableEntry<>
-                            (w, model.intVar(w.nome + " (L)", range(targetL, 10))))
-              .forEach(e -> wvs.put(e.getKey(), e.getValue()));
-
+        int targetLiters = 10;
         Water target = yellowDry;
 
-        Map<Salt, IntVar> ss = new HashMap<>();
-        salts.stream()
-             .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", 0, 100)))
-             .forEach(s -> ss.put(s.getValue0(), s.getValue1()));
+        Map<Water, IntVar> waterVars = waterVars(model, waters, targetLiters);
+        Map<Salt, IntVar> saltVars = saltVars(model, salts);
 
-        IntVar zero = model.intVar(0);
-        IntVar sumCaWs = waterSum(wvs, w1 -> w1.ca).add(sumSalt(ss, s -> s.ca).orElse(zero)).intVar();
-        IntVar sumMgWs = waterSum(wvs, w1 -> w1.mg).add(sumSalt(ss, s -> s.mg).orElse(zero)).intVar();
-        IntVar sumNaWs = waterSum(wvs, w1 -> w1.na).add(sumSalt(ss, s -> s.na).orElse(zero)).intVar();
-        IntVar sumSo4Ws = waterSum(wvs, w1 -> w1.so4).add(sumSalt(ss, s -> s.so4).orElse(zero)).intVar();
-        IntVar sumClWs = waterSum(wvs, w1 -> w1.cl).add(sumSalt(ss, s -> s.cl).orElse(zero)).intVar();
-        IntVar sumHco3Ws = waterSum(wvs, w1 -> w1.hco3).add(sumSalt(ss, s -> s.hco3).orElse(zero)).intVar();
+        IntVar cost = cost(model, targetLiters, target, waterVars, saltVars);
 
-        IntVar cost = error(sumCaWs, target.ca * targetL)
-                 .add(error(sumMgWs, target.mg * targetL))
-                 .add(error(sumNaWs, target.na * targetL))
-                 .add(error(sumSo4Ws, target.so4 * targetL))
-                 .add(error(sumClWs, target.cl * targetL))
-                 .add(error(sumHco3Ws, target.hco3 * targetL))
-                 .intVar();
-
-        model.sum(wvs.values().toArray(new IntVar[0]), "=", targetL).post();
+        /* la somma delle acque deve corrispondere al totale dei litri necessari */
+        model.sum(waterVars.values().toArray(new IntVar[0]), "=", targetLiters).post();
 
         model.setObjective(Model.MINIMIZE, cost);
         Solver solver = model.getSolver();
 
-        List<IntVar> toWatch = new ArrayList<>(wvs.values());
-        toWatch.addAll(ss.values());
+        List<IntVar> toWatch = new ArrayList<>(waterVars.values());
+        toWatch.addAll(saltVars.values());
 
         while(solver.solve()) {
 //            solver.printStatistics();
@@ -94,15 +72,50 @@ public class CS3 {
             toWatch.stream().filter(w -> w.getValue() != 0).forEach(w -> System.out.println(":"+w.toString()));
             System.out.println("target:" + target.toString());
             System.out.printf(
-                    "Ca (mg/L): " + weightedSum(wvs, w -> w.ca, ss, s -> s.ca, targetL) +
-                            ",\nMg (mg/L): " + weightedSum(wvs, w -> w.mg, ss, s -> s.mg, targetL) +
-                            ",\nNa (mg/L): " + weightedSum(wvs, w -> w.na, ss, s -> s.na, targetL) +
-                            ",\nSO4 (mg/L): " + weightedSum(wvs, w -> w.so4, ss, s -> s.so4, targetL) +
-                            ",\nCl (mg/L): " + weightedSum(wvs, w -> w.cl, ss, s -> s.cl, targetL) +
-                            ",\nHCO3 (mg/L): " + weightedSum(wvs, w -> w.hco3, ss, s -> s.hco3, targetL) +
-                            "\n");
+                   "Ca (mg/L): "   + weightedSum(waterVars, w -> w.ca, saltVars, s -> s.ca, targetLiters) +
+                ",\nMg (mg/L): "   + weightedSum(waterVars, w -> w.mg, saltVars, s -> s.mg, targetLiters) +
+                ",\nNa (mg/L): "   + weightedSum(waterVars, w -> w.na, saltVars, s -> s.na, targetLiters) +
+                ",\nSO4 (mg/L): "  + weightedSum(waterVars, w -> w.so4, saltVars, s -> s.so4, targetLiters) +
+                ",\nCl (mg/L): "   + weightedSum(waterVars, w -> w.cl, saltVars, s -> s.cl, targetLiters) +
+                ",\nHCO3 (mg/L): " + weightedSum(waterVars, w -> w.hco3, saltVars, s -> s.hco3, targetLiters) +
+                "\n");
         }
+    }
 
+    private IntVar cost(Model model, int targetLiters, Water target, Map<Water, IntVar> waterVars, Map<Salt, IntVar> saltVars) {
+        IntVar zero = model.intVar(0);
+        IntVar sumCaWs = waterSum(waterVars, w1 -> w1.ca).add(sumSalt(saltVars, s -> s.ca).orElse(zero)).intVar();
+        IntVar sumMgWs = waterSum(waterVars, w1 -> w1.mg).add(sumSalt(saltVars, s -> s.mg).orElse(zero)).intVar();
+        IntVar sumNaWs = waterSum(waterVars, w1 -> w1.na).add(sumSalt(saltVars, s -> s.na).orElse(zero)).intVar();
+        IntVar sumSo4Ws = waterSum(waterVars, w1 -> w1.so4).add(sumSalt(saltVars, s -> s.so4).orElse(zero)).intVar();
+        IntVar sumClWs = waterSum(waterVars, w1 -> w1.cl).add(sumSalt(saltVars, s -> s.cl).orElse(zero)).intVar();
+        IntVar sumHco3Ws = waterSum(waterVars, w1 -> w1.hco3).add(sumSalt(saltVars, s -> s.hco3).orElse(zero)).intVar();
+
+        return error(sumCaWs, target.ca * targetLiters)
+                 .add(error(sumMgWs, target.mg * targetLiters))
+                 .add(error(sumNaWs, target.na * targetLiters))
+                 .add(error(sumSo4Ws, target.so4 * targetLiters))
+                 .add(error(sumClWs, target.cl * targetLiters))
+                 .add(error(sumHco3Ws, target.hco3 * targetLiters))
+                 .intVar();
+    }
+
+    private Map<Salt, IntVar> saltVars(Model model, List<Salt> salts) {
+        Map<Salt, IntVar> saltVars = new HashMap<>();
+         /* TODO far impostare la disponibilità di sali (ub)*/
+        salts.stream()
+             .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", 0, 100)))
+             .forEach(s -> saltVars.put(s.getValue0(), s.getValue1()));
+        return saltVars;
+    }
+
+    private Map<Water, IntVar> waterVars(Model model, List<Water> waters, int targetLiters) {
+        Map<Water, IntVar> waterVars = new HashMap<>();
+        waters.stream()
+              .map(w -> new HashMap.SimpleImmutableEntry<>
+                            (w, model.intVar(w.nome + " (L)", range(targetLiters, 10))))
+              .forEach(e -> waterVars.put(e.getKey(), e.getValue()));
+        return waterVars;
     }
 
     private IntVar error(IntVar actual, int expected) {
@@ -113,13 +126,14 @@ public class CS3 {
         assertThat(range(100, 10)).containsExactly(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100);
         assertThat(range(100, 1)).hasSize(101);
         assertThat(range(200, 1)).hasSize(101);
+        assertThat(range(10, 10)).hasSize(11);
     }
 
     /** ritorna un range con massimo targetL e step ogni perc, ad esempio:
         range(100, 10)  -> [0, 10, 20, 30, 40, 50, 60, 70, 80 , 90, 100]
         range(100, 50)  -> [0, 50, 100]
         range(100, 100) -> [0, 100]
-        range(10, 10)   -> [1, 2, 3, 4 5, 6, 7, 8, 9, 10]
+        range(10, 10)   -> [0, 1, 2, 3, 4 5, 6, 7, 8, 9, 10]
      */
     static private int[] range(int targetL, int perc) {
         int step = Math.max(1, (targetL * perc) / 100);
