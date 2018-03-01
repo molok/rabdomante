@@ -13,47 +13,60 @@ import org.junit.runners.JUnit4;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JUnit4.class)
 public class CS3 {
-    Water santanna = new Water(10, 0, 1, 8, 0, 26, "santanna");
-    Water milano = new Water(70, 15, 12, 42, 27, 228, "milano");
-    Water boario = new Water(131, 40, 5, 240, 4, 303, "boardio");
-    Water levissima = new Water(21, 2, 2, 17, 0, 57, "levissima");
-    Water eva = new Water(10, 4, 0, 2, 0, 48, "eva");
-    Water norda = new Water(11, 3, 2, 6, 1, 52, "norda");
-    Water vera = new Water(35, 12, 2, 19, 3, 148, "vera");
-    Water vitasnella = new Water(86, 26, 3, 83, 2, 301, "vitasnella");
-    Water dolomiti = new Water(8, 9, 1, 22, 1, 95, "dolomiti");
-    Water sanbern = new Water(9, 1, 1, 2, 1, 30, "sanberardo");
-    Water distilled = new Water(0, 0, 0, 0, 0, 0, "distillata");
+    WaterProfile santanna = new WaterProfile(10, 0, 1, 8, 0, 26, "santanna");
+    WaterProfile milano = new WaterProfile(70, 15, 12, 42, 27, 228, "milano");
+    WaterProfile boario = new WaterProfile(131, 40, 5, 240, 4, 303, "boardio");
+    WaterProfile levissima = new WaterProfile(21, 2, 2, 17, 0, 57, "levissima");
+    WaterProfile eva = new WaterProfile(10, 4, 0, 2, 0, 48, "eva");
+    WaterProfile norda = new WaterProfile(11, 3, 2, 6, 1, 52, "norda");
+    WaterProfile vera = new WaterProfile(35, 12, 2, 19, 3, 148, "vera");
+    WaterProfile vitasnella = new WaterProfile(86, 26, 3, 83, 2, 301, "vitasnella");
+    WaterProfile dolomiti = new WaterProfile(8, 9, 1, 22, 1, 95, "dolomiti");
+    WaterProfile sanbern = new WaterProfile(9, 1, 1, 2, 1, 30, "sanberardo");
+    WaterProfile distilled = new WaterProfile(0, 0, 0, 0, 0, 0, "distillata");
 
-    Water yellowDry = new Water(50, 10, 5, 105, 45, 0, "yellow dry");
+    WaterProfile yellowDry = new WaterProfile(50, 10, 5, 105, 45, 0, "yellow dry");
 
-    Salt gypsum = new Salt(23, 0, 0, 56, 0, 0, "gypsum");
-    Salt tableSalt = new Salt(0, 0, 39, 0, 62, 0, "tableSalt");
+    SaltProfile gypsum = new SaltProfile(23, 0, 0, 56, 0, 0, "gypsum");
+    SaltProfile tableSalt = new SaltProfile(0, 0, 39, 0, 62, 0, "tableSalt");
+    SaltProfile calciumChloride = new SaltProfile(36, 0, 0, 0, 64, 0, "calcium chloride");
+    SaltProfile magnesiumChloride = new SaltProfile(0, 12, 0, 0, 35, 0, "magnesium chloride");
+    SaltProfile espomSalt = new SaltProfile(0, 1, 0, 0, 35, 0, "epsom salt");
+    SaltProfile bakingSoda = new SaltProfile(0, 0, 27, 0, 0, 72, "baking soda");
+    SaltProfile piclingLime = new SaltProfile(45, 0, 0, 0, 0, 164, "pickling lime");
 
-    /*
-    public final static MineralProfile CALCIUM_CHLORIDE = new MineralProfile.Builder().name("calcium chloride").calcioRatio(0.3611).cloruroRatio(0.6389).build();
-    public final static MineralProfile ESPOM_SALT = new Builder().name("epsom salt").magnesiumRatio(0.0986).solfatoRatio(0.3487).build();
-    public final static MineralProfile MAGNESIUM_CHLORIDE = new MineralProfile.Builder().name("magnesium chloride").magnesiumRatio(0.1195).cloruroRatio(0.3487).build();
-    public final static MineralProfile BAKING_SODA = new Builder().name("baking soda").sodioRatio(0.2737).bicarbonateRatio(0.7263).build();
-    public final static MineralProfile CHALK = new Builder().name("chalk").calcioRatio(0.4005).bicarbonateRatio(1.2198).build();
-    public final static MineralProfile PICKLING_LIME = new Builder().name("pickling lime").calcioRatio(0.541).bicarbonateRatio(1.6455).build();
-    */
+    @Test public void antani() {
+        List<Salt> mySalts = Arrays.asList(
+                new Salt(gypsum, 100),
+                new Salt(tableSalt, 1000),
+                new Salt(bakingSoda, 1000));
 
-    List<Water> waters = Arrays.asList(santanna, milano, boario, levissima, eva, norda, vera, vitasnella, dolomiti, sanbern/*, distilled*/);
-    List<Salt> salts = Arrays.asList(gypsum, tableSalt);
+        List<Water> myWater = Arrays.asList(
+                new Water(milano, Integer.MAX_VALUE),
+                new Water(santanna, 1),
+                new Water(sanbern, 1));
 
-    @Test public void x() {
+        Water target = new Water(yellowDry, 20);
+
+        Optional<Recipex> recipe = solve(target, mySalts, myWater);
+        assertThat(recipe.isPresent()).isTrue();
+        System.out.println(recipe.toString());
+        System.out.println(target.toString());
+    }
+
+    private Optional<Recipex> solve(Water target, List<Salt> mySalts, List<Water> myWater) {
         Model model = new Model("waterModel");
-        int targetLiters = 10;
-        Water target = yellowDry;
 
-        Map<Water, IntVar> waterVars = waterVars(model, waters, targetLiters);
-        Map<Salt, IntVar> saltVars = saltVars(model, salts);
+        int targetLiters = target.liters;
+
+        Map<WaterProfile, IntVar> waterVars = waterVars(model, myWater, targetLiters);
+        Map<SaltProfile, IntVar> saltVars = saltVars(model, mySalts);
 
         IntVar cost = cost(model, targetLiters, target, waterVars, saltVars);
 
@@ -66,23 +79,60 @@ public class CS3 {
         List<IntVar> toWatch = new ArrayList<>(waterVars.values());
         toWatch.addAll(saltVars.values());
 
+        Recipex recipe = null;
         while(solver.solve()) {
-//            solver.printStatistics();
-            System.out.println("\n\ncost:"+cost.toString());
-            toWatch.stream().filter(w -> w.getValue() != 0).forEach(w -> System.out.println(":"+w.toString()));
-            System.out.println("target:" + target.toString());
-            System.out.printf(
-                   "Ca (mg/L): "   + weightedSum(waterVars, w -> w.ca, saltVars, s -> s.ca, targetLiters) +
-                ",\nMg (mg/L): "   + weightedSum(waterVars, w -> w.mg, saltVars, s -> s.mg, targetLiters) +
-                ",\nNa (mg/L): "   + weightedSum(waterVars, w -> w.na, saltVars, s -> s.na, targetLiters) +
-                ",\nSO4 (mg/L): "  + weightedSum(waterVars, w -> w.so4, saltVars, s -> s.so4, targetLiters) +
-                ",\nCl (mg/L): "   + weightedSum(waterVars, w -> w.cl, saltVars, s -> s.cl, targetLiters) +
-                ",\nHCO3 (mg/L): " + weightedSum(waterVars, w -> w.hco3, saltVars, s -> s.hco3, targetLiters) +
-                "\n");
+            recipe = new Recipex(
+                waterVars.entrySet().stream()
+                        .filter(wv -> wv.getValue().getValue() != 0)
+                        .map(wv -> new Water(wv.getKey(), wv.getValue().getValue()))
+                        .collect(Collectors.toList()),
+                saltVars.entrySet().stream()
+                        .filter(sv -> sv.getValue().getValue() != 0)
+                        .map(sv -> new Salt(sv.getKey(), sv.getValue().getValue()))
+                        .collect(Collectors.toList()),
+                cost.getValue()
+            );
         }
+
+        return Optional.ofNullable(recipe);
     }
 
-    private IntVar cost(Model model, int targetLiters, Water target, Map<Water, IntVar> waterVars, Map<Salt, IntVar> saltVars) {
+    @Test public void x() {
+//        Model model = new Model("waterModel");
+//        int targetLiters = 10;
+//        Water target = yellowDry;
+//
+//        Map<Water, IntVar> waterVars = waterVars(model, waters, targetLiters);
+//        Map<SaltProfile, IntVar> saltVars = saltVars(model, salts);
+//
+//        IntVar cost = cost(model, targetLiters, target, waterVars, saltVars);
+//
+//        /* la somma delle acque deve corrispondere al totale dei litri necessari */
+//        model.sum(waterVars.values().toArray(new IntVar[0]), "=", targetLiters).post();
+//
+//        model.setObjective(Model.MINIMIZE, cost);
+//        Solver solver = model.getSolver();
+//
+//        List<IntVar> toWatch = new ArrayList<>(waterVars.values());
+//        toWatch.addAll(saltVars.values());
+//
+//        while(solver.solve()) {
+////            solver.printStatistics();
+//            System.out.println("\n\ncost:"+cost.toString());
+//            toWatch.stream().filter(w -> w.getValue() != 0).forEach(w -> System.out.println(":"+w.toString()));
+//            System.out.println("target:" + target.toString());
+//            System.out.printf(
+//                   "Ca (mg/L): "   + weightedSum(waterVars, w -> w.ca, saltVars, s -> s.ca, targetLiters) +
+//                ",\nMg (mg/L): "   + weightedSum(waterVars, w -> w.mg, saltVars, s -> s.mg, targetLiters) +
+//                ",\nNa (mg/L): "   + weightedSum(waterVars, w -> w.na, saltVars, s -> s.na, targetLiters) +
+//                ",\nSO4 (mg/L): "  + weightedSum(waterVars, w -> w.so4, saltVars, s -> s.so4, targetLiters) +
+//                ",\nCl (mg/L): "   + weightedSum(waterVars, w -> w.cl, saltVars, s -> s.cl, targetLiters) +
+//                ",\nHCO3 (mg/L): " + weightedSum(waterVars, w -> w.hco3, saltVars, s -> s.hco3, targetLiters) +
+//                "\n");
+//        }
+    }
+
+    private IntVar cost(Model model, int targetLiters, WaterProfile target, Map<WaterProfile, IntVar> waterVars, Map<SaltProfile, IntVar> saltVars) {
         IntVar zero = model.intVar(0);
         IntVar sumCaWs = waterSum(waterVars, w1 -> w1.ca).add(sumSalt(saltVars, s -> s.ca).orElse(zero)).intVar();
         IntVar sumMgWs = waterSum(waterVars, w1 -> w1.mg).add(sumSalt(saltVars, s -> s.mg).orElse(zero)).intVar();
@@ -100,20 +150,20 @@ public class CS3 {
                  .intVar();
     }
 
-    private Map<Salt, IntVar> saltVars(Model model, List<Salt> salts) {
-        Map<Salt, IntVar> saltVars = new HashMap<>();
+    private Map<SaltProfile, IntVar> saltVars(Model model, List<Salt> salts) {
+        Map<SaltProfile, IntVar> saltVars = new HashMap<>();
          /* TODO far impostare la disponibilità di sali (ub)*/
         salts.stream()
-             .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", 0, 100)))
+             .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", 0, s.dg)))
              .forEach(s -> saltVars.put(s.getValue0(), s.getValue1()));
         return saltVars;
     }
 
-    private Map<Water, IntVar> waterVars(Model model, List<Water> waters, int targetLiters) {
-        Map<Water, IntVar> waterVars = new HashMap<>();
+    private Map<WaterProfile, IntVar> waterVars(Model model, List<Water> waters, int targetLiters) {
+        Map<WaterProfile, IntVar> waterVars = new HashMap<>();
         waters.stream()
               .map(w -> new HashMap.SimpleImmutableEntry<>
-                            (w, model.intVar(w.nome + " (L)", range(targetLiters, 10))))
+                            (w, model.intVar(w.nome + " (L)", range(Math.min(targetLiters, w.liters), 10))))
               .forEach(e -> waterVars.put(e.getKey(), e.getValue()));
         return waterVars;
     }
@@ -142,12 +192,12 @@ public class CS3 {
                         new IntegerSequence.Range(0, targetL, step ).iterator()));
     }
 
-    private Optional<IntVar> sumSalt(Map<Salt, IntVar> ss, Function<Salt, Integer> f) {
+    private Optional<IntVar> sumSalt(Map<SaltProfile, IntVar> ss, Function<SaltProfile, Integer> f) {
         return ss.entrySet().stream().map(s -> s.getValue().mul(f.apply(s.getKey())).intVar())
                              .reduce((a, b) -> a.add(b).intVar());
     }
 
-    private int weightedSum(Map<Water, IntVar> wvs, Function<Water, Integer> getter, Map<Salt, IntVar> ss, Function<Salt, Integer> sgetter, int liters) {
+    private int weightedSum(Map<WaterProfile, IntVar> wvs, Function<WaterProfile, Integer> getter, Map<SaltProfile, IntVar> ss, Function<SaltProfile, Integer> sgetter, int liters) {
         int wSum = wvs.entrySet().stream()
                 .mapToInt(wv -> wv.getValue().getValue() * getter.apply(wv.getKey()))
                 .sum();
@@ -157,46 +207,22 @@ public class CS3 {
         return (wSum + sSum)/ liters;
     }
 
-    private IntVar waterSum(Map<Water, IntVar> wvs, Function<Water, Integer> getter) {
+    private IntVar waterSum(Map<WaterProfile, IntVar> wvs, Function<WaterProfile, Integer> getter) {
         return wvs.entrySet().stream()
                 .map(wv -> wv.getValue().mul(getter.apply(wv.getKey())).intVar())
                 .reduce((a, b) -> a.add(b).intVar()).get();
     }
 
-    class Water {
-        private final int ca;
-        private final int mg;
-        private final int na;
-        private final int so4;
-        private final int cl;
-        private final int hco3;
-        private final String nome;
+    class WaterProfile {
+        final int ca;
+        final int mg;
+        final int na;
+        final int so4;
+        final int cl;
+        final int hco3;
+        final String nome;
 
-        Water(int ca, int mg, int na, int so4, int cl, int hco3, String nome) {
-            this.ca = ca;
-            this.mg = mg;
-            this.na = na;
-            this.so4 = so4;
-            this.cl = cl;
-            this.hco3 = hco3;
-            this.nome = nome;
-        }
-        @Override
-        public String toString() {
-            return "Water{" + "ca=" + ca + ", mg=" + mg + ", na=" + na + ", so4=" + so4 + ", cl=" + cl + ", hco3=" + hco3 + '}';
-        }
-    }
-
-    class Salt {
-        private final int ca;
-        private final int mg;
-        private final int na;
-        private final int so4;
-        private final int cl;
-        private final int hco3;
-        private final String nome;
-
-        Salt(int ca, int mg, int na, int so4, int cl, int hco3, String nome) {
+        WaterProfile(int ca, int mg, int na, int so4, int cl, int hco3, String nome) {
             this.ca = ca;
             this.mg = mg;
             this.na = na;
@@ -206,11 +232,151 @@ public class CS3 {
             this.nome = nome;
         }
 
-        @Override
-        public String toString() {
-            return "Salt{" + "ca=" + ca + ", mg=" + mg + ", na=" + na + ", so4=" + so4 + ", cl=" + cl + ", hco3=" + hco3 + '}';
+        @Override public String toString() {
+            return "Water{" +
+                    "ca=" + ca +
+                    ", mg=" + mg +
+                    ", na=" + na +
+                    ", so4=" + so4 +
+                    ", cl=" + cl +
+                    ", hco3=" + hco3 +
+                    ", nome='" + nome + '\'' +
+                    '}';
         }
     }
 
+    class SaltProfile {
+        final int ca;
+        final int mg;
+        final int na;
+        final int so4;
+        final int cl;
+        final int hco3;
+        final String nome;
 
+        SaltProfile(int ca, int mg, int na, int so4, int cl, int hco3, String nome) {
+            this.ca = ca;
+            this.mg = mg;
+            this.na = na;
+            this.so4 = so4;
+            this.cl = cl;
+            this.hco3 = hco3;
+            this.nome = nome;
+        }
+
+        @Override
+        public String toString() {
+            return "SaltProfile{" +
+                    "ca=" + ca +
+                    ", mg=" + mg +
+                    ", na=" + na +
+                    ", so4=" + so4 +
+                    ", cl=" + cl +
+                    ", hco3=" + hco3 +
+                    ", nome='" + nome + '\'' +
+                    '}';
+        }
+    }
+
+    class Water extends WaterProfile {
+        private final int liters;
+        Water(WaterProfile salt, int liters) {
+            this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, liters);
+        }
+        Water(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int liters) {
+            super(ca, mg, na, so4, cl, hco3, nome);
+            this.liters = liters;
+        }
+
+        @Override
+        public String toString() {
+            return "AvailableWater{" +
+                    "ca=" + ca +
+                    ", mg=" + mg +
+                    ", na=" + na +
+                    ", so4=" + so4 +
+                    ", cl=" + cl +
+                    ", hco3=" + hco3 +
+                    ", nome='" + nome + '\'' +
+                    ", liters=" + liters +
+                    '}';
+        }
+    }
+
+    class Salt extends SaltProfile {
+        private final int dg;
+        Salt(SaltProfile salt, int dg) {
+            this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, dg);
+        }
+        Salt(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int dg) {
+            super(ca, mg, na, so4, cl, hco3, nome);
+            this.dg = dg;
+        }
+
+        @Override
+        public String toString() {
+            return "Salt{" +
+                    "ca=" + ca +
+                    ", mg=" + mg +
+                    ", na=" + na +
+                    ", so4=" + so4 +
+                    ", cl=" + cl +
+                    ", hco3=" + hco3 +
+                    ", nome='" + nome + '\'' +
+                    ", dg=" + dg +
+                    '}';
+        }
+    }
+
+    @Test public void testRecipe() {
+        Recipex recipe = new Recipex(Arrays.asList(new Water(santanna, 10)), Arrays.asList(), 0);
+        System.out.println(recipe);
+    }
+
+    private class Recipex {
+        private final List<Water> waters;
+        private final List<Salt> salts;
+        private int distanceFromTarget;
+
+        public Recipex(List<Water> waters, List<Salt> salts, int distanceFromTarget) {
+            this.waters = waters;
+            this.salts = salts;
+            this.distanceFromTarget = distanceFromTarget;
+        }
+
+        @Override
+        public String toString() {
+            return "Recipex{" +
+                    "waters=" + ingredientsToString(waters) +
+                    ",\nsalts=" + ingredientsToString(salts) +
+                    ",\ndistanceFromTarget=" + distanceFromTarget +
+                    ", mix: \n" + mix() +
+                    '}';
+        }
+
+        private String mix() {
+            int targetLiters = waters.stream().mapToInt(w -> w.liters).sum();
+            return "Ca (mg/L): "   + weightedSum(waters, w -> w.ca, salts, s -> s.ca, targetLiters) +
+                ",\nMg (mg/L): "   + weightedSum(waters, w -> w.mg, salts, s -> s.mg, targetLiters) +
+                ",\nNa (mg/L): "   + weightedSum(waters, w -> w.na, salts, s -> s.na, targetLiters) +
+                ",\nSO4 (mg/L): "  + weightedSum(waters, w -> w.so4, salts, s -> s.so4, targetLiters) +
+                ",\nCl (mg/L): "   + weightedSum(waters, w -> w.cl, salts, s -> s.cl, targetLiters) +
+                ",\nHCO3 (mg/L): " + weightedSum(waters, w -> w.hco3, salts, s -> s.hco3, targetLiters);
+
+        }
+
+        private int weightedSum(List<Water> wvs, Function<Water, Integer> waterGetter, List<Salt> ss, Function<Salt, Integer> saltGetter, int liters) {
+            int wSum = wvs.stream().mapToInt(w -> waterGetter.apply(w) * w.liters).sum();
+            int sSum = ss.stream().mapToInt(w -> saltGetter.apply(w) * w.dg).sum();
+            return (wSum + sSum)/ liters;
+        }
+
+        private String ingredientsToString(List<? extends Object> list) {
+            return list.stream()
+                .map(e -> "\n" + e.toString())
+                .collect(Collectors.joining()) + "\n";
+
+
+        }
+    }
 }
