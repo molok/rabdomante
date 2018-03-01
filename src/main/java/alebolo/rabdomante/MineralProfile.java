@@ -12,6 +12,11 @@ public class MineralProfile {
     private final String name;
 
     public final static MineralProfile GYPSUM = new MineralProfile.Builder().name("gypsum").calcioRatio(0.2328).solfatoRatio(0.558).build();
+    /*
+    1g => 0.39g
+    1000mg => 390mg
+    100mg => 39gm
+    * */
     public final static MineralProfile TABLE_SALT = new MineralProfile.Builder().name("tableSalt").sodioRatio(0.3934).cloruroRatio(0.6066).build();
     public final static MineralProfile CALCIUM_CHLORIDE = new MineralProfile.Builder().name("calcium chloride").calcioRatio(0.3611).cloruroRatio(0.6389).build();
     public final static MineralProfile ESPOM_SALT = new Builder().name("epsom salt").magnesiumRatio(0.0986).solfatoRatio(0.3487).build();

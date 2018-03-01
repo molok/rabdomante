@@ -29,6 +29,9 @@ public class CS3 {
     Water dolomiti = new Water(8, 9, 1, 22, 1, 95, "dolomiti");
     Water sanbern = new Water(9, 1, 1, 2, 1, 30, "sanberardo");
     Water distilled = new Water(0, 0, 0, 0, 0, 0, "distillata");
+
+    Water yellowDry = new Water(50, 10, 5, 105, 45, 0, "yellow dry");
+
     Salt gypsum = new Salt(23, 0, 0, 56, 0, 0, "gypsum");
     Salt tableSalt = new Salt(0, 0, 39, 0, 62, 0, "tableSalt");
 
@@ -41,19 +44,12 @@ public class CS3 {
     public final static MineralProfile PICKLING_LIME = new Builder().name("pickling lime").calcioRatio(0.541).bicarbonateRatio(1.6455).build();
     */
 
-    List<Water> waters = Arrays.asList(santanna, milano, boario, levissima, eva, norda, vera, vitasnella, dolomiti, sanbern, distilled);
+    List<Water> waters = Arrays.asList(santanna, milano, boario, levissima, eva, norda, vera, vitasnella, dolomiti, sanbern/*, distilled*/);
     List<Salt> salts = Arrays.asList(gypsum, tableSalt);
-
-//    List<Water> waters = Arrays.asList(santanna);
-//    List<Salt> salts = Arrays.asList();
 
     @Test public void x() {
         Model model = new Model("waterModel");
-        int targetL = 20;
-
-//        IntVar vDistillata = model.intVar("distillata (L)", range(targetL, 10));
-//        IntVar vSantanna = model.intVar("santanna (L)", range(targetL, 10));
-//        IntVar vMilano = model.intVar("milano (L)", range(targetL, 10));
+        int targetL = 10;
 
         Map<Water, IntVar> wvs = new HashMap<>();
         waters.stream()
@@ -61,12 +57,11 @@ public class CS3 {
                             (w, model.intVar(w.nome + " (L)", range(targetL, 10))))
               .forEach(e -> wvs.put(e.getKey(), e.getValue()));
 
-        Water target = new Water(11, 0, 1, 8, 0, 26, "santannax");
-        //Water santanna = new Water(10, 0, 1, 8, 0, 26, "santanna");
+        Water target = yellowDry;
 
         Map<Salt, IntVar> ss = new HashMap<>();
         salts.stream()
-             .map(s -> new Pair<>(s, model.intVar(s.nome + " (g)", 0, 100)))
+             .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", 0, 100)))
              .forEach(s -> ss.put(s.getValue0(), s.getValue1()));
 
         IntVar zero = model.intVar(0);
@@ -100,11 +95,11 @@ public class CS3 {
             System.out.println("target:" + target.toString());
             System.out.printf(
                     "Ca (mg/L): " + weightedSum(wvs, w -> w.ca, ss, s -> s.ca, targetL) +
-                            ", Mg (mg/L): " + weightedSum(wvs, w -> w.mg, ss, s -> s.mg, targetL) +
-                            ", Na (mg/L): " + weightedSum(wvs, w -> w.na, ss, s -> s.na, targetL) +
-                            ", SO4 (mg/L): " + weightedSum(wvs, w -> w.so4, ss, s -> s.so4, targetL) +
-                            ", Cl (mg/L): " + weightedSum(wvs, w -> w.cl, ss, s -> s.cl, targetL) +
-                            ", HCO3 (mg/L): " + weightedSum(wvs, w -> w.hco3, ss, s -> s.hco3, targetL) +
+                            ",\nMg (mg/L): " + weightedSum(wvs, w -> w.mg, ss, s -> s.mg, targetL) +
+                            ",\nNa (mg/L): " + weightedSum(wvs, w -> w.na, ss, s -> s.na, targetL) +
+                            ",\nSO4 (mg/L): " + weightedSum(wvs, w -> w.so4, ss, s -> s.so4, targetL) +
+                            ",\nCl (mg/L): " + weightedSum(wvs, w -> w.cl, ss, s -> s.cl, targetL) +
+                            ",\nHCO3 (mg/L): " + weightedSum(wvs, w -> w.hco3, ss, s -> s.hco3, targetL) +
                             "\n");
         }
 
