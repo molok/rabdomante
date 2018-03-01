@@ -37,7 +37,7 @@ public class CS3 {
         Water sa = new Water(50, 20, 20);
         Water milano = new Water(100, 100, 100);
         Water target = new Water(75, 75, 75);
-        int targetL = 100; /* a 1000 si spacca... qualche overflow ? */
+        int targetL = 1000; /* a 1000 si spacca... qualche overflow ? */
 
         Model model = new Model("waterModel");
 
@@ -63,9 +63,9 @@ public class CS3 {
         IntVar sumMgWs = waterSum(wvs, w1 -> w1.mg).add(sumSalt(ss, s -> s.mg)).intVar();
         IntVar sumNaWs = waterSum(wvs, w1 -> w1.na).add(sumSalt(ss, s -> s.na)).intVar();
 
-        IntVar cost = square(sumCaWs.sub(target.ca * targetL).intVar())
-                 .add(square(sumMgWs.sub(target.mg * targetL).intVar()))
-                 .add(square(sumNaWs.sub(target.na * targetL).intVar()))
+        IntVar cost = sumCaWs.sub(target.ca * targetL).abs().intVar()
+                 .add(sumMgWs.sub(target.mg * targetL).abs().intVar())
+                 .add(sumNaWs.sub(target.na * targetL).abs().intVar())
                  .intVar();
 
         model.sum(wvs.values().toArray(new IntVar[0]), "=", targetL).post();
@@ -126,7 +126,4 @@ public class CS3 {
                 .reduce((a, b) -> a.add(b).intVar()).get();
     }
 
-    private IntVar square(IntVar x) {
-        return x.mul(x).intVar();
-    }
 }
