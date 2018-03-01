@@ -7,14 +7,14 @@ import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
 import org.javatuples.Pair;
-import org.javatuples.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import scala.collection.parallel.ParIterableLike;
 
 import java.util.*;
 import java.util.function.Function;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JUnit4.class)
 public class CS3 {
@@ -44,9 +44,12 @@ public class CS3 {
     List<Water> waters = Arrays.asList(santanna, milano, boario, levissima, eva, norda, vera, vitasnella, dolomiti, sanbern, distilled);
     List<Salt> salts = Arrays.asList(gypsum, tableSalt);
 
+//    List<Water> waters = Arrays.asList(santanna);
+//    List<Salt> salts = Arrays.asList();
+
     @Test public void x() {
         Model model = new Model("waterModel");
-        int targetL = 10;
+        int targetL = 20;
 
 //        IntVar vDistillata = model.intVar("distillata (L)", range(targetL, 10));
 //        IntVar vSantanna = model.intVar("santanna (L)", range(targetL, 10));
@@ -58,26 +61,28 @@ public class CS3 {
                             (w, model.intVar(w.nome + " (L)", range(targetL, 10))))
               .forEach(e -> wvs.put(e.getKey(), e.getValue()));
 
-        Water target = new Water(50, 10, 33, 57, 44, 142, "target");
+        Water target = new Water(11, 0, 1, 8, 0, 26, "santannax");
+        //Water santanna = new Water(10, 0, 1, 8, 0, 26, "santanna");
 
         Map<Salt, IntVar> ss = new HashMap<>();
         salts.stream()
-             .map(s -> new Pair<>(s, model.intVar(s.nome + ("g"), 0, 100)))
+             .map(s -> new Pair<>(s, model.intVar(s.nome + " (g)", 0, 100)))
              .forEach(s -> ss.put(s.getValue0(), s.getValue1()));
 
-        IntVar sumCaWs = waterSum(wvs, w1 -> w1.ca).add(sumSalt(ss, s -> s.ca)).intVar();
-        IntVar sumMgWs = waterSum(wvs, w1 -> w1.mg).add(sumSalt(ss, s -> s.mg)).intVar();
-        IntVar sumNaWs = waterSum(wvs, w1 -> w1.na).add(sumSalt(ss, s -> s.na)).intVar();
-        IntVar sumSo4Ws = waterSum(wvs, w1 -> w1.so4).add(sumSalt(ss, s -> s.so4)).intVar();
-        IntVar sumClWs = waterSum(wvs, w1 -> w1.cl).add(sumSalt(ss, s -> s.cl)).intVar();
-        IntVar sumHco3Ws = waterSum(wvs, w1 -> w1.hco3).add(sumSalt(ss, s -> s.hco3)).intVar();
+        IntVar zero = model.intVar(0);
+        IntVar sumCaWs = waterSum(wvs, w1 -> w1.ca).add(sumSalt(ss, s -> s.ca).orElse(zero)).intVar();
+        IntVar sumMgWs = waterSum(wvs, w1 -> w1.mg).add(sumSalt(ss, s -> s.mg).orElse(zero)).intVar();
+        IntVar sumNaWs = waterSum(wvs, w1 -> w1.na).add(sumSalt(ss, s -> s.na).orElse(zero)).intVar();
+        IntVar sumSo4Ws = waterSum(wvs, w1 -> w1.so4).add(sumSalt(ss, s -> s.so4).orElse(zero)).intVar();
+        IntVar sumClWs = waterSum(wvs, w1 -> w1.cl).add(sumSalt(ss, s -> s.cl).orElse(zero)).intVar();
+        IntVar sumHco3Ws = waterSum(wvs, w1 -> w1.hco3).add(sumSalt(ss, s -> s.hco3).orElse(zero)).intVar();
 
-        IntVar cost = sumCaWs.sub(target.ca * targetL).abs().intVar()
-                 .add(sumMgWs.sub(target.mg * targetL).abs().intVar())
-                 .add(sumNaWs.sub(target.na * targetL).abs().intVar())
-                 .add(sumSo4Ws.sub(target.so4 * targetL).abs().intVar())
-                 .add(sumClWs.sub(target.cl * targetL).abs().intVar())
-                 .add(sumHco3Ws.sub(target.hco3 * targetL).abs().intVar())
+        IntVar cost = error(sumCaWs, target.ca * targetL)
+                 .add(error(sumMgWs, target.mg * targetL))
+                 .add(error(sumNaWs, target.na * targetL))
+                 .add(error(sumSo4Ws, target.so4 * targetL))
+                 .add(error(sumClWs, target.cl * targetL))
+                 .add(error(sumHco3Ws, target.hco3 * targetL))
                  .intVar();
 
         model.sum(wvs.values().toArray(new IntVar[0]), "=", targetL).post();
@@ -105,25 +110,32 @@ public class CS3 {
 
     }
 
-    /* ritorna un range con massimo targetL e step ogni perc, ad esempio:
+    private IntVar error(IntVar actual, int expected) {
+        return actual.sub(expected).abs().intVar();
+    }
+
+    @Test public void testRange() {
+        assertThat(range(100, 10)).containsExactly(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100);
+        assertThat(range(100, 1)).hasSize(101);
+        assertThat(range(200, 1)).hasSize(101);
+    }
+
+    /** ritorna un range con massimo targetL e step ogni perc, ad esempio:
         range(100, 10)  -> [0, 10, 20, 30, 40, 50, 60, 70, 80 , 90, 100]
         range(100, 50)  -> [0, 50, 100]
         range(100, 100) -> [0, 100]
         range(10, 10)   -> [1, 2, 3, 4 5, 6, 7, 8, 9, 10]
      */
-    private int[] range(int targetL, int perc) {
-        if ((targetL / perc ) <= 0 ) {
-            throw new RuntimeException("targetL / perc <= 0");
-        } else {
-            return Ints.toArray(
-                    IteratorUtils.toList(
-                            new IntegerSequence.Range(0, targetL, targetL / perc).iterator()));
-        }
+    static private int[] range(int targetL, int perc) {
+        int step = Math.max(1, (targetL * perc) / 100);
+        return Ints.toArray(
+                IteratorUtils.toList(
+                        new IntegerSequence.Range(0, targetL, step ).iterator()));
     }
 
-    private IntVar sumSalt(Map<Salt, IntVar> ss, Function<Salt, Integer> f) {
+    private Optional<IntVar> sumSalt(Map<Salt, IntVar> ss, Function<Salt, Integer> f) {
         return ss.entrySet().stream().map(s -> s.getValue().mul(f.apply(s.getKey())).intVar())
-                             .reduce((a, b) -> a.add(b).intVar()).get();
+                             .reduce((a, b) -> a.add(b).intVar());
     }
 
     private int weightedSum(Map<Water, IntVar> wvs, Function<Water, Integer> getter, Map<Salt, IntVar> ss, Function<Salt, Integer> sgetter, int liters) {
