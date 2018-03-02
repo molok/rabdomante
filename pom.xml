@@ -9,11 +9,11 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-        <dependency>
-            <groupId>org.jacop</groupId>
-            <artifactId>jacop</artifactId>
-            <version>4.4.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.jacop</groupId>-->
+            <!--<artifactId>jacop</artifactId>-->
+            <!--<version>4.4.0</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>ch.qos.logback</groupId>

@@ -2,19 +2,19 @@ package alebolo.rabdomante;
 
 import java.util.Objects;
 
-class Water extends WaterProfile {
-    final int liters;
-    Water(WaterProfile salt, int liters) {
-        this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, liters);
+class Salt extends SaltProfile {
+    final int dg;
+    Salt(SaltProfile salt, int dg) {
+        this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, dg);
     }
-    Water(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int liters) {
+    Salt(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int dg) {
         super(ca, mg, na, so4, cl, hco3, nome);
-        this.liters = liters;
+        this.dg = dg;
     }
 
     @Override
     public String toString() {
-        return "AvailableWater{" +
+        return "Salt{" +
                 "ca=" + ca +
                 ", mg=" + mg +
                 ", na=" + na +
@@ -22,7 +22,7 @@ class Water extends WaterProfile {
                 ", cl=" + cl +
                 ", hco3=" + hco3 +
                 ", nome='" + nome + '\'' +
-                ", liters=" + liters +
+                ", dg=" + dg +
                 '}';
     }
 
@@ -31,13 +31,13 @@ class Water extends WaterProfile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        Water water = (Water) o;
-        return liters == water.liters;
+        Salt salt = (Salt) o;
+        return dg == salt.dg;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), liters);
+        return Objects.hash(super.hashCode(), dg);
     }
 }
