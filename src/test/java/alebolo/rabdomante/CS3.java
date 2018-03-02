@@ -41,6 +41,135 @@ public class CS3 {
     SaltProfile bakingSoda = new SaltProfile(0, 0, 27, 0, 0, 72, "baking soda");
     SaltProfile piclingLime = new SaltProfile(45, 0, 0, 0, 0, 164, "pickling lime");
 
+    @Test public void testUpperBound() {
+        assertThat(
+                saltUpperBound(new Salt(calciumChloride, 10000),
+                        new Water(yellowDry, 1000))
+        ).isEqualTo(4);
+    }
+
+    @Test public void all_vars_big() {
+        List<Salt> mySalts = Arrays.asList(
+                new Salt(gypsum, 10000),
+                new Salt(tableSalt, 10000),
+                new Salt(calciumChloride, 10000),
+                new Salt(magnesiumChloride, 10000),
+                new Salt(espomSalt, 10000),
+                new Salt(bakingSoda, 10000),
+                new Salt(piclingLime, 10000)
+        );
+
+        List<Water> myWater = Arrays.asList(
+                new Water( santanna , Integer.MAX_VALUE),
+                new Water( milano , Integer.MAX_VALUE),
+                new Water( boario , Integer.MAX_VALUE),
+                new Water( levissima , Integer.MAX_VALUE),
+                new Water( eva , Integer.MAX_VALUE),
+                new Water( norda , Integer.MAX_VALUE),
+                new Water( vera , Integer.MAX_VALUE),
+                new Water( vitasnella , Integer.MAX_VALUE),
+                new Water( dolomiti , Integer.MAX_VALUE),
+                new Water( sanbern , Integer.MAX_VALUE)
+//                new Water( distilled , Integer.MAX_VALUE)
+        );
+
+        Water target = new Water(yellowDry, 1000);
+        Optional<Recipex> solution = solve(target, mySalts, myWater);
+        assertThat(solution).isPresent();
+
+        System.out.println(solution.get().toString());
+        System.out.println(target.toString());
+    }
+
+    @Test public void all_vars() {
+        List<Salt> mySalts = Arrays.asList(
+                new Salt(gypsum, 1000),
+                new Salt(tableSalt, 1000),
+                new Salt(calciumChloride, 1000),
+                new Salt(magnesiumChloride, 1000),
+                new Salt(espomSalt, 1000),
+                new Salt(bakingSoda, 1000),
+                new Salt(piclingLime, 1000)
+        );
+
+        List<Water> myWater = Arrays.asList(
+                new Water( santanna , Integer.MAX_VALUE),
+                new Water( milano , Integer.MAX_VALUE),
+                new Water( boario , Integer.MAX_VALUE),
+                new Water( levissima , Integer.MAX_VALUE),
+                new Water( eva , Integer.MAX_VALUE),
+                new Water( norda , Integer.MAX_VALUE),
+                new Water( vera , Integer.MAX_VALUE),
+                new Water( vitasnella , Integer.MAX_VALUE),
+                new Water( dolomiti , Integer.MAX_VALUE),
+                new Water( sanbern , Integer.MAX_VALUE),
+                new Water( distilled , Integer.MAX_VALUE)
+        );
+
+        Water target = new Water(yellowDry, 100);
+        Optional<Recipex> solution = solve(target, mySalts, myWater);
+        assertThat(solution).isPresent();
+
+        System.out.println(solution.get().toString());
+        System.out.println(target.toString());
+    }
+
+
+    @Test public void happy() {
+        List<Salt> mySalts = Arrays.asList();
+        List<Water> myWater = Arrays.asList(new Water(distilled, Integer.MAX_VALUE));
+        Water target = new Water(distilled, 10);
+
+        Optional<Recipex> solution = solve(target, mySalts, myWater);
+        assertThat(solution).isPresent();
+        assertThat(solution.get().waters).containsExactly(new Water(distilled, 10));
+    }
+
+    @Test public void not_enough_water() {
+        List<Salt> mySalts = Arrays.asList();
+        List<Water> myWater = Arrays.asList(new Water(distilled, 9));
+        Water target = new Water(distilled, 10);
+
+        Optional<Recipex> solution = solve(target, mySalts, myWater);
+        assertThat(solution).isNotPresent();
+    }
+
+    @Test public void easy_50_50() {
+        List<Salt> mySalts = Arrays.asList();
+
+        WaterProfile pa = new WaterProfile(10, 10, 10, 10, 10, 10, "a");
+        Water a = new Water(pa, 100);
+
+        WaterProfile pb = new WaterProfile(0, 0, 0, 0, 0, 0, "b");
+        Water b = new Water(pb, 100);
+
+        WaterProfile pc = new WaterProfile(100, 100, 100, 100, 100, 100, "c");
+        Water c = new Water(pb, 100);
+
+        List<Water> myWater = Arrays.asList( a, b, c );
+
+        Water target = new Water(new WaterProfile(5, 5, 5, 5, 5, 5, "target"), 30);
+
+        Optional<Recipex> solution = solve(target, mySalts, myWater);
+        assertThat(solution).isPresent();
+        assertThat(solution.get().waters).containsOnly(new Water(pa, 15), new Water(pb, 15));
+        assertThat(solution.get().salts).isEmpty();
+    }
+
+    @Test public void salt() {
+        SaltProfile magicSalt = new SaltProfile(5, 5, 5, 5, 5, 5, "magicSalt");
+        SaltProfile badSalt = new SaltProfile(301, 301, 301, 301, 301, 301, "magicSalt");
+        List<Salt> mySalts = Arrays.asList(new Salt(magicSalt, 1000 * 10), new Salt(badSalt, 1000 * 10));
+        List<Water> myWater = Arrays.asList(new Water(distilled, Integer.MAX_VALUE));
+
+        Water target = new Water(new WaterProfile(15, 15, 15, 15, 15, 15, "target"), 100);
+
+        Optional<Recipex> solution = solve(target, mySalts, myWater);
+        assertThat(solution).isPresent();
+        assertThat(solution.get().waters).containsOnly(new Water(distilled, 100));
+        assertThat(solution.get().salts).containsOnly(new Salt(magicSalt, 300));
+    }
+
     @Test public void antani() {
         List<Salt> mySalts = Arrays.asList(
                 new Salt(gypsum, 100),
@@ -66,7 +195,7 @@ public class CS3 {
         int targetLiters = target.liters;
 
         Map<WaterProfile, IntVar> waterVars = waterVars(model, myWater, targetLiters);
-        Map<SaltProfile, IntVar> saltVars = saltVars(model, mySalts);
+        Map<SaltProfile, IntVar> saltVars = saltVars(model, mySalts, target);
 
         IntVar cost = cost(model, targetLiters, target, waterVars, saltVars);
 
@@ -150,13 +279,26 @@ public class CS3 {
                  .intVar();
     }
 
-    private Map<SaltProfile, IntVar> saltVars(Model model, List<Salt> salts) {
+    private Map<SaltProfile, IntVar> saltVars(Model model, List<Salt> salts, Water target) {
         Map<SaltProfile, IntVar> saltVars = new HashMap<>();
          /* TODO far impostare la disponibilità di sali (ub)*/
         salts.stream()
-             .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", 0, s.dg)))
+             .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", 0, saltUpperBound(s, target))))
              .forEach(s -> saltVars.put(s.getValue0(), s.getValue1()));
         return saltVars;
+    }
+
+    static int saltUpperBound(Salt s, Water target) {
+        return Math.min
+                ( s.dg,
+                  Arrays.asList(
+                        ( s.ca == 0 ? 0 : ((target.ca * target.liters) / s.ca) * 2),
+                        ( s.mg == 0 ? 0 : ((target.mg * target.liters) / s.mg) * 2),
+                        ( s.na == 0 ? 0 : ((target.na * target.liters) / s.na) * 2),
+                        ( s.so4 == 0 ? 0 : ((target.so4 * target.liters) / s.so4) * 2),
+                        ( s.cl == 0 ? 0 : ((target.cl * target.liters) / s.cl) * 2),
+                        ( s.hco3 == 0 ? 0 : ((target.hco3 * target.liters) / s.hco3) * 2))
+                        .stream().mapToInt(i -> i).max().getAsInt());
     }
 
     private Map<WaterProfile, IntVar> waterVars(Model model, List<Water> waters, int targetLiters) {
@@ -243,6 +385,25 @@ public class CS3 {
                     ", nome='" + nome + '\'' +
                     '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            WaterProfile that = (WaterProfile) o;
+            return ca == that.ca &&
+                    mg == that.mg &&
+                    na == that.na &&
+                    so4 == that.so4 &&
+                    cl == that.cl &&
+                    hco3 == that.hco3 &&
+                    Objects.equals(nome, that.nome);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(ca, mg, na, so4, cl, hco3, nome);
+        }
     }
 
     class SaltProfile {
@@ -276,6 +437,25 @@ public class CS3 {
                     ", nome='" + nome + '\'' +
                     '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            SaltProfile that = (SaltProfile) o;
+            return ca == that.ca &&
+                    mg == that.mg &&
+                    na == that.na &&
+                    so4 == that.so4 &&
+                    cl == that.cl &&
+                    hco3 == that.hco3 &&
+                    Objects.equals(nome, that.nome);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(ca, mg, na, so4, cl, hco3, nome);
+        }
     }
 
     class Water extends WaterProfile {
@@ -301,6 +481,21 @@ public class CS3 {
                     ", liters=" + liters +
                     '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            Water water = (Water) o;
+            return liters == water.liters;
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(super.hashCode(), liters);
+        }
     }
 
     class Salt extends SaltProfile {
@@ -325,6 +520,21 @@ public class CS3 {
                     ", nome='" + nome + '\'' +
                     ", dg=" + dg +
                     '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            Salt salt = (Salt) o;
+            return dg == salt.dg;
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(super.hashCode(), dg);
         }
     }
 
