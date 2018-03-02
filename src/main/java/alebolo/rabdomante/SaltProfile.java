@@ -3,6 +3,14 @@ package alebolo.rabdomante;
 import java.util.Objects;
 
 class SaltProfile {
+    static final SaltProfile GYPSUM = new SaltProfile(23, 0, 0, 56, 0, 0, "GYPSUM");
+    static final SaltProfile TABLE_SALT = new SaltProfile(0, 0, 39, 0, 62, 0, "table salt");
+    static final SaltProfile CALCIUM_CHLORIDE = new SaltProfile(36, 0, 0, 0, 64, 0, "calcium chloride");
+    static final SaltProfile MAGNESIUM_CHLORIDE = new SaltProfile(0, 12, 0, 0, 35, 0, "magnesium chloride");
+    static final SaltProfile EPSOM_SALT = new SaltProfile(0, 1, 0, 0, 35, 0, "epsom salt");
+    static final SaltProfile BAKING_SODA = new SaltProfile(0, 0, 27, 0, 0, 72, "baking soda");
+    static final SaltProfile PICKLING_LIME = new SaltProfile(45, 0, 0, 0, 0, 164, "pickling lime");
+
     final int ca;
     final int mg;
     final int na;

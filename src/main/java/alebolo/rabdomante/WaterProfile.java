@@ -3,6 +3,19 @@ package alebolo.rabdomante;
 import java.util.Objects;
 
 class WaterProfile {
+    static final WaterProfile SANTANNA = new WaterProfile(10, 0, 1, 8, 0, 26, "santanna");
+    static final WaterProfile MILANO = new WaterProfile(70, 15, 12, 42, 27, 228, "milano");
+    static final WaterProfile BOARIO = new WaterProfile(131, 40, 5, 240, 4, 303, "boario");
+    static final WaterProfile LEVISSIMA = new WaterProfile(21, 2, 2, 17, 0, 57, "levissima");
+    static final WaterProfile EVA = new WaterProfile(10, 4, 0, 2, 0, 48, "eva");
+    static final WaterProfile NORDA = new WaterProfile(11, 3, 2, 6, 1, 52, "norda");
+    static final WaterProfile VERA = new WaterProfile(35, 12, 2, 19, 3, 148, "vera");
+    static final WaterProfile VITASNELLA = new WaterProfile(86, 26, 3, 83, 2, 301, "vitasnella");
+    static final WaterProfile DOLOMITI = new WaterProfile(8, 9, 1, 22, 1, 95, "dolomiti");
+    static final WaterProfile SANBERARDO = new WaterProfile(9, 1, 1, 2, 1, 30, "sanberardo");
+    static final WaterProfile DISTILLED = new WaterProfile(0, 0, 0, 0, 0, 0, "distilled");
+    static final WaterProfile YELLOW_DRY = new WaterProfile(50, 10, 5, 105, 45, 0, "yellow dry");
+
     final int ca;
     final int mg;
     final int na;
