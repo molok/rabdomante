@@ -22,7 +22,7 @@ class Salt extends SaltProfile {
                 ", cl=" + cl +
                 ", hco3=" + hco3 +
                 ", nome='" + nome + '\'' +
-                ", dg=" + dg +
+                ", g=" + dg/10. +
                 '}';
     }
 

@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(JUnit4.class)
 public class WaterSolverTest {
     @Test public void all_vars_big() {
@@ -38,7 +40,7 @@ public class WaterSolverTest {
 
         Water target = new Water(WaterProfiles.YELLOW_DRY, 1000);
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
-        Assertions.assertThat(solution).isPresent();
+        assertThat(solution).isPresent();
 
         System.out.println(solution.get().toString());
         System.out.println(target.toString());
@@ -69,9 +71,9 @@ public class WaterSolverTest {
                 new Water( WaterProfiles.DISTILLED, Integer.MAX_VALUE)
         );
 
-        Water target = new Water(WaterProfiles.YELLOW_DRY, 100);
+        Water target = new Water(WaterProfiles.YELLOW_DRY, 1000);
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
-        Assertions.assertThat(solution).isPresent();
+        assertThat(solution).isPresent();
 
         System.out.println(solution.get().toString());
         System.out.println(target.toString());
@@ -84,8 +86,8 @@ public class WaterSolverTest {
         Water target = new Water(WaterProfiles.DISTILLED, 10);
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
-        Assertions.assertThat(solution).isPresent();
-        Assertions.assertThat(solution.get().waters).containsExactly(new Water(WaterProfiles.DISTILLED, 10));
+        assertThat(solution).isPresent();
+        assertThat(solution.get().waters).containsExactly(new Water(WaterProfiles.DISTILLED, 10));
     }
 
     @Test public void not_enough_water() {
@@ -94,7 +96,7 @@ public class WaterSolverTest {
         Water target = new Water(WaterProfiles.DISTILLED, 10);
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
-        Assertions.assertThat(solution).isNotPresent();
+        assertThat(solution).isNotPresent();
     }
 
     @Test public void easy_50_50() {
@@ -114,9 +116,9 @@ public class WaterSolverTest {
         Water target = new Water(new WaterProfile("target", 5, 5, 5, 5, 5, 5), 30);
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
-        Assertions.assertThat(solution).isPresent();
-        Assertions.assertThat(solution.get().waters).containsOnly(new Water(pa, 15), new Water(pb, 15));
-        Assertions.assertThat(solution.get().salts).isEmpty();
+        assertThat(solution).isPresent();
+        assertThat(solution.get().waters).containsOnly(new Water(pa, 15), new Water(pb, 15));
+        assertThat(solution.get().salts).isEmpty();
     }
 
     @Test public void salt() {
@@ -128,9 +130,9 @@ public class WaterSolverTest {
         Water target = new Water(new WaterProfile("target", 15, 15, 15, 15, 15, 15), 100);
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
-        Assertions.assertThat(solution).isPresent();
-        Assertions.assertThat(solution.get().waters).containsOnly(new Water(WaterProfiles.DISTILLED, 100));
-        Assertions.assertThat(solution.get().salts).containsOnly(new Salt(magicSalt, 300));
+        assertThat(solution).isPresent();
+        assertThat(solution.get().waters).containsOnly(new Water(WaterProfiles.DISTILLED, 100));
+        assertThat(solution.get().salts).containsOnly(new Salt(magicSalt, 300));
     }
 
     @Test public void antani() {
@@ -147,7 +149,7 @@ public class WaterSolverTest {
         Water target = new Water(WaterProfiles.YELLOW_DRY, 20);
 
         Optional<Recipe> recipe = new ChocoSolver().solve(target, mySalts, myWater);
-        Assertions.assertThat(recipe.isPresent()).isTrue();
+        assertThat(recipe.isPresent()).isTrue();
         System.out.println(recipe.toString());
         System.out.println(target.toString());
     }
@@ -155,5 +157,9 @@ public class WaterSolverTest {
     @Test public void testRecipe() {
         Recipe recipe = new Recipe(Arrays.asList(new Water(WaterProfiles.SANTANNA_VIN, 10)), Arrays.asList(), 0);
         System.out.println(recipe);
+    }
+
+    @Test public void range() {
+        assertThat(ChocoSolver.range(10000, 10)).hasSize(11);
     }
 }

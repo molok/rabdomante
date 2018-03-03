@@ -72,17 +72,18 @@ public class ChocoSolver implements WaterSolver {
 
     private Map<SaltProfile, IntVar> saltVars(Model model, List<Salt> salts, Water target) {
         Map<SaltProfile, IntVar> saltVars = new HashMap<>();
-        /* TODO far impostare la disponibilità di sali (ub)*/
         salts.stream()
-                .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", 0, saltUpperBound(s, target))))
+                .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", range(saltUpperBound(s, target), 1))))
                 .forEach(s -> saltVars.put(s.getValue0(), s.getValue1()));
         return saltVars;
     }
 
     static int saltUpperBound(Salt s, Water target) {
+        /* l'idea è calcolare l'apporto massimo che è sensato dare ad un'acqua
+           quindi è inutile provare con 1kg di sale se già con 20g si è sforato
+           il valore massimo di sodio */
         return Math.min
-                ( s.dg,
-                        Arrays.asList(
+                ( s.dg, Arrays.asList(
                                 ( s.ca == 0 ? 0 : ((target.ca * target.liters) / s.ca) * 2),
                                 ( s.mg == 0 ? 0 : ((target.mg * target.liters) / s.mg) * 2),
                                 ( s.na == 0 ? 0 : ((target.na * target.liters) / s.na) * 2),
@@ -109,13 +110,13 @@ public class ChocoSolver implements WaterSolver {
      range(100, 10)  -> [0, 10, 20, 30, 40, 50, 60, 70, 80 , 90, 100]
      range(100, 50)  -> [0, 50, 100]
      range(100, 100) -> [0, 100]
-     range(10, 10)   -> [0, 1, 2, 3, 4 5, 6, 7, 8, 9, 10]
+     range(10, 10)   -> [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
      */
-    static private int[] range(int targetL, int perc) {
-        int step = Math.max(1, (targetL * perc) / 100);
+    static public int[] range(int max, int perc) {
+        int step = Math.max(1, (max * perc) / 100);
         return Ints.toArray(
                 IteratorUtils.toList(
-                        new IntegerSequence.Range(0, targetL, step ).iterator()));
+                        new IntegerSequence.Range(0, max, step ).iterator()));
     }
 
     private Optional<IntVar> sumSalt(Map<SaltProfile, IntVar> ss, Function<SaltProfile, Integer> f) {
