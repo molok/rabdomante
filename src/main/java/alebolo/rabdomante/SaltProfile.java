@@ -3,7 +3,7 @@ package alebolo.rabdomante;
 import java.util.Objects;
 
 class SaltProfile {
-    static final SaltProfile GYPSUM = new SaltProfile(23, 0, 0, 56, 0, 0, "GYPSUM");
+    static final SaltProfile GYPSUM = new SaltProfile(23, 0, 0, 56, 0, 0, "gypsum");
     static final SaltProfile TABLE_SALT = new SaltProfile(0, 0, 39, 0, 62, 0, "table salt");
     static final SaltProfile CALCIUM_CHLORIDE = new SaltProfile(36, 0, 0, 0, 64, 0, "calcium chloride");
     static final SaltProfile MAGNESIUM_CHLORIDE = new SaltProfile(0, 12, 0, 0, 35, 0, "magnesium chloride");

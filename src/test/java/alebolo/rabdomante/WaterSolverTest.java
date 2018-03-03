@@ -37,7 +37,7 @@ public class WaterSolverTest {
         );
 
         Water target = new Water(WaterProfile.YELLOW_DRY, 1000);
-        Optional<Recipe> solution = solve(target, mySalts, myWater);
+        Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
 
         System.out.println(solution.get().toString());
@@ -70,7 +70,7 @@ public class WaterSolverTest {
         );
 
         Water target = new Water(WaterProfile.YELLOW_DRY, 100);
-        Optional<Recipe> solution = solve(target, mySalts, myWater);
+        Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
 
         System.out.println(solution.get().toString());
@@ -83,7 +83,7 @@ public class WaterSolverTest {
         List<Water> myWater = Arrays.asList(new Water(WaterProfile.DISTILLED, Integer.MAX_VALUE));
         Water target = new Water(WaterProfile.DISTILLED, 10);
 
-        Optional<Recipe> solution = solve(target, mySalts, myWater);
+        Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
         Assertions.assertThat(solution.get().waters).containsExactly(new Water(WaterProfile.DISTILLED, 10));
     }
@@ -93,7 +93,7 @@ public class WaterSolverTest {
         List<Water> myWater = Arrays.asList(new Water(WaterProfile.DISTILLED, 9));
         Water target = new Water(WaterProfile.DISTILLED, 10);
 
-        Optional<Recipe> solution = solve(target, mySalts, myWater);
+        Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isNotPresent();
     }
 
@@ -113,7 +113,7 @@ public class WaterSolverTest {
 
         Water target = new Water(new WaterProfile(5, 5, 5, 5, 5, 5, "target"), 30);
 
-        Optional<Recipe> solution = solve(target, mySalts, myWater);
+        Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
         Assertions.assertThat(solution.get().waters).containsOnly(new Water(pa, 15), new Water(pb, 15));
         Assertions.assertThat(solution.get().salts).isEmpty();
@@ -127,7 +127,7 @@ public class WaterSolverTest {
 
         Water target = new Water(new WaterProfile(15, 15, 15, 15, 15, 15, "target"), 100);
 
-        Optional<Recipe> solution = solve(target, mySalts, myWater);
+        Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
         Assertions.assertThat(solution.get().waters).containsOnly(new Water(WaterProfile.DISTILLED, 100));
         Assertions.assertThat(solution.get().salts).containsOnly(new Salt(magicSalt, 300));
@@ -146,14 +146,10 @@ public class WaterSolverTest {
 
         Water target = new Water(WaterProfile.YELLOW_DRY, 20);
 
-        Optional<Recipe> recipe = solve(target, mySalts, myWater);
+        Optional<Recipe> recipe = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(recipe.isPresent()).isTrue();
         System.out.println(recipe.toString());
         System.out.println(target.toString());
-    }
-
-    private Optional<Recipe> solve(Water target, List<Salt> mySalts, List<Water> myWater) {
-        return new WaterSolver().solve(target, mySalts, myWater);
     }
 
     @Test public void testRecipe() {
