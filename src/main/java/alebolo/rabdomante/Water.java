@@ -8,7 +8,7 @@ class Water extends WaterProfile {
         this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, liters);
     }
     Water(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int liters) {
-        super(ca, mg, na, so4, cl, hco3, nome);
+        super(nome, ca, mg, na, so4, cl, hco3);
         this.liters = liters;
     }
 

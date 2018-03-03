@@ -13,30 +13,30 @@ import java.util.Optional;
 public class WaterSolverTest {
     @Test public void all_vars_big() {
         List<Salt> mySalts = Arrays.asList(
-                new Salt(SaltProfile.GYPSUM, 10000),
-                new Salt(SaltProfile.TABLE_SALT, 10000),
-                new Salt(SaltProfile.CALCIUM_CHLORIDE, 10000),
-                new Salt(SaltProfile.MAGNESIUM_CHLORIDE, 10000),
-                new Salt(SaltProfile.EPSOM_SALT, 10000),
-                new Salt(SaltProfile.BAKING_SODA, 10000),
-                new Salt(SaltProfile.PICKLING_LIME, 10000)
+                new Salt(SaltProfiles.GYPSUM, 10000),
+                new Salt(SaltProfiles.TABLE_SALT, 10000),
+                new Salt(SaltProfiles.CALCIUM_CHLORIDE, 10000),
+                new Salt(SaltProfiles.MAGNESIUM_CHLORIDE, 10000),
+                new Salt(SaltProfiles.EPSOM_SALT, 10000),
+                new Salt(SaltProfiles.BAKING_SODA, 10000),
+                new Salt(SaltProfiles.PICKLING_LIME, 10000)
         );
 
         List<Water> myWater = Arrays.asList(
-                new Water( WaterProfile.SANTANNA, Integer.MAX_VALUE),
-                new Water( WaterProfile.MILANO, Integer.MAX_VALUE),
-                new Water( WaterProfile.BOARIO, Integer.MAX_VALUE),
-                new Water( WaterProfile.LEVISSIMA, Integer.MAX_VALUE),
-                new Water( WaterProfile.EVA, Integer.MAX_VALUE),
-                new Water( WaterProfile.NORDA, Integer.MAX_VALUE),
-                new Water( WaterProfile.VERA, Integer.MAX_VALUE),
-                new Water( WaterProfile.VITASNELLA, Integer.MAX_VALUE),
-                new Water( WaterProfile.DOLOMITI, Integer.MAX_VALUE),
-                new Water( WaterProfile.SANBERARDO, Integer.MAX_VALUE)
+                new Water( WaterProfiles.SANTANNA_VIN, Integer.MAX_VALUE),
+                new Water( WaterProfiles.MILANO, Integer.MAX_VALUE),
+                new Water( WaterProfiles.BOARIO, Integer.MAX_VALUE),
+                new Water( WaterProfiles.LEVISSIMA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.EVA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.NORDA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.VERA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.VITASNELLA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.DOLOMITI, Integer.MAX_VALUE),
+                new Water( WaterProfiles.SANBERARDO, Integer.MAX_VALUE)
 //                new Water( DISTILLED , Integer.MAX_VALUE)
         );
 
-        Water target = new Water(WaterProfile.YELLOW_DRY, 1000);
+        Water target = new Water(WaterProfiles.YELLOW_DRY, 1000);
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
 
@@ -46,30 +46,30 @@ public class WaterSolverTest {
 
     @Test public void all_vars() {
         List<Salt> mySalts = Arrays.asList(
-                new Salt(SaltProfile.GYPSUM, 1000),
-                new Salt(SaltProfile.TABLE_SALT, 1000),
-                new Salt(SaltProfile.CALCIUM_CHLORIDE, 1000),
-                new Salt(SaltProfile.MAGNESIUM_CHLORIDE, 1000),
-                new Salt(SaltProfile.EPSOM_SALT, 1000),
-                new Salt(SaltProfile.BAKING_SODA, 1000),
-                new Salt(SaltProfile.PICKLING_LIME, 1000)
+                new Salt(SaltProfiles.GYPSUM, Integer.MAX_VALUE),
+                new Salt(SaltProfiles.TABLE_SALT, Integer.MAX_VALUE),
+                new Salt(SaltProfiles.CALCIUM_CHLORIDE, Integer.MAX_VALUE),
+                new Salt(SaltProfiles.MAGNESIUM_CHLORIDE, Integer.MAX_VALUE),
+                new Salt(SaltProfiles.EPSOM_SALT, Integer.MAX_VALUE),
+                new Salt(SaltProfiles.BAKING_SODA, Integer.MAX_VALUE),
+                new Salt(SaltProfiles.PICKLING_LIME, Integer.MAX_VALUE)
         );
 
         List<Water> myWater = Arrays.asList(
-                new Water( WaterProfile.SANTANNA, Integer.MAX_VALUE),
-                new Water( WaterProfile.MILANO, Integer.MAX_VALUE),
-                new Water( WaterProfile.BOARIO, Integer.MAX_VALUE),
-                new Water( WaterProfile.LEVISSIMA, Integer.MAX_VALUE),
-                new Water( WaterProfile.EVA, Integer.MAX_VALUE),
-                new Water( WaterProfile.NORDA, Integer.MAX_VALUE),
-                new Water( WaterProfile.VERA, Integer.MAX_VALUE),
-                new Water( WaterProfile.VITASNELLA, Integer.MAX_VALUE),
-                new Water( WaterProfile.DOLOMITI, Integer.MAX_VALUE),
-                new Water( WaterProfile.SANBERARDO, Integer.MAX_VALUE),
-                new Water( WaterProfile.DISTILLED, Integer.MAX_VALUE)
+                new Water( WaterProfiles.SANTANNA_VIN, Integer.MAX_VALUE),
+                new Water( WaterProfiles.MILANO, Integer.MAX_VALUE),
+                new Water( WaterProfiles.BOARIO, Integer.MAX_VALUE),
+                new Water( WaterProfiles.LEVISSIMA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.EVA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.NORDA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.VERA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.VITASNELLA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.DOLOMITI, Integer.MAX_VALUE),
+                new Water( WaterProfiles.SANBERARDO, Integer.MAX_VALUE),
+                new Water( WaterProfiles.DISTILLED, Integer.MAX_VALUE)
         );
 
-        Water target = new Water(WaterProfile.YELLOW_DRY, 100);
+        Water target = new Water(WaterProfiles.YELLOW_DRY, 100);
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
 
@@ -80,18 +80,18 @@ public class WaterSolverTest {
 
     @Test public void happy() {
         List<Salt> mySalts = Arrays.asList();
-        List<Water> myWater = Arrays.asList(new Water(WaterProfile.DISTILLED, Integer.MAX_VALUE));
-        Water target = new Water(WaterProfile.DISTILLED, 10);
+        List<Water> myWater = Arrays.asList(new Water(WaterProfiles.DISTILLED, Integer.MAX_VALUE));
+        Water target = new Water(WaterProfiles.DISTILLED, 10);
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
-        Assertions.assertThat(solution.get().waters).containsExactly(new Water(WaterProfile.DISTILLED, 10));
+        Assertions.assertThat(solution.get().waters).containsExactly(new Water(WaterProfiles.DISTILLED, 10));
     }
 
     @Test public void not_enough_water() {
         List<Salt> mySalts = Arrays.asList();
-        List<Water> myWater = Arrays.asList(new Water(WaterProfile.DISTILLED, 9));
-        Water target = new Water(WaterProfile.DISTILLED, 10);
+        List<Water> myWater = Arrays.asList(new Water(WaterProfiles.DISTILLED, 9));
+        Water target = new Water(WaterProfiles.DISTILLED, 10);
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isNotPresent();
@@ -100,18 +100,18 @@ public class WaterSolverTest {
     @Test public void easy_50_50() {
         List<Salt> mySalts = Arrays.asList();
 
-        WaterProfile pa = new WaterProfile(10, 10, 10, 10, 10, 10, "a");
+        WaterProfile pa = new WaterProfile("a", 10, 10, 10, 10, 10, 10);
         Water a = new Water(pa, 100);
 
-        WaterProfile pb = new WaterProfile(0, 0, 0, 0, 0, 0, "b");
+        WaterProfile pb = new WaterProfile("b", 0, 0, 0, 0, 0, 0);
         Water b = new Water(pb, 100);
 
-        WaterProfile pc = new WaterProfile(100, 100, 100, 100, 100, 100, "c");
+        WaterProfile pc = new WaterProfile("c", 100, 100, 100, 100, 100, 100);
         Water c = new Water(pb, 100);
 
         List<Water> myWater = Arrays.asList( a, b, c );
 
-        Water target = new Water(new WaterProfile(5, 5, 5, 5, 5, 5, "target"), 30);
+        Water target = new Water(new WaterProfile("target", 5, 5, 5, 5, 5, 5), 30);
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
@@ -120,31 +120,31 @@ public class WaterSolverTest {
     }
 
     @Test public void salt() {
-        SaltProfile magicSalt = new SaltProfile(5, 5, 5, 5, 5, 5, "magicSalt");
-        SaltProfile badSalt = new SaltProfile(301, 301, 301, 301, 301, 301, "magicSalt");
+        SaltProfile magicSalt = new SaltProfile("magicSalt", 5, 5, 5, 5, 5, 5);
+        SaltProfile badSalt = new SaltProfile("magicSalt", 301, 301, 301, 301, 301, 301);
         List<Salt> mySalts = Arrays.asList(new Salt(magicSalt, 1000 * 10), new Salt(badSalt, 1000 * 10));
-        List<Water> myWater = Arrays.asList(new Water(WaterProfile.DISTILLED, Integer.MAX_VALUE));
+        List<Water> myWater = Arrays.asList(new Water(WaterProfiles.DISTILLED, Integer.MAX_VALUE));
 
-        Water target = new Water(new WaterProfile(15, 15, 15, 15, 15, 15, "target"), 100);
+        Water target = new Water(new WaterProfile("target", 15, 15, 15, 15, 15, 15), 100);
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(solution).isPresent();
-        Assertions.assertThat(solution.get().waters).containsOnly(new Water(WaterProfile.DISTILLED, 100));
+        Assertions.assertThat(solution.get().waters).containsOnly(new Water(WaterProfiles.DISTILLED, 100));
         Assertions.assertThat(solution.get().salts).containsOnly(new Salt(magicSalt, 300));
     }
 
     @Test public void antani() {
         List<Salt> mySalts = Arrays.asList(
-                new Salt(SaltProfile.GYPSUM, 100),
-                new Salt(SaltProfile.TABLE_SALT, 1000),
-                new Salt(SaltProfile.BAKING_SODA, 1000));
+                new Salt(SaltProfiles.GYPSUM, 100),
+                new Salt(SaltProfiles.TABLE_SALT, 1000),
+                new Salt(SaltProfiles.BAKING_SODA, 1000));
 
         List<Water> myWater = Arrays.asList(
-                new Water(WaterProfile.MILANO, Integer.MAX_VALUE),
-                new Water(WaterProfile.SANTANNA, 1),
-                new Water(WaterProfile.SANBERARDO, 1));
+                new Water(WaterProfiles.MILANO, Integer.MAX_VALUE),
+                new Water(WaterProfiles.SANTANNA_VIN, 1),
+                new Water(WaterProfiles.SANBERARDO, 1));
 
-        Water target = new Water(WaterProfile.YELLOW_DRY, 20);
+        Water target = new Water(WaterProfiles.YELLOW_DRY, 20);
 
         Optional<Recipe> recipe = new ChocoSolver().solve(target, mySalts, myWater);
         Assertions.assertThat(recipe.isPresent()).isTrue();
@@ -153,7 +153,7 @@ public class WaterSolverTest {
     }
 
     @Test public void testRecipe() {
-        Recipe recipe = new Recipe(Arrays.asList(new Water(WaterProfile.SANTANNA, 10)), Arrays.asList(), 0);
+        Recipe recipe = new Recipe(Arrays.asList(new Water(WaterProfiles.SANTANNA_VIN, 10)), Arrays.asList(), 0);
         System.out.println(recipe);
     }
 }

@@ -8,7 +8,7 @@ class Salt extends SaltProfile {
         this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, dg);
     }
     Salt(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int dg) {
-        super(ca, mg, na, so4, cl, hco3, nome);
+        super(nome, ca, mg, na, so4, cl, hco3);
         this.dg = dg;
     }
 
