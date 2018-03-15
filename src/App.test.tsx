@@ -3,11 +3,11 @@ import * as ReactDOM from 'react-dom';
 import App from './App';
 import {createStore} from 'redux';
 
-// it('renders without crashing', () => {
-//     let store = createStore((s, a) => s, { counter: 0 });
-//     const div = document.createElement('div');
-//     ReactDOM.render(<App store={store}/>, div);
-// });
+it('renders without crashing', () => {
+    let store = createStore((s, a) => s, { counter: 0 });
+    const div = document.createElement('div');
+    ReactDOM.render(<App store={store}/>, div);
+});
 
 function removeElement(array :Array<any>, pos :number): Array<any> {
     return array.slice(0, pos).concat(array.slice(pos+1));
