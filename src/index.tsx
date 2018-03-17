@@ -9,10 +9,14 @@ interface ActionType {
     type: string;
 }
 
+let foo: ActionType = {
+   type: "foo",
+};
+
 export interface State {
-    counter: number;
-    todos: Array<string>;
-    todoText: any;
+    readonly counter: number;
+    readonly todos: Array<string>;
+    readonly todoText: string;
 }
 
 function actAddTodo(text: string) {
@@ -36,7 +40,11 @@ function reducers(state: State, action: any) {
         case 'todo_text_changed':
             return { ...state, todoText: action.text };
         case 'add_todo':
-            let newState = { ...state, todos: [...state.todos, action.text]};
+            let newState = {
+                ...state,
+                todos: [...state.todos, action.text],
+                todoText: ""
+            };
             console.log("newState:", newState, "action was:", action.text);
             return newState;
         default:
