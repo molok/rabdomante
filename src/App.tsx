@@ -1,14 +1,13 @@
 import * as React from 'react';
 import './App.css';
-import Counter from "./Counter";
-import Todos from "./Todos";
+import {Component} from "react";
+import Rabdo from "./Rabdo";
 
-class App extends React.Component {
+class App extends Component {
     render() {
         return (
             <div>
-                <Counter />
-                <Todos />
+                <Rabdo />
             </div>
         )
     }
