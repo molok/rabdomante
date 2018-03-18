@@ -3,7 +3,10 @@ import './App.css';
 import {Component, Fragment} from "react";
 import {State} from "./index";
 import {connect} from "react-redux";
-import {ControlLabel, Form, FormControl, FormGroup, Label, Col, Row} from "react-bootstrap";
+import {
+    ControlLabel, Form, FormControl, FormGroup, Label, Col, Row, PageHeader, Panel, Button,
+    PanelGroup, ButtonToolbar
+} from "react-bootstrap";
 import './Rabdo.css'
 
 class MineralInput extends Component {
@@ -40,55 +43,111 @@ interface RabdoProps {
 }
 
 class XRabdo extends Component<RabdoProps, {}> {
-    renderWaters() {
-        return (<div></div>)
-    }
-
-    titleCase(str: string) {
-        return str.charAt(0).toUpperCase() +
-               str.substr(1).toLowerCase();
-    }
-
-    formInput(label: string, symbol: string = "") {
-        let show = this.titleCase(label) + (symbol ? " (" + symbol + ")" : "");
-        return (
-            <><Col componentClass={ControlLabel} sm={2}>{show}</Col><Col sm={1}> <FormControl bsSize="small" type="number" placeholder=""/></Col></>
-        )
-    }
-
     render() {
         return (
             <div className="Rabdo container">
-                <div className="page-header mb-5">
-                    <h1>Rabdomante <small>Water Profile Calculator</small></h1>
-                </div>
+                <PageHeader>
+                    Rabdomante <small>Water Profile Calculator</small>
+                </PageHeader>
                 <Form horizontal>
-                    <h6 className="text-muted form-heading">OBIETTIVO</h6>
                     <FormGroup>
-                        <Row>
-                            {this.formInput("litri")}
-                        </Row>
+                        <Panel>
+                            <Panel.Heading>
+                                <Panel.Title>Obiettivo</Panel.Title>
+                            </Panel.Heading>
+                            <Panel.Body>
+                                <FormGroup>
+                                    <FormGroup>
+                                        <Row>{this.mineralInput("litri")}</Row>
+                                    </FormGroup>
+                                    {this.mineralForm()}
+                                </FormGroup>
+                            </Panel.Body>
+                        </Panel>
+
+                        {this.renderWaters()}
+
+                        <Button bsSize="small">Aggiungi sorgente</Button>
                     </FormGroup>
+
                     <FormGroup>
-                        <Row>
-                            {this.formInput("Calcio", "Ca")}
-                            {this.formInput("Magnesio", "Mg")}
-                            {this.formInput("Sodio", "Na")}
-                        </Row>
-                    </FormGroup>
-                    <FormGroup>
-                        <Row>
-                            {this.formInput("solfati", "SO4")}
-                            {this.formInput("cloruro", "Cl")}
-                            {this.formInput("bicarbonati", "HCO3")}
-                        </Row>
+                        <Button type="submit" bsStyle="primary" >Calcola la combinazione migliore</Button>
                     </FormGroup>
                 </Form>
             </div>
         )
     }
 
-    // render2() {
+    togglePanel(idx: number) {
+        // TODO
+    }
+
+    isExpanded(idx: number) {
+        // TODO
+        return true;
+    }
+
+    renderWaters() {
+        let watersPanel: JSX.Element[] = ["boario", "sant'anna"]
+                     .map((w, idx) =>
+            <Panel eventKey={idx} expanded={true} /*expanded={this.isExpanded.bind(this, idx)}*/ onClick={this.togglePanel.bind(this, idx)}>
+                <Panel.Heading>
+                    <Panel.Title toggle>Sorgente #{idx}</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body collapsible>
+                    <FormGroup>
+                        <Row>
+                            <Col componentClass={ControlLabel} sm={2}>Nome</Col>
+                            <Col sm={4}>
+                                <FormControl bsSize="small" type="text" placeholder=""/>
+                            </Col>
+                            {this.mineralInput("litri")}
+                        </Row>
+                    </FormGroup>
+                    {this.mineralForm()}
+                </Panel.Body>
+            </Panel> );
+        return (
+            <PanelGroup accordion>
+                {watersPanel}
+            </PanelGroup>
+        );
+    }
+
+    private mineralForm() {
+        return (
+            <>
+                <FormGroup>
+                    <Row>
+                        {this.mineralInput("Calcio", "Ca")}
+                        {this.mineralInput("Magnesio", "Mg")}
+                        {this.mineralInput("Sodio", "Na")}
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Row>
+                        {this.mineralInput("solfati", "SO4")}
+                        {this.mineralInput("cloruro", "Cl")}
+                        {this.mineralInput("bicarbonati", "HCO3")}
+                    </Row>
+                </FormGroup>
+            </>);
+    }
+
+    titleCase(str: string) {
+        return str.charAt(0).toUpperCase() +
+            str.substr(1).toLowerCase();
+    }
+
+    mineralInput(label: string, symbol: string = "") {
+        let show = this.titleCase(label) + (symbol ? " (" + symbol + ")" : "");
+        return (
+            <><Col componentClass={ControlLabel} sm={2}>{show}</Col><Col sm={1}> <FormControl bsSize="small" type="number" placeholder=""/></Col></>
+        )
+    }
+
+
+// render2() {
     //     return (
     //         <div className="Rabdo container">
     //             <div className="page-header mb-5">

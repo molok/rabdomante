@@ -1,3 +1,8 @@
 .form-heading {
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
+
+html {
+    overflow-y:scroll;
+}
+
