@@ -4,56 +4,43 @@ import App from './App';
 import './index.css';
 import { createStore } from 'redux';
 import { Provider} from 'react-redux';
-
-interface ActionType {
-    type: string;
-}
-
-let foo: ActionType = {
-   type: "foo",
-};
+import {ADD_SOURCE, CALCULATE, SOURCE_CHANGED, TARGET_CHANGED} from "./actions";
+import {water, WaterDef} from "./water";
 
 export interface State {
-    readonly counter: number;
-    readonly todos: Array<string>;
-    readonly todoText: string;
-}
-
-function actAddTodo(text: string) {
-    return { type: 'add_todo'
-           , text: text };
-}
-
-function actTodoTextChanged(text: string) {
-    return { type: 'todo_text_changed'
-           , text: text };
+    readonly target: WaterDef;
+    readonly sources: Array<WaterDef>
 }
 
 function reducers(state: State, action: any) {
-    // console.log("state:", state);
-    // console.log("action:", action);
+    console.log("state:", state);
+    console.log("action:", action);
     switch ( action.type ) {
-        case 'increment':
-            return { ...state, counter: state.counter + 1 };
-        case 'decrement':
-            return { ...state, counter: state.counter - 1 };
-        case 'todo_text_changed':
-            return { ...state, todoText: action.text };
-        case 'add_todo':
-            let newState = {
+        case ADD_SOURCE:
+            return {
                 ...state,
-                todos: [...state.todos, action.text],
-                todoText: ""
+                sources: [...state.sources, action.payload]
             };
-            console.log("newState:", newState, "action was:", action.text);
-            return newState;
+        case SOURCE_CHANGED:
+            return {
+                ...state,
+                sources: state.sources.map(
+                    (w,i) => i === action.payload.idx ? action.payload.water : w)
+            };
+        case TARGET_CHANGED:
+            return {
+                ...state,
+                target: action.payload
+            };
+        case CALCULATE:
+            return state;
         default:
             console.log("non gestito: ", action);
             return state;
     }
 }
 
-let store = createStore(reducers, { counter: 0, todos: [], todoText: "" });
+let store = createStore(reducers, { target: water("target"), sources: [{}] } );
 
 function render() {
     ReactDOM.render(
@@ -63,7 +50,5 @@ function render() {
         document.getElementById('root') as HTMLElement );
 };
 render();
-
-export {actAddTodo, actTodoTextChanged};
 
 // registerServiceWorker();

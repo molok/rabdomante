@@ -8,38 +8,14 @@ import {
     PanelGroup, ButtonToolbar
 } from "react-bootstrap";
 import './Rabdo.css'
-
-class MineralInput extends Component {
-    static defaultProps = {
-        labelClassName: "col-sm-2",
-        inputClassName: "col-sm-1",
-        symbol: ""
-    };
-
-    render() {
-        let label = "label";
-        let symbol = "symbol";
-        return (
-            <Fragment>
-                <ControlLabel>{label}</ControlLabel>
-                <FormControl type="number" placeholder=""/>
-                {/*<label className={`col-form-label col-form-label-sm text-right ${this.props.labelClassName}`}>{label} <small>{symbol}</small></label>*/}
-                {/*<div className={this.props.inputClassName}>*/}
-                    {/*<input required={true}*/}
-                           {/*className="form-control form-control-sm"*/}
-                           {/*type="number"*/}
-                           {/*value={this.props.value||""}*/}
-                           {/*placeholder={this.props.placeholder}*/}
-                           {/*onChange={this.changed.bind(this)}/>*/}
-                {/*</div>*/}
-            </Fragment>
-        );
-    }
-}
+import {addSource, calculate} from "./actions";
+import {WaterDef} from "./water";
 
 interface RabdoProps {
-    submit: () => void,
-    addWater: () => void,
+    target: WaterDef
+    sources: Array<WaterDef>
+    submit: () => void
+    addWater: (w: WaterDef) => void
 }
 
 class XRabdo extends Component<RabdoProps, {}> {
@@ -142,52 +118,22 @@ class XRabdo extends Component<RabdoProps, {}> {
     mineralInput(label: string, symbol: string = "") {
         let show = this.titleCase(label) + (symbol ? " (" + symbol + ")" : "");
         return (
-            <><Col componentClass={ControlLabel} sm={2}>{show}</Col><Col sm={1}> <FormControl bsSize="small" type="number" placeholder=""/></Col></>
+            <>
+              <Col componentClass={ControlLabel} sm={2}>{show}</Col>
+              <Col sm={1}> <FormControl bsSize="small" type="number" placeholder=""/></Col>
+            </>
         )
     }
 
-
-// render2() {
-    //     return (
-    //         <div className="Rabdo container">
-    //             <div className="page-header mb-5">
-    //                 <h1>Rabdomante <small>Water Profile Calculator</small></h1>
-    //             </div>
-    //             <form onSubmit={this.props.submit.bind(this)}>
-    //                 <div>
-    //                     <div className="form-group">
-    //                         <h5>Obiettivo</h5>
-    //                         <fieldset className="form-group">
-    //                             <div className="form-group row">
-    //                                 <MineralInput />
-    //                             </div>
-    //                             <MineralsForm />
-    //                         </fieldset>
-    //
-    //                         <fieldset className="form-group">
-    //                             <h5>Sorgenti</h5>
-    //                             <div id="accordion">
-    //                                 {this.renderWaters()}
-    //                             </div>
-    //                         </fieldset>
-    //                         <button className="btn btn-secondary btn-sm" type="button" onClick={this.props.addWater.bind(this)}>
-    //                             Aggiungi acqua
-    //                         </button>
-    //                     </div>
-    //                 </div>
-    //                 <button type="submit" className="btn btn-primary mt-5" onClick={this.props.submit.bind(this)}>Calcola la combinazione migliore</button>
-    //             </form>
-    //         </div>
-    //     )
-    // }
 }
 
-
-function mapStateToProps (state: State) { return {}; }
+function mapStateToProps (state: State) {
+    return state;
+}
 function mapDispatchToProps (dispatch: Function) {
     return {
-        submit: () => { dispatch({ type: 'calc'})},
-        addWater: () => { dispatch({ type: 'add_water'})}
+        submit: () => { dispatch(calculate())},
+        addWater: (w :WaterDef) => { dispatch(addSource(w))}
     }
 }
 
