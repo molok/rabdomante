@@ -5,9 +5,10 @@ import {State} from "./index";
 import {connect} from "react-redux";
 import {
     ControlLabel, Form, FormControl, FormGroup, Col, Row, PageHeader, Panel, Button,
-    PanelGroup} from "react-bootstrap";
+    PanelGroup, Glyphicon
+} from "react-bootstrap";
 import './Rabdo.css'
-import {addSource, calculate, sourceChanged, targetChanged} from "./actions";
+import {addSource, calculate, removeSource, sourceChanged, targetChanged} from "./actions";
 import {water, WaterDef} from "./water";
 
 interface RabdoProps {
@@ -17,6 +18,7 @@ interface RabdoProps {
     addWater: (w: WaterDef) => void
     sourceChanged: (idx: number, w: WaterDef) => void
     targetChanged: (w: WaterDef) => void
+    removeSource: (idx: number) => void
 }
 
 class XRabdo extends Component<RabdoProps, {}> {
@@ -49,34 +51,33 @@ class XRabdo extends Component<RabdoProps, {}> {
 
                         {this.renderWaters()}
 
-                        <Button bsSize="small" onClick={this.addWater.bind(this)}>Aggiungi sorgente</Button>
+                        <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> Aggiungi sorgente</Button>
                     </FormGroup>
 
                     <FormGroup>
-                        <Button type="submit" bsStyle="primary" >Calcola la combinazione migliore</Button>
+                        <Button type="submit" bsStyle="primary" ><Glyphicon glyph="play"/> Calcola la combinazione migliore</Button>
                     </FormGroup>
                 </Form>
             </div>
         )
     }
 
-    addWater() {
+    addWater(e: any) {
+        e.preventDefault();
         this.props.addWater(water());
     }
 
-    togglePanel(idx: number) {
+    togglePanel(idx: number, e: any) {
+        console.log("togglePanel!")
+        e.preventDefault();
         this.props.sourceChanged(
             idx,
             { ...this.props.sources[idx], visible: !this.props.sources[idx].visible }
         );
     }
 
-    isExpanded(idx: number) {
-        // TODO
-        return true;
-    }
-
     sourceChanged(idx: number, attrName: string, e: React.ChangeEvent<HTMLInputElement>) {
+        console.log("sourceChanged!")
         this.props.sourceChanged(idx, { ...this.props.sources[idx], [attrName]: e.target.value });
     }
 
@@ -84,15 +85,22 @@ class XRabdo extends Component<RabdoProps, {}> {
         this.props.targetChanged({ ...this.props.target, [attrName]: e.target.value });
     }
 
+    removeSource(idx: number, e: any) {
+        e.preventDefault();
+        e.stopPropagation()
+        this.props.removeSource(idx);
+    }
+
     renderWaters() {
         let watersPanel: JSX.Element[] = this.props.sources
                      .map((w, idx) =>
 
-             // TODO capire differenza tra onToggle, onClick
             <Panel key={idx} eventKey={idx}
                    expanded={this.props.sources[idx].visible}>
                 <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                    <Panel.Title toggle>{w.name || "Sorgente #" + (idx + 1)}</Panel.Title>
+                    <Panel.Title toggle className="clearfix">{w.name || "Sorgente #" + (idx + 1)}
+                                        <span className={"pull-right"}><Button bsSize="xsmall" onClick={this.removeSource.bind(this, idx)}><Glyphicon glyph="remove"/></Button></span>
+                    </Panel.Title>
                 </Panel.Heading>
                 <Panel.Body collapsible>
                     <FormGroup>
@@ -178,7 +186,8 @@ function mapDispatchToProps (dispatch: Function) {
         submit: () => { dispatch(calculate())},
         addWater: (w :WaterDef) => { dispatch(addSource(w))},
         sourceChanged: (idx: number, w: WaterDef) => { dispatch(sourceChanged(idx, w))},
-        targetChanged: (w: WaterDef) => { dispatch(targetChanged(w))}
+        targetChanged: (w: WaterDef) => { dispatch(targetChanged(w))},
+        removeSource: (idx: number) => { dispatch(removeSource(idx))}
     }
 }
 

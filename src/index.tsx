@@ -4,7 +4,7 @@ import App from './App';
 import './index.css';
 import { createStore } from 'redux';
 import { Provider} from 'react-redux';
-import {ADD_SOURCE, CALCULATE, SOURCE_CHANGED, TARGET_CHANGED} from "./actions";
+import {ADD_SOURCE, CALCULATE, REMOVE_SOURCE, SOURCE_CHANGED, TARGET_CHANGED} from "./actions";
 import {water, WaterDef} from "./water";
 
 export interface State {
@@ -34,6 +34,11 @@ function reducers(state: State, action: any) {
             };
         case CALCULATE:
             return state;
+        case REMOVE_SOURCE:
+            return {
+                ...state,
+                sources: state.sources.filter((_, idx) => idx !== action.idx )
+            };
         default:
             console.log("non gestito: ", action);
             return state;

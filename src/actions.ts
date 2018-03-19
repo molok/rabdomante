@@ -4,6 +4,7 @@ export const ADD_SOURCE = 'ADD_SOURCE';
 export const CALCULATE = 'CALCULATE';
 export const SOURCE_CHANGED = 'SOURCE_CHANGED';
 export const TARGET_CHANGED = 'TARGET_CHANGED';
+export const REMOVE_SOURCE = 'REMOVE_SOURCE';
 
 
 export function addSource(w: WaterDef) {
@@ -20,15 +21,6 @@ export function sourceChanged(idx: number, water: WaterDef) {
     }
 }
 
-export function targetChanged(water: WaterDef) {
-    return {
-        type: TARGET_CHANGED,
-        payload: water
-    }
-}
-
-export function calculate() {
-    return {
-        type: CALCULATE
-    }
-}
+export function targetChanged(water: WaterDef) { return { type: TARGET_CHANGED, payload: water } }
+export function calculate() { return { type: CALCULATE } }
+export function removeSource(idx: number) { return { type: REMOVE_SOURCE, idx}}
