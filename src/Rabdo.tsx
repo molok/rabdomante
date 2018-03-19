@@ -1,21 +1,21 @@
 import * as React from 'react';
 import './App.css';
-import {Component, Fragment} from "react";
+import {ChangeEvent, Component} from "react";
 import {State} from "./index";
 import {connect} from "react-redux";
 import {
-    ControlLabel, Form, FormControl, FormGroup, Label, Col, Row, PageHeader, Panel, Button,
-    PanelGroup, ButtonToolbar
-} from "react-bootstrap";
+    ControlLabel, Form, FormControl, FormGroup, Col, Row, PageHeader, Panel, Button,
+    PanelGroup} from "react-bootstrap";
 import './Rabdo.css'
-import {addSource, calculate} from "./actions";
-import {WaterDef} from "./water";
+import {addSource, calculate, sourceChanged} from "./actions";
+import {water, WaterDef} from "./water";
 
 interface RabdoProps {
     target: WaterDef
     sources: Array<WaterDef>
     submit: () => void
     addWater: (w: WaterDef) => void
+    sourceChanged: (idx: number, w: WaterDef) => void
 }
 
 class XRabdo extends Component<RabdoProps, {}> {
@@ -43,7 +43,7 @@ class XRabdo extends Component<RabdoProps, {}> {
 
                         {this.renderWaters()}
 
-                        <Button bsSize="small">Aggiungi sorgente</Button>
+                        <Button bsSize="small" onClick={this.addWater.bind(this)}>Aggiungi sorgente</Button>
                     </FormGroup>
 
                     <FormGroup>
@@ -54,8 +54,15 @@ class XRabdo extends Component<RabdoProps, {}> {
         )
     }
 
+    addWater() {
+        this.props.addWater(water());
+    }
+
     togglePanel(idx: number) {
-        // TODO
+        this.props.sourceChanged(
+            idx,
+            { ...this.props.sources[idx], visible: !this.props.sources[idx].visible }
+        );
     }
 
     isExpanded(idx: number) {
@@ -63,28 +70,40 @@ class XRabdo extends Component<RabdoProps, {}> {
         return true;
     }
 
+    sourceChanged(idx: number, e: any) {
+        this.props.sourceChanged(
+            idx,
+            { ...this.props.sources[idx], name: e.target.value }
+        )
+    }
+
     renderWaters() {
-        let watersPanel: JSX.Element[] = ["boario", "sant'anna"]
+        let watersPanel: JSX.Element[] = this.props.sources
                      .map((w, idx) =>
-            <Panel eventKey={idx} expanded={true} /*expanded={this.isExpanded.bind(this, idx)}*/ onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Heading>
-                    <Panel.Title toggle>Sorgente #{idx}</Panel.Title>
+
+             // TODO capire differenza tra onToggle, onClick
+            <Panel key={idx} eventKey={idx}
+                   expanded={this.props.sources[idx].visible}>
+                <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
+                    <Panel.Title toggle>{w.name || "Sorgente #" + (idx + 1)}</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body collapsible>
                     <FormGroup>
                         <Row>
                             <Col componentClass={ControlLabel} sm={2}>Nome</Col>
                             <Col sm={4}>
-                                <FormControl bsSize="small" type="text" placeholder=""/>
+                                <FormControl bsSize="small" type="text" placeholder="" value={w.name} onChange={this.sourceChanged.bind(this, idx)}/>
                             </Col>
                             {this.mineralInput("litri")}
                         </Row>
                     </FormGroup>
                     {this.mineralForm()}
                 </Panel.Body>
-            </Panel> );
+            </Panel>
+        );
+
         return (
-            <PanelGroup accordion>
+            <PanelGroup id="source_waters">
                 {watersPanel}
             </PanelGroup>
         );
@@ -133,7 +152,8 @@ function mapStateToProps (state: State) {
 function mapDispatchToProps (dispatch: Function) {
     return {
         submit: () => { dispatch(calculate())},
-        addWater: (w :WaterDef) => { dispatch(addSource(w))}
+        addWater: (w :WaterDef) => { dispatch(addSource(w))},
+        sourceChanged: (idx: number, w: WaterDef) => { dispatch(sourceChanged(idx, w))}
     }
 }
 
