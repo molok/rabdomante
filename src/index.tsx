@@ -40,7 +40,7 @@ function reducers(state: State, action: any) {
     }
 }
 
-let store = createStore(reducers, { target: water("target"), sources: [{}] } );
+let store = createStore(reducers, { target: water("target"), sources: [water()] } );
 
 function render() {
     ReactDOM.render(
