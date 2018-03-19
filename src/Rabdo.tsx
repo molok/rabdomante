@@ -25,7 +25,7 @@ class XRabdo extends Component<RabdoProps, {}> {
     render() {
         return (
             <div className="Rabdo container">
-                <PageHeader>
+                <PageHeader className={"text-center"}>
                     Rabdomante <small>Water Profile Calculator</small>
                 </PageHeader>
                 <Form horizontal>

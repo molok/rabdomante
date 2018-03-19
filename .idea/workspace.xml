@@ -42,8 +42,8 @@
       <file leaf-file-name="Rabdo.tsx" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Rabdo.tsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="555">
-              <caret line="88" column="8" lean-forward="false" selection-start-line="88" selection-start-column="8" selection-end-line="88" selection-end-column="8" />
+            <state relative-caret-position="85">
+              <caret line="27" column="50" lean-forward="false" selection-start-line="27" selection-start-column="50" selection-end-line="27" selection-end-column="50" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -367,7 +367,7 @@
       <workItem from="1521222618886" duration="1106000" />
       <workItem from="1521274248289" duration="5603000" />
       <workItem from="1521391435738" duration="17756000" />
-      <workItem from="1521454973241" duration="10388000" />
+      <workItem from="1521454973241" duration="11523000" />
     </task>
     <servers />
   </component>
@@ -401,7 +401,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55500000" />
+    <option name="totallyTimeSpent" value="56635000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1366" height="768" extended-state="0" />
@@ -640,8 +640,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Rabdo.tsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="88" column="8" lean-forward="false" selection-start-line="88" selection-start-column="8" selection-end-line="88" selection-end-column="8" />
+        <state relative-caret-position="85">
+          <caret line="27" column="50" lean-forward="false" selection-start-line="27" selection-start-column="50" selection-end-line="27" selection-end-column="50" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
