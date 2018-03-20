@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
 import {createStore} from 'redux';
+import * as _ from "lodash";
 
 // it('renders without crashing', () => {
 //     let store = createStore((s, a) => s, { counter: 0 });
@@ -30,3 +31,8 @@ it('array slice6', () => {
     expect(removeElement6(arr, 2)).toEqual(['a', 'b', 'd']);
 });
 
+it('object equals', () => {
+    let a = {foo: 1};
+    let b = {foo: 1};
+    expect(_.isEqual(a, b)).toEqual(true);
+})

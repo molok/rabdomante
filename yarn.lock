@@ -6,6 +6,10 @@
   version "22.2.0"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.0.tgz#55ce83139f7ad1b48b414c3927746614c6963c0f"
 
+"@types/lodash@^4.14.105":
+  version "4.14.105"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.105.tgz#9fcc4627a1f98f8f8fce79ddb2bff4afd97e959b"
+
 "@types/node@*", "@types/node@^9.4.7":
   version "9.4.7"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.7.tgz#57d81cd98719df2c9de118f2d5f3b1120dcd7275"
@@ -33,6 +37,12 @@
   dependencies:
     "@types/react" "*"
     redux "^3.6.0"
+
+"@types/react-select@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-1.2.5.tgz#f0fb02b9b3951e3da864802f05832ad10cb8d8d7"
+  dependencies:
+    "@types/react" "*"
 
 "@types/react@*", "@types/react@^16.0.40":
   version "16.0.40"
@@ -610,17 +620,6 @@ boom@5.x.x:
   resolved "https://registry.yarnpkg.com/boom/-/boom-5.2.0.tgz#5dd9da6ee3a5f302077436290cb717d3f4a54e02"
   dependencies:
     hoek "4.x.x"
-
-bootstrap-material-design@0.5.10:
-  version "0.5.10"
-  resolved "https://registry.yarnpkg.com/bootstrap-material-design/-/bootstrap-material-design-0.5.10.tgz#b36b0035b528a821c1758695b25d25e25e121372"
-  dependencies:
-    bootstrap ">=3.0"
-    jquery ">=1.9.1"
-
-bootstrap@>=3.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.0.0.tgz#ceb03842c145fcc1b9b4e15da2a05656ba68469a"
 
 boxen@^1.2.1:
   version "1.3.0"
@@ -3367,10 +3366,6 @@ jest@20.0.4:
   resolved "https://registry.yarnpkg.com/jest/-/jest-20.0.4.tgz#3dd260c2989d6dad678b1e9cc4d91944f6d602ac"
   dependencies:
     jest-cli "^20.0.4"
-
-jquery@>=1.9.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 
 js-base64@^2.1.9:
   version "2.4.3"

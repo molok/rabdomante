@@ -1,24 +1,31 @@
 import * as React from 'react';
 import './App.css';
 import {ChangeEvent, Component} from "react";
-import {State} from "./index";
+import {Salt, State} from "./index";
 import {connect} from "react-redux";
 import {
     ControlLabel, Form, FormControl, FormGroup, Col, Row, PageHeader, Panel, Button,
-    PanelGroup, Glyphicon
+    PanelGroup, Glyphicon, Checkbox
 } from "react-bootstrap";
 import './Rabdo.css'
-import {addSource, calculate, removeSource, sourceChanged, targetChanged} from "./actions";
+import {
+    addSource, calculate, removeSource, saltSelectionChanged, sourceChanged,
+    targetChanged
+} from "./actions";
 import {water, WaterDef} from "./water";
+import Select from 'react-select';
+import 'react-select/dist/react-select.css'
 
 interface RabdoProps {
     target: WaterDef
     sources: Array<WaterDef>
+    salts: Array<Salt>
     submit: () => void
     addWater: (w: WaterDef) => void
     sourceChanged: (idx: number, w: WaterDef) => void
     targetChanged: (w: WaterDef) => void
     removeSource: (idx: number) => void
+    saltSelectionChanged: (salts: Array<string>) => void
 }
 
 class XRabdo extends Component<RabdoProps, {}> {
@@ -48,14 +55,16 @@ class XRabdo extends Component<RabdoProps, {}> {
                                 </FormGroup>
                             </Panel.Body>
                         </Panel>
-
                         {this.renderWaters()}
-
-                        <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> Aggiungi sorgente</Button>
+                        <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/>Aggiungi acqua base</Button>
                     </FormGroup>
 
                     <FormGroup>
-                        <Button type="submit" bsStyle="primary" ><Glyphicon glyph="play"/> Calcola la combinazione migliore</Button>
+                        {this.renderSalts()}
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Button type="submit" bsStyle="primary" ><Glyphicon glyph="play"/>Calcola la combinazione migliore</Button>
                     </FormGroup>
                 </Form>
             </div>
@@ -87,8 +96,24 @@ class XRabdo extends Component<RabdoProps, {}> {
 
     removeSource(idx: number, e: any) {
         e.preventDefault();
-        e.stopPropagation()
+        e.stopPropagation();
         this.props.removeSource(idx);
+    }
+
+    saltsChanged(e: any) {
+        console.log("event:", e);
+        let salts = e.map((sel: any) => sel.value);
+        this.props.saltSelectionChanged(salts);
+    }
+
+    renderSalts() {
+        let options = this.props.salts.map(salt => ({ label: salt.name, value: salt.name}));
+        let value = this.props.salts
+                        .filter(salt => salt.selected)
+                        .map( salt => ({ label: salt.name, value: salt.name}));
+        return (
+            <Select multi value={value} options={options} onChange={this.saltsChanged.bind(this)}></Select>
+        )
     }
 
     renderWaters() {
@@ -98,7 +123,7 @@ class XRabdo extends Component<RabdoProps, {}> {
             <Panel key={idx} eventKey={idx}
                    expanded={this.props.sources[idx].visible}>
                 <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                    <Panel.Title toggle className="clearfix">{w.name || "Sorgente #" + (idx + 1)}
+                    <Panel.Title toggle className="clearfix">{w.name || "Acqua base #" + (idx + 1)}
                                         <span className={"pull-right"}><Button bsSize="xsmall" onClick={this.removeSource.bind(this, idx)}><Glyphicon glyph="remove"/></Button></span>
                     </Panel.Title>
                 </Panel.Heading>
@@ -187,7 +212,8 @@ function mapDispatchToProps (dispatch: Function) {
         addWater: (w :WaterDef) => { dispatch(addSource(w))},
         sourceChanged: (idx: number, w: WaterDef) => { dispatch(sourceChanged(idx, w))},
         targetChanged: (w: WaterDef) => { dispatch(targetChanged(w))},
-        removeSource: (idx: number) => { dispatch(removeSource(idx))}
+        removeSource: (idx: number) => { dispatch(removeSource(idx))},
+        saltSelectionChanged: (salts: Array<string>) => { dispatch(saltSelectionChanged(salts))}
     }
 }
 
