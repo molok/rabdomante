@@ -32,7 +32,7 @@ const RenderSalts = ({ salts, saltChanged } : { salts: Array<Salt>;
     return (
         <Select multi value={value} options={options} onChange={saltChanged}></Select>
     )
-}
+};
 
 class XRabdo extends Component<RabdoProps, {}> {
     render() {

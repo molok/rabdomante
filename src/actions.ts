@@ -9,7 +9,6 @@ export const REMOVE_SOURCE = 'REMOVE_SOURCE';
 export const SALT_CHANGED = 'SALT_CHANGED';
 export const SALT_SELECTION_CHANGED = 'SALT_SELECTION_CHANGED';
 
-
 export function addSource(w: WaterDef) {
     return {
         type: ADD_SOURCE,

@@ -28,6 +28,7 @@ class SourceWaters extends Component<SourceWatersProps, {}> {
         let res = this.props.sources
             .map((w: WaterDef, idx: number) =>
                 <Panel key={idx} eventKey={idx}
+                       className="waterPanel"
                        expanded={this.props.sources[idx].visible}
                        onToggle={(ignored: any) => {
                        }} /* se non presente una callback spara fuori un warning */ >

@@ -9,7 +9,7 @@ interface MineralInputProps {
     onChange: (e: number) => void,
 }
 
-class MineralInput extends Component<MineralInputProps, {}> {
+class MineralInput extends React.Component<MineralInputProps, {}> {
     changed(e: ChangeEvent<HTMLInputElement>) {
         this.props.onChange(parseFloat(e.target.value));
     }

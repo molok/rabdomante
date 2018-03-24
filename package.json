@@ -23,12 +23,20 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@types/jest": "^22.2.0",
+    "@types/enzyme": "^3.1.9",
+    "@types/enzyme-adapter-react-16": "^1.0.2",
+    "@types/jest": "^22.2.2",
     "@types/node": "^9.4.7",
     "@types/react": "^16.0.40",
     "@types/react-bootstrap": "^0.32.1",
     "@types/react-dom": "^16.0.4",
     "@types/react-select": "^1.2.5",
+    "@types/react-test-renderer": "^16.0.1",
+    "@types/redux-test-utils": "^0.2.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "react-test-renderer": "^16.2.0",
+    "redux-test-utils": "^0.2.2",
     "typescript": "^2.7.2"
   }
 }
