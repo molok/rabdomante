@@ -5,7 +5,7 @@ import {createStore} from 'redux';
 import {Provider} from 'react-redux';
 import Rabdo from "./containers/Rabdo";
 import {defaultState} from "./model";
-import reducers from "./reducers";
+import {reducers} from "./reducers";
 
 let store = createStore(reducers, defaultState);
 
