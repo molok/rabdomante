@@ -1,15 +1,16 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {Salt, State} from "../index";
+import {State} from "../model/index";
 import {connect} from "react-redux";
 import {Button, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
 import './Rabdo.css'
 import {addSource, calculate, removeSource, saltSelectionChanged, sourceChanged, targetChanged} from "../actions";
-import {water, WaterDef} from "../water";
+import {water} from "../model/index";
 import Select from 'react-select';
 import 'react-select/dist/react-select.css'
 import TargetWater from "../components/TargetWater";
 import SourceWaters from "../components/SourceWaters";
+import {Salt, WaterDef} from "../model";
 
 interface RabdoProps {
     target: WaterDef

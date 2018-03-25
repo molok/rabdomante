@@ -35,6 +35,8 @@
     "@types/redux-test-utils": "^0.2.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "jsdom": "^11.6.2",
+    "jsdom-global": "^3.0.2",
     "react-test-renderer": "^16.2.0",
     "redux-test-utils": "^0.2.2",
     "typescript": "^2.7.2"

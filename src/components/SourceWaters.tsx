@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Component} from 'react';
 import {Button, Col, ControlLabel, FormControl, FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
-import {WaterDef} from "../water";
+import {WaterDef} from "../model/index";
 import MineralForm from "./MineralForm";
 import MineralInput from "./MineralInput";
 

@@ -1,5 +1,5 @@
-import {WaterDef} from "./water";
-import {Salt} from "./index";
+import {WaterDef} from "./model/index";
+import {Salt} from "./model/index";
 
 export const ADD_SOURCE = 'ADD_SOURCE';
 export const CALCULATE = 'CALCULATE';

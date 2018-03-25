@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as act from '../actions';
-import {State} from "../index";
+import {State} from "../model/index";
 
 function reducers(state: State, action: any) {
     console.log("state:", state);
@@ -17,17 +17,15 @@ function reducers(state: State, action: any) {
                 sources: state.sources.map(
                     (w,i) => i === action.payload.idx ? action.payload.water : w)
             };
-        case act.TARGET_CHANGED:
-            return {
-                ...state,
-                target: action.payload
-            };
-        case act.CALCULATE:
-            return state;
         case act.REMOVE_SOURCE:
             return {
                 ...state,
                 sources: state.sources.filter((_, idx) => idx !== action.idx )
+            };
+        case act.TARGET_CHANGED:
+            return {
+                ...state,
+                target: action.payload
             };
         case act.SALT_CHANGED:
             return {
@@ -39,6 +37,8 @@ function reducers(state: State, action: any) {
                 ...state,
                 salts: state.salts.map( salt => ({ ...salt, selected: action.salts.includes(salt.name) }) )
             };
+        case act.CALCULATE:
+            return state;
         default:
             console.log("non gestito: ", action);
             return state;

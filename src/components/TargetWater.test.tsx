@@ -7,7 +7,8 @@ import * as enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import MineralForm from "./MineralForm";
 import TargetWater from "./TargetWater";
-import {water, WaterDef} from "../water";
+import {water} from "../model/index";
+import {WaterDef} from "../model";
 enzyme.configure({ adapter: new Adapter() });
 
 
