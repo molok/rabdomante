@@ -36,11 +36,14 @@ function sourceReducer(sources: Array<WaterDef>, action: any): Array<WaterDef> {
 }
 
 function coreReducer(state: State, action: any): State {
-    return {
+    // console.log("action", action, "state before:", state);
+    const nextState= {
         sources: sourceReducer(state.sources, action),
         target: targetReducer(state.target, action),
         salts: saltReducer(state.salts, action)
     };
+    // console.log("state after", nextState);
+    return nextState;
 }
 
 export function reducers (state: State, action: any): State {
