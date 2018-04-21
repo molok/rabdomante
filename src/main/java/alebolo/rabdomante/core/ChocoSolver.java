@@ -7,6 +7,8 @@ import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
 import org.javatuples.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,7 +16,13 @@ import java.util.stream.Collectors;
 import java.util.function.Function;
 
 public class ChocoSolver implements WaterSolver {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override public Optional<Recipe> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters) {
+        logger.info("target {}", target);
+        logger.info("waters {}", availableWaters);
+        logger.info("salts {}", availableSalts);
+
         Model model = new Model("waterModel");
 
         int targetLiters = target.liters;
@@ -48,6 +56,8 @@ public class ChocoSolver implements WaterSolver {
                     cost.getValue()
             );
         }
+
+        logger.info("recipe", recipe);
 
         return Optional.ofNullable(recipe);
     }

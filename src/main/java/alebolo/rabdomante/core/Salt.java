@@ -3,7 +3,7 @@ package alebolo.rabdomante.core;
 import java.util.Objects;
 
 public class Salt extends SaltProfile {
-    final int dg;
+    public final int dg;
     public Salt(SaltProfile salt, int dg) {
         this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, dg);
     }

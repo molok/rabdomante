@@ -3,13 +3,13 @@ package alebolo.rabdomante.core;
 import java.util.Objects;
 
 public class WaterProfile {
-    final int ca;
-    final int mg;
-    final int na;
-    final int so4;
-    final int cl;
-    final int hco3;
-    final String nome;
+    public final int ca;
+    public final int mg;
+    public final int na;
+    public final int so4;
+    public final int cl;
+    public final int hco3;
+    public final String nome;
 
     public static boolean sameProfile(WaterProfile a, WaterProfile b) {
         return a.ca == b.ca &&

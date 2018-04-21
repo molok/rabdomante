@@ -1,6 +1,7 @@
 package alebolo.rabdomante.cli;
 
 import alebolo.rabdomante.core.*;
+import alebolo.rabdomante.xlsx.UserInputReader;
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.junit.runner.RunWith;

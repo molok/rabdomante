@@ -3,7 +3,7 @@ package alebolo.rabdomante.core;
 import java.util.Objects;
 
 public class Water extends WaterProfile {
-    final int liters;
+    public final int liters;
     public Water(WaterProfile profile, int liters) {
         this(profile.ca, profile.mg, profile.na, profile.so4, profile.cl, profile.hco3, profile.nome, liters);
     }
