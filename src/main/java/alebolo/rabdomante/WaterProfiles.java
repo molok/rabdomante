@@ -11,7 +11,7 @@ public class WaterProfiles {
     static final WaterProfile VERA = new WaterProfile("vera", 35, 12, 2, 19, 3, 148);
     static final WaterProfile VITASNELLA = new WaterProfile("vitasnella", 86, 26, 3, 83, 2, 301);
     static final WaterProfile DOLOMITI = new WaterProfile("dolomiti", 8, 9, 1, 22, 1, 95);
-    static final WaterProfile SANBERARDO = new WaterProfile("sanberardo", 9, 1, 1, 2, 1, 30);
+    static final WaterProfile SANBERARDO = new WaterProfile("sanbernardo", 9, 1, 1, 2, 1, 30);
     static final WaterProfile DISTILLED = new WaterProfile("distilled", 0, 0, 0, 0, 0, 0);
     static final WaterProfile YELLOW_DRY = new WaterProfile("yellow dry", 50, 10, 5, 105, 45, 0);
 }

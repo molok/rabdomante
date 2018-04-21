@@ -154,6 +154,30 @@ public class WaterSolverTest {
         System.out.println(target.toString());
     }
 
+    @Test public void yellow() {
+        List<Salt> mySalts = Arrays.asList(
+                new Salt(SaltProfiles.GYPSUM, 100),
+                new Salt(SaltProfiles.TABLE_SALT, 1000));
+
+        List<Water> myWater = Arrays.asList(
+//                new Water( WaterProfiles.SANTANNA_VIN, Integer.MAX_VALUE),
+                new Water( WaterProfiles.SANTANNA_REB, Integer.MAX_VALUE),
+                new Water( WaterProfiles.MILANO, Integer.MAX_VALUE),
+                new Water( WaterProfiles.BOARIO, Integer.MAX_VALUE),
+                new Water( WaterProfiles.LEVISSIMA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.EVA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.NORDA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.VERA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.VITASNELLA, Integer.MAX_VALUE),
+                new Water( WaterProfiles.DOLOMITI, Integer.MAX_VALUE),
+                new Water( WaterProfiles.SANBERARDO, Integer.MAX_VALUE));
+
+        Water target = new Water(WaterProfiles.YELLOW_DRY, 17);
+
+        Optional<Recipe> recipe = new ChocoSolver().solve(target, mySalts, myWater);
+        System.out.println(recipe.get());
+    }
+
     @Test public void testRecipe() {
         Recipe recipe = new Recipe(Arrays.asList(new Water(WaterProfiles.SANTANNA_VIN, 10)), Arrays.asList(), 0);
         System.out.println(recipe);
