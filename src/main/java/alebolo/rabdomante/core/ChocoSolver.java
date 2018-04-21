@@ -1,4 +1,4 @@
-package alebolo.rabdomante;
+package alebolo.rabdomante.core;
 
 import com.google.common.primitives.Ints;
 import org.apache.commons.collections4.IteratorUtils;

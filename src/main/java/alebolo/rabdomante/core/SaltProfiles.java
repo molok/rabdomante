@@ -1,4 +1,4 @@
-package alebolo.rabdomante;
+package alebolo.rabdomante.core;
 
 public class SaltProfiles {
     static final SaltProfile GYPSUM = new SaltProfile.Builder("gypsum").ca(23).so4(56).build();

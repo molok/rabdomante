@@ -1,6 +1,6 @@
-package alebolo.rabdomante;
+package alebolo.rabdomante.core;
 
-import org.assertj.core.api.Assertions;
+import alebolo.rabdomante.core.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

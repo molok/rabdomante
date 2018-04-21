@@ -1,4 +1,4 @@
-package alebolo.rabdomante;
+package alebolo.rabdomante.core;
 
 public class WaterProfiles {
     static final WaterProfile SANTANNA_VIN = new WaterProfile("sant'anna vinadio", 10, 0/*NA*/, 1, 8, 0/*NA*/, 26);

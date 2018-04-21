@@ -1,4 +1,4 @@
-package alebolo.rabdomante;
+package alebolo.rabdomante.core;
 
 import java.util.List;
 import java.util.Optional;
