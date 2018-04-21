@@ -28,14 +28,30 @@ public class UserInputReader implements IUserInputReader {
     }
 
     @Override public List<Water> waters() {
+        return readWaters(SHEETS.WATER);
+    }
+
+    @Override public Water target() {
+        List<Water> res = readWaters(SHEETS.TARGET);
+        if (res.size() == 0) {
+            throw new RabdoInputException("File non corretto, target non configurato");
+        } else if (res.size() > 1) {
+            throw new RabdoInputException("File non corretto, solo un target permesso, trovati " + res.size());
+        } else {
+            return res.get(0);
+        }
+    }
+
+    private List<Water> readWaters(SHEETS water) {
         try (Workbook wb = workbook()) {
-            return Streams.stream(wb.getSheetAt(SHEETS.WATER.ordinal()).rowIterator())
+            List<Water> res = Streams.stream(wb.getSheetAt(water.ordinal()).rowIterator())
                     .skip(HEADER_ROWS)
-                    .filter( row -> {
+                    .filter(row -> {
                         String name = row.getCell(NAME.ordinal()).getStringCellValue();
                         return name != null && !name.isEmpty();
-                    } )
-                    .map( row -> new Water(
+                    })
+                    .filter(row -> toInt(row.getCell(QTY.ordinal()).getNumericCellValue()) > 0)
+                    .map(row -> new Water(
                             new WaterProfile(
                                     row.getCell(NAME.ordinal()).getStringCellValue(),
                                     toInt(row.getCell(CA.ordinal()).getNumericCellValue()),
@@ -46,6 +62,12 @@ public class UserInputReader implements IUserInputReader {
                                     toInt(row.getCell(HCO3.ordinal()).getNumericCellValue())),
                             toInt(row.getCell(QTY.ordinal()).getNumericCellValue())))
                     .collect(Collectors.toList());
+
+            if (res.size() == 0) {
+                throw new RabdoInputException("File non corretto, nessuna acqua disponibile configurata");
+            } else {
+                return res;
+            }
         } catch (Exception e) {
             throw new RabdoInputException(e);
         }
@@ -53,13 +75,14 @@ public class UserInputReader implements IUserInputReader {
 
     @Override public List<Salt> salts() {
         try (Workbook wb = workbook()) {
-            return Streams.stream(wb.getSheetAt(SHEETS.SALTS.ordinal()).rowIterator())
+            List<Salt> res = Streams.stream(wb.getSheetAt(SHEETS.SALTS.ordinal()).rowIterator())
                     .skip(HEADER_ROWS)
-                    .filter( row -> {
+                    .filter(row -> {
                         String name = row.getCell(NAME.ordinal()).getStringCellValue();
                         return name != null && !name.isEmpty();
-                    } )
-                    .map( row -> new Salt(
+                    })
+                    .filter(row -> toInt(row.getCell(QTY.ordinal()).getNumericCellValue()) > 0)
+                    .map(row -> new Salt(
                             new SaltProfile(
                                     row.getCell(NAME.ordinal()).getStringCellValue(),
                                     toInt(row.getCell(CA.ordinal()).getNumericCellValue()),
@@ -70,6 +93,12 @@ public class UserInputReader implements IUserInputReader {
                                     toInt(row.getCell(HCO3.ordinal()).getNumericCellValue())),
                             toInt(row.getCell(QTY.ordinal()).getNumericCellValue())))
                     .collect(Collectors.toList());
+
+            if (res.size() == 0) {
+                throw new RabdoInputException("File non corretto, nessuna acqua disponibile configurata");
+            } else {
+                return res;
+            }
         } catch (Exception e) {
             throw new RabdoInputException(e);
         }

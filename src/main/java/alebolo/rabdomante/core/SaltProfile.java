@@ -53,6 +53,15 @@ public class SaltProfile {
                 '}';
     }
 
+    public static boolean sameProfile(SaltProfile a, SaltProfile b) {
+        return  a.ca == b.ca &&
+                a.mg == b.mg &&
+                a.na == b.na &&
+                a.so4 == b.so4 &&
+                a.cl == b.cl &&
+                a.hco3 == b.hco3;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
