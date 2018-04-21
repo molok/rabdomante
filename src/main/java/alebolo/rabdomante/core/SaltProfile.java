@@ -2,7 +2,7 @@ package alebolo.rabdomante.core;
 
 import java.util.Objects;
 
-class SaltProfile {
+public class SaltProfile {
     final int ca;
     final int mg;
     final int na;
@@ -30,7 +30,7 @@ class SaltProfile {
         SaltProfile build() { return new SaltProfile(nome, ca, mg, na, so4, cl, hco3); }
     }
 
-    SaltProfile(String nome, int ca, int mg, int na, int so4, int cl, int hco3) {
+    public SaltProfile(String nome, int ca, int mg, int na, int so4, int cl, int hco3) {
         this.ca = ca;
         this.mg = mg;
         this.na = na;

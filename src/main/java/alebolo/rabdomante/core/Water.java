@@ -2,12 +2,12 @@ package alebolo.rabdomante.core;
 
 import java.util.Objects;
 
-class Water extends WaterProfile {
+public class Water extends WaterProfile {
     final int liters;
-    Water(WaterProfile salt, int liters) {
-        this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, liters);
+    public Water(WaterProfile profile, int liters) {
+        this(profile.ca, profile.mg, profile.na, profile.so4, profile.cl, profile.hco3, profile.nome, liters);
     }
-    Water(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int liters) {
+    public Water(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int liters) {
         super(nome, ca, mg, na, so4, cl, hco3);
         this.liters = liters;
     }
@@ -37,7 +37,6 @@ class Water extends WaterProfile {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), liters);
     }
 }

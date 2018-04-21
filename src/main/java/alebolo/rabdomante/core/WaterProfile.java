@@ -2,7 +2,7 @@ package alebolo.rabdomante.core;
 
 import java.util.Objects;
 
-class WaterProfile {
+public class WaterProfile {
     final int ca;
     final int mg;
     final int na;
@@ -11,7 +11,16 @@ class WaterProfile {
     final int hco3;
     final String nome;
 
-    WaterProfile(String nome, int ca, int mg, int na, int so4, int cl, int hco3) {
+    public static boolean sameProfile(WaterProfile a, WaterProfile b) {
+        return a.ca == b.ca &&
+               a.mg == b.mg &&
+               a.na == b.na &&
+               a.so4 == b.so4 &&
+               a.cl == b.cl &&
+               a.hco3 == b.hco3;
+    }
+
+    public WaterProfile(String nome, int ca, int mg, int na, int so4, int cl, int hco3) {
         this.nome = nome;
         this.ca = ca;
         this.mg = mg;

@@ -2,9 +2,9 @@ package alebolo.rabdomante.core;
 
 import java.util.Objects;
 
-class Salt extends SaltProfile {
+public class Salt extends SaltProfile {
     final int dg;
-    Salt(SaltProfile salt, int dg) {
+    public Salt(SaltProfile salt, int dg) {
         this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, dg);
     }
     Salt(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int dg) {
