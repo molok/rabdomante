@@ -19,6 +19,10 @@ public class ChocoSolver implements WaterSolver {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override public Optional<Recipe> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters) {
+        return solve(target, availableSalts, availableWaters, null);
+    }
+
+    @Override public Optional<Recipe> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters, Long secondsTimeout) {
         logger.info("target {}", target);
         logger.info("waters {}", availableWaters);
         logger.info("salts {}", availableSalts);
@@ -37,7 +41,10 @@ public class ChocoSolver implements WaterSolver {
 
         model.setObjective(Model.MINIMIZE, cost);
         Solver solver = model.getSolver();
-//        solver.limitTime(30 * 1000);
+
+        if (secondsTimeout != null) {
+            solver.limitTime(secondsTimeout.longValue() * 1000);
+        }
 
         List<IntVar> toWatch = new ArrayList<>(waterVars.values());
         toWatch.addAll(saltVars.values());
@@ -57,7 +64,7 @@ public class ChocoSolver implements WaterSolver {
             );
         }
 
-        logger.info("recipe", recipe);
+        logger.info("recipe: {}", recipe);
 
         return Optional.ofNullable(recipe);
     }

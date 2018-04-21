@@ -24,8 +24,8 @@ public class Cli {
 
     public static void main(String[] args) {
         logger.info("entrato");
-        resWriter.write(
-                new ChocoSolver().solve(uiReader.target(), uiReader.salts(), uiReader.waters()).get());
+        // TODO add secondsTimeout
+        resWriter.write(new ChocoSolver().solve(uiReader.target(), uiReader.salts(), uiReader.waters()).get());
         logger.info("uscito");
     }
 
