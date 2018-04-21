@@ -25,17 +25,15 @@ public class ResultWriter implements IResultWriter {
         this.output = output;
     }
 
-    private static void close( Closeable a, Closeable b ) {
-        try { if (a != null) a.close(); } catch (Exception e) {}
-        try { if (b != null) b.close(); } catch (Exception e) {}
-    }
-
     @Override
     public void write(Recipe recipe) {
         logger.info("inizio scrittura su {}", input);
 
+        FileInputStream fis = null;
+
         try {
-            try (Workbook wb = WorkbookFactory.create(new FileInputStream(input))) {
+            fis = new FileInputStream(input);
+            try (Workbook wb = WorkbookFactory.create(fis)) {
                 Sheet sheet = wb.getSheetAt(RESULT.ordinal());
                 removePreviousRecipe(sheet);
 
@@ -45,9 +43,21 @@ public class ResultWriter implements IResultWriter {
             }
         } catch (Exception e) {
             throw new RabdoException(e);
+        } finally {
+            if (fis != null) close(fis);
         }
 
         logger.info("fine scrittura");
+    }
+
+    public static void close(Closeable... toClose) {
+        for (Closeable c : toClose) {
+            try {
+                if (c != null) { c.close(); }
+            } catch (Throwable t) {
+                // ignoro, non mi interessa
+            }
+        }
     }
 
     private void writeRecipe(Sheet sheet, Recipe recipe) {

@@ -46,6 +46,35 @@ public class WaterSolverTest {
         System.out.println(target.toString());
     }
 
+    @Test public void mistero() {
+        List<Salt> mySalts = Arrays.asList(
+                new Salt(SaltProfiles.GYPSUM, 100),
+                new Salt(SaltProfiles.TABLE_SALT, 100),
+                new Salt(SaltProfiles.CALCIUM_CHLORIDE, 10),
+                new Salt(SaltProfiles.MAGNESIUM_CHLORIDE, 10),
+                new Salt(SaltProfiles.EPSOM_SALT, 10),
+                new Salt(SaltProfiles.BAKING_SODA, 10),
+                new Salt(SaltProfiles.PICKLING_LIME, 10)
+        );
+
+        List<Water> myWater = Arrays.asList(
+                new Water( WaterProfiles.BOARIO, 10),
+                new Water( WaterProfiles.DISTILLED, 10),
+                new Water( WaterProfiles.DOLOMITI, 10),
+                new Water( WaterProfiles.EVA, 10),
+                new Water( WaterProfiles.LEVISSIMA, 10),
+                new Water( WaterProfiles.MILANO, 10)
+        );
+
+        Water target = new Water(new WaterProfile("Burton", 270, 41, 113, 720, 85, 270), 10);
+//        Water target = new Water(new WaterProfile("MAH", 100, 100, 100, 100, 100, 100), 10);
+        Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater);
+        assertThat(solution).isPresent();
+
+        System.out.println(solution.get().toString());
+        System.out.println(target.toString());
+    }
+
     @Test public void all_vars() {
         List<Salt> mySalts = Arrays.asList(
                 new Salt(SaltProfiles.GYPSUM, Integer.MAX_VALUE),
