@@ -59,6 +59,8 @@ public class Cli {
     }
 
     public static int doMain(String[] args) {
+        long start = System.currentTimeMillis();
+
         try {
             CommandLine opts = new DefaultParser().parse(cliOptions(), args);
 
@@ -68,7 +70,7 @@ public class Cli {
             }
 
             if (opts.hasOption("verbose")) {
-                setLogLevel(Level.DEBUG);
+                setLogLevel(Level.TRACE);
             } else {
                 setLogLevel(Level.WARN);
             }
@@ -82,12 +84,18 @@ public class Cli {
                             .orElseThrow(() -> {
                                 throw new RabdoException("Nessuna soluzione trovata");
                             }));
+
+            System.out.println("Solution found!");
+
             return 0;
         } catch (Throwable e) {
+            System.err.println("Solution NOT found!");
             System.err.println("==================================== ERROR =====================================");
             e.printStackTrace();
             System.err.println("================================================================================");
             return 66;
+        } finally {
+            System.out.println("Execution time: " + String.format("%.03f", (System.currentTimeMillis() - start) / 1000.) + "s");
         }
     }
 
