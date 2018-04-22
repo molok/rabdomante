@@ -39,7 +39,7 @@ public class UserInputReader implements IUserInputReader {
 
     List<Water> readWaters(Constants.SHEETS sheet) {
         try (Workbook wb = WorkbookFactory.create(file)) {
-            List<Water> res = Streams.stream(wb.getSheetAt(sheet.ordinal()).rowIterator())
+            List<Water> res = Streams.stream(wb.getSheet(sheet.uiName).rowIterator())
                     .skip(Constants.HEADER_ROWS)
                     .filter(row -> {
                         Cell cell = row.getCell(NAME.ordinal());
@@ -72,7 +72,7 @@ public class UserInputReader implements IUserInputReader {
 
     @Override public List<Salt> salts() {
         try (Workbook wb = WorkbookFactory.create(file)) {
-            List<Salt> res = Streams.stream(wb.getSheetAt(Constants.SHEETS.SALTS.ordinal()).rowIterator())
+            List<Salt> res = Streams.stream(wb.getSheet(Constants.SHEETS.SALTS.uiName).rowIterator())
                     .skip(Constants.HEADER_ROWS)
                     .filter(row -> {
                         String name = row.getCell(NAME.ordinal()).getStringCellValue();

@@ -10,10 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.Iterator;
 
 import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
-import static alebolo.rabdomante.xlsx.Constants.HEADER_ROWS;
 import static alebolo.rabdomante.xlsx.Constants.SHEETS.RESULT;
 
 public class ResultWriter implements IResultWriter {
@@ -35,9 +35,8 @@ public class ResultWriter implements IResultWriter {
         try {
             fis = new FileInputStream(input);
             try (Workbook wb = WorkbookFactory.create(fis)) {
-                wb.removeSheetAt(RESULT.ordinal());
-                wb.createSheet("Ricetta");
-                Sheet sheet = wb.getSheetAt(RESULT.ordinal());
+                wb.removeSheetAt(wb.getSheetIndex(RESULT.uiName));
+                Sheet sheet = wb.createSheet(RESULT.uiName);
 
                 Font defaultFont = wb.createFont();
 
@@ -46,7 +45,9 @@ public class ResultWriter implements IResultWriter {
                 rowNum = spacer(sheet, rowNum);
                 rowNum = writeSalts(recipe, sheet, defaultFont, rowNum);
                 rowNum = spacer(sheet, rowNum);
-                writeTotals(recipe, sheet, defaultFont, rowNum);
+                rowNum = writeTotals(recipe, sheet, defaultFont, rowNum);
+                rowNum = spacer(sheet, rowNum);
+                rowNum = timestamp(sheet, rowNum);
 
                 Utils.autoSizeColumns(wb);
 
@@ -61,10 +62,16 @@ public class ResultWriter implements IResultWriter {
         logger.info("fine scrittura");
     }
 
-    private void writeTotals(Recipe recipe, Sheet sheet, Font defaultFont, int rowNum) {
+    private int timestamp(Sheet sheet, int rowNum) {
+        getOrCreate(sheet, rowNum++).createCell(0).setCellValue("Aggiornato @" + LocalDate.now().toString());
+        return rowNum;
+    }
+
+    private int writeTotals(Recipe recipe, Sheet sheet, Font defaultFont, int rowNum) {
         writeWatersHeader(getOrCreate(sheet, rowNum), defaultFont);
         rowNum++;
         writeTotal(sheet, recipe, rowNum);
+        return rowNum;
     }
 
     private int writeSalts(Recipe recipe, Sheet sheet, Font defaultFont, int rowNum) {

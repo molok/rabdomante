@@ -45,7 +45,7 @@ public class DefaultFileGenerator {
             writeResultSheet(file);
             writeKnownWatersSheet(file);
 
-            autoSizeColumns(file);
+            cleanup(file);
 
         } catch (Exception e) {
             throw new RabdoException(e);
@@ -59,7 +59,7 @@ public class DefaultFileGenerator {
         try {
             fis = new FileInputStream(file);
             try (Workbook wb = WorkbookFactory.create(fis)) {
-                Sheet sheet = wb.createSheet("Acque Commerciali");
+                Sheet sheet = wb.createSheet(Constants.SHEETS.KNOWN_WATERS.uiName);
                 int rowNum = 0;
                 Font font = wb.createFont();
 
@@ -86,11 +86,12 @@ public class DefaultFileGenerator {
         }
     }
 
-    private void autoSizeColumns(File file) {
+    private void cleanup(File file) {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(file);
             try (Workbook wb = WorkbookFactory.create(fis)) {
+                wb.setActiveSheet(wb.getSheetIndex(Constants.SHEETS.WATER.uiName));
                 Utils.autoSizeColumns(wb);
                 wb.write(new FileOutputStream(file));
             }
@@ -106,7 +107,7 @@ public class DefaultFileGenerator {
         try {
             fis = new FileInputStream(file);
             try (Workbook wb = WorkbookFactory.create(fis)) {
-                Sheet sheet = wb.createSheet("Ricetta");
+                Sheet sheet = wb.createSheet(Constants.SHEETS.RESULT.uiName);
                 colorTab(sheet, COLOR_LIGHT_BLUE);
                 wb.write(new FileOutputStream(file));
             }
@@ -122,7 +123,7 @@ public class DefaultFileGenerator {
         try {
             fis = new FileInputStream(file);
             try (Workbook wb = WorkbookFactory.create(fis)) {
-                Sheet sheet = wb.createSheet("Obiettivo");
+                Sheet sheet = wb.createSheet(Constants.SHEETS.TARGET.uiName);
                 colorTab(sheet, COLOR_LIGHT_YELLOW);
 
                 Font font = wb.createFont();
@@ -146,7 +147,7 @@ public class DefaultFileGenerator {
                 style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.index);
                 style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-                Sheet sheet = wb.createSheet("Sali");
+                Sheet sheet = wb.createSheet(Constants.SHEETS.SALTS.uiName);
                 colorTab(sheet, COLOR_LIGHT_YELLOW);
 
                 int rowNum = 0;
@@ -186,7 +187,7 @@ public class DefaultFileGenerator {
     private void writeWaterSheet(File file) {
         try {
             try (Workbook wb = new XSSFWorkbook()) {
-                Sheet sheet = wb.createSheet("Acque Disponibili");
+                Sheet sheet = wb.createSheet(Constants.SHEETS.WATER.uiName);
                 colorTab(sheet, COLOR_LIGHT_YELLOW);
 
                 int rowNum = 0;
