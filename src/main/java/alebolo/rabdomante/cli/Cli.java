@@ -93,7 +93,10 @@ public class Cli {
             File output = opts.hasOption("output") ? new File(opts.getOptionValue("output")) : new File(DEFAULT_FILENAME);
 
             if (!input.exists()) {
+                System.out.println("File non presente, genero template "+input.getAbsolutePath());
                 new DefaultFileGenerator().generate(input);
+                System.out.println("Template generato");
+                return 1;
             }
 
             IUserInputReader uiReader = new UserInputReader(input);
@@ -109,11 +112,11 @@ public class Cli {
                                 throw new RabdoException("Nessuna soluzione trovata");
                             }));
 
-            System.out.println("Solution found!");
+            System.out.println("Soluzione trovata!");
 
             return 0;
         } catch (Throwable e) {
-            System.err.println("Solution NOT found!");
+            System.err.println("Soluzione NON trovata!");
             System.err.println("==================================== ERROR =====================================");
             e.printStackTrace();
             System.err.println("================================================================================");

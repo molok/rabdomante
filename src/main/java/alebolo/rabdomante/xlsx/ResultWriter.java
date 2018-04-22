@@ -36,7 +36,7 @@ public class ResultWriter implements IResultWriter {
             fis = new FileInputStream(input);
             try (Workbook wb = WorkbookFactory.create(fis)) {
                 wb.removeSheetAt(RESULT.ordinal());
-                wb.createSheet("Recipe");
+                wb.createSheet("Ricetta");
                 Sheet sheet = wb.getSheetAt(RESULT.ordinal());
 
                 Font defaultFont = wb.createFont();

@@ -3,8 +3,10 @@ package alebolo.rabdomante.xlsx;
 import alebolo.rabdomante.cli.RabdoException;
 import alebolo.rabdomante.core.SaltProfile;
 import alebolo.rabdomante.core.SaltProfiles;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import alebolo.rabdomante.core.Water;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
@@ -30,6 +32,8 @@ public class DefaultFileGenerator {
             SaltProfiles.PICKLING_LIME,
             SaltProfiles.MAGNESIUM_CHLORIDE
     );
+    public static final java.awt.Color COLOR_LIGHT_YELLOW = new java.awt.Color(255, 255, 102);
+    public static final java.awt.Color COLOR_LIGHT_BLUE = new java.awt.Color(50, 150, 200);
 
     public void generate(File file) {
         try {
@@ -39,9 +43,61 @@ public class DefaultFileGenerator {
             writeSaltsSheet(file);
             writeTargetSheet(file);
             writeResultSheet(file);
+            writeKnownWatersSheet(file);
+
+            autoSizeColumns(file);
 
         } catch (Exception e) {
             throw new RabdoException(e);
+        }
+    }
+
+    private void writeKnownWatersSheet(File file) {
+        List<Water> waters = new KnownWatersProvider().knownWaters();
+
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            try (Workbook wb = WorkbookFactory.create(fis)) {
+                Sheet sheet = wb.createSheet("Acque Commerciali");
+                int rowNum = 0;
+                Font font = wb.createFont();
+
+                ResultWriter.commonHeader(getOrCreate(sheet, rowNum), font);
+                rowNum++;
+
+                for (Water w : waters) {
+                    Row row = getOrCreate(sheet, rowNum++);
+                    row.createCell(NAME.ordinal()).setCellValue(w.nome);
+                    row.createCell(CA.ordinal()).setCellValue(w.ca);
+                    row.createCell(MG.ordinal()).setCellValue(w.mg);
+                    row.createCell(NA.ordinal()).setCellValue(w.na);
+                    row.createCell(SO4.ordinal()).setCellValue(w.so4);
+                    row.createCell(CL.ordinal()).setCellValue(w.cl);
+                    row.createCell(HCO3.ordinal()).setCellValue(w.hco3);
+                }
+
+                wb.write(new FileOutputStream(file));
+            }
+        } catch (Exception e) {
+            throw new RabdoException(e);
+        } finally {
+            if (fis != null) close(fis);
+        }
+    }
+
+    private void autoSizeColumns(File file) {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            try (Workbook wb = WorkbookFactory.create(fis)) {
+                Utils.autoSizeColumns(wb);
+                wb.write(new FileOutputStream(file));
+            }
+        } catch (Exception e) {
+            throw new RabdoException(e);
+        } finally {
+            if (fis != null) close(fis);
         }
     }
 
@@ -50,8 +106,8 @@ public class DefaultFileGenerator {
         try {
             fis = new FileInputStream(file);
             try (Workbook wb = WorkbookFactory.create(fis)) {
-                wb.createSheet("Recipe");
-                Utils.autoSizeColumns(wb);
+                Sheet sheet = wb.createSheet("Ricetta");
+                colorTab(sheet, COLOR_LIGHT_BLUE);
                 wb.write(new FileOutputStream(file));
             }
         } catch (Exception e) {
@@ -66,7 +122,8 @@ public class DefaultFileGenerator {
         try {
             fis = new FileInputStream(file);
             try (Workbook wb = WorkbookFactory.create(fis)) {
-                Sheet sheet = wb.createSheet("Target");
+                Sheet sheet = wb.createSheet("Obiettivo");
+                colorTab(sheet, COLOR_LIGHT_YELLOW);
 
                 Font font = wb.createFont();
                 targetHeader(font, getOrCreate(sheet, 0));
@@ -89,7 +146,8 @@ public class DefaultFileGenerator {
                 style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.index);
                 style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-                Sheet sheet = wb.createSheet("Salts");
+                Sheet sheet = wb.createSheet("Sali");
+                colorTab(sheet, COLOR_LIGHT_YELLOW);
 
                 int rowNum = 0;
                 Font font = wb.createFont();
@@ -128,7 +186,8 @@ public class DefaultFileGenerator {
     private void writeWaterSheet(File file) {
         try {
             try (Workbook wb = new XSSFWorkbook()) {
-                Sheet sheet = wb.createSheet("Waters");
+                Sheet sheet = wb.createSheet("Acque Disponibili");
+                colorTab(sheet, COLOR_LIGHT_YELLOW);
 
                 int rowNum = 0;
                 Font font = wb.createFont();
@@ -144,6 +203,10 @@ public class DefaultFileGenerator {
             throw new RabdoException(e);
         } finally {
         }
+    }
+
+    private void colorTab(Sheet sheet, java.awt.Color color) {
+        ((XSSFSheet) sheet).setTabColor(new XSSFColor(color));
     }
 
     private int waters(Sheet sheet, int rowNum) {

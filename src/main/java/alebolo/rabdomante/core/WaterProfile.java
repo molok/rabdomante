@@ -1,5 +1,7 @@
 package alebolo.rabdomante.core;
 
+import alebolo.rabdomante.cli.RabdoInputException;
+
 import java.util.Objects;
 
 public class WaterProfile {
@@ -22,12 +24,22 @@ public class WaterProfile {
 
     public WaterProfile(String nome, int ca, int mg, int na, int so4, int cl, int hco3) {
         this.nome = nome;
-        this.ca = ca;
-        this.mg = mg;
-        this.na = na;
-        this.so4 = so4;
-        this.cl = cl;
-        this.hco3 = hco3;
+        this.ca = validate(ca);
+        this.mg = validate(mg);
+        this.na = validate(na);
+        this.so4 = validate(so4);
+        this.cl = validate(cl);
+        this.hco3 = validate(hco3);
+    }
+
+    private int validate(int v) {
+        if (v >= 0) {
+            return v;
+        } else if (v == -1) {
+            return 0; // I use -1 for N/A, in the future I may reject this too
+        } else {
+            throw new RabdoInputException("Mineral value can't be < -1, was:"+v);
+        }
     }
 
     @Override public String toString() {
