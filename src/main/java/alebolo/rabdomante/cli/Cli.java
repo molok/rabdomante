@@ -45,7 +45,7 @@ public class Cli {
                 .hasArg(true)
                 .argName("timeout")
                 .optionalArg(true)
-                .desc("Maximum wait time for finding the best solution (seconds), if not specified " +
+                .desc("Maximum wait time (in seconds) for finding the best solution, if not specified " +
                         "the computation is run until it finds the best solution")
                 .build());
         return opts;
