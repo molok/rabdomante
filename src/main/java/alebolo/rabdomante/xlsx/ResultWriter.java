@@ -37,6 +37,7 @@ public class ResultWriter implements IResultWriter {
             try (Workbook wb = WorkbookFactory.create(fis)) {
                 wb.removeSheetAt(wb.getSheetIndex(RESULT.uiName));
                 Sheet sheet = wb.createSheet(RESULT.uiName);
+                Utils.colorTab(sheet, Utils.COLOR_LIGHT_BLUE);
 
                 Font defaultFont = wb.createFont();
 
