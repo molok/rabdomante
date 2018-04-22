@@ -48,6 +48,8 @@ public class ResultWriter implements IResultWriter {
                 rowNum = spacer(sheet, rowNum);
                 writeTotals(recipe, sheet, defaultFont, rowNum);
 
+                Utils.autoSizeColumns(wb);
+
                 wb.write(new FileOutputStream(output));
             }
         } catch (Exception e) {
@@ -101,17 +103,17 @@ public class ResultWriter implements IResultWriter {
         }
     }
 
-    private void writeSaltHeader(Row row, Font font) {
+    private static void writeSaltHeader(Row row, Font font) {
         styledCell(row, QTY.ordinal(), font).setCellValue("Grammi (g)");
         commonHeader(row, font);
     }
 
-    private void writeWatersHeader(Row row, Font font) {
+    public static void writeWatersHeader(Row row, Font font) {
         styledCell(row, QTY.ordinal(), font).setCellValue("Litri (L)");
         commonHeader(row, font);
     }
 
-    private void commonHeader(Row row, Font font) {
+    public static void commonHeader(Row row, Font font) {
         styledCell(row, NAME.ordinal(), font).setCellValue("Nome");
         styledCell(row, CA.ordinal(), font).setCellValue("Calcio (Ca)");
         styledCell(row, MG.ordinal(), font).setCellValue("Magnesio (Mg)");
@@ -121,7 +123,7 @@ public class ResultWriter implements IResultWriter {
         styledCell(row, HCO3.ordinal(), font).setCellValue("Bicarbonati (HCO3)");
     }
 
-    private Cell styledCell(Row row, int pos, Font font) {
+    public static Cell styledCell(Row row, int pos, Font font) {
         Cell cell = row.createCell(pos);
         cell.getCellStyle().setFont(font);
         return cell;
@@ -163,7 +165,7 @@ public class ResultWriter implements IResultWriter {
         row.createCell(HCO3.ordinal()).setCellValue(w.hco3);
     }
 
-    private Row getOrCreate(Sheet sheet, int rowNum) {
+    public static Row getOrCreate(Sheet sheet, int rowNum) {
         Row res = sheet.getRow(rowNum);
         if (res == null) {
             res = sheet.createRow(rowNum);

@@ -20,9 +20,7 @@ import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
 public class UserInputReader implements IUserInputReader {
     private final File file;
 
-    public UserInputReader(File file) {
-        this.file = file;
-    }
+    public UserInputReader(File file) { this.file = file; }
 
     @Override public List<Water> waters() {
         return readWaters(Constants.SHEETS.WATER);

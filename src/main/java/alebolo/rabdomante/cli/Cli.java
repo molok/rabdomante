@@ -1,6 +1,7 @@
 package alebolo.rabdomante.cli;
 
 import alebolo.rabdomante.core.*;
+import alebolo.rabdomante.xlsx.DefaultFileGenerator;
 import alebolo.rabdomante.xlsx.ResultWriter;
 import alebolo.rabdomante.xlsx.UserInputReader;
 import ch.qos.logback.classic.Level;
@@ -15,8 +16,7 @@ import java.util.Properties;
 public class Cli {
     static Logger logger = LoggerFactory.getLogger(Cli.class);
     public static final String DEFAULT_FILENAME = "rabdomante.xlsx";
-    private static final IUserInputReader uiReader = new UserInputReader(new File(DEFAULT_FILENAME));
-    private static final IResultWriter resWriter = new ResultWriter(new File(DEFAULT_FILENAME), new File("rabdomante.xlsx"));
+
     public static void printUsage() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp( "java -jar rabdomante.jar", cliOptions() );
@@ -38,6 +38,20 @@ public class Cli {
                 .hasArg(false)
                 .optionalArg(true)
                 .desc("Shows details of the computation")
+                .build());
+
+        opts.addOption(Option.builder("i")
+                .longOpt("input")
+                .hasArg(true)
+                .optionalArg(true)
+                .desc("Input file")
+                .build());
+
+        opts.addOption(Option.builder("o")
+                .longOpt("output")
+                .hasArg(true)
+                .optionalArg(true)
+                .desc("Output file")
                 .build());
 
         opts.addOption(Option.builder("t")
@@ -75,7 +89,17 @@ public class Cli {
                 setLogLevel(Level.WARN);
             }
 
-            resWriter.write(
+            File input = opts.hasOption("input") ? new File(opts.getOptionValue("input")) : new File(DEFAULT_FILENAME);
+            File output = opts.hasOption("output") ? new File(opts.getOptionValue("output")) : new File(DEFAULT_FILENAME);
+
+            if (!input.exists()) {
+                new DefaultFileGenerator().generate(input);
+            }
+
+            IUserInputReader uiReader = new UserInputReader(input);
+
+            new ResultWriter(input, output)
+                    .write(
                     new ChocoSolver().solve(
                             uiReader.target(),
                             uiReader.salts(),
