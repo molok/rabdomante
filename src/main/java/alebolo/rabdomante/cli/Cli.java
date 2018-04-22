@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.Properties;
 
 public class Cli {
@@ -59,8 +60,7 @@ public class Cli {
                 .hasArg(true)
                 .argName("timeout")
                 .optionalArg(true)
-                .desc("Maximum wait time (in seconds) for finding the best solution, if not specified " +
-                        "the computation is run until it finds the best solution")
+                .desc("Maximum wait time (in seconds) for finding the best solution, 60 is the default value")
                 .build());
         return opts;
     }
@@ -101,18 +101,17 @@ public class Cli {
 
             IUserInputReader uiReader = new UserInputReader(input);
 
-            new ResultWriter(input, output)
-                    .write(
-                    new ChocoSolver().solve(
-                            uiReader.target(),
-                            uiReader.salts(),
-                            uiReader.waters(),
-                            parseLong(opts.getOptionValue("timeout", null)))
-                            .orElseThrow(() -> {
-                                throw new RabdoException("Nessuna soluzione trovata");
-                            }));
+            Long timeout = parseLong(opts.getOptionValue("timeout", "60"));
 
-            System.out.println("Soluzione trovata!");
+            Optional<WSolution> solution = new ChocoSolver().solve(
+                    uiReader.target(),
+                    uiReader.salts(),
+                    uiReader.waters(),
+                    timeout);
+
+            new ResultWriter(input, output).write(solution.orElseThrow(() -> {throw new RabdoException("Nessuna soluzione trovata");}));
+
+            System.out.println(solution.get().searchCompleted ? "Soluzione trovata!" : "Ricerca incompleta!");
 
             return 0;
         } catch (Throwable e) {

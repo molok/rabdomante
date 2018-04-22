@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,7 +50,8 @@ public class DefaultFileGenerator {
     }
 
     private void writeKnownWatersSheet(File file) {
-        List<Water> waters = new KnownWatersProvider().knownWaters();
+        final WaterProfileParser waterProfileParser = new WaterProfileParser();
+        List<Water> waters = waterProfileParser.parse(knownWaterSet());
 
         FileInputStream fis = null;
         try {
@@ -80,6 +82,10 @@ public class DefaultFileGenerator {
         } finally {
             if (fis != null) close(fis);
         }
+    }
+
+    private InputStream knownWaterSet() {
+        return this.getClass().getResourceAsStream("/waters.csv");
     }
 
     private void cleanup(File file) {

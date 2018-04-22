@@ -1,10 +1,14 @@
 package alebolo.rabdomante.core;
 
+import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.math3.util.IntegerSequence;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.search.SearchState;
+import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
 import org.chocosolver.solver.variables.IntVar;
 import org.javatuples.Pair;
 import org.slf4j.Logger;
@@ -18,11 +22,22 @@ import java.util.function.Function;
 public class ChocoSolver implements WaterSolver {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override public Optional<Recipe> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters) {
+    @Override public Optional<WSolution> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters) {
         return solve(target, availableSalts, availableWaters, null);
     }
 
-    @Override public Optional<Recipe> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters, Long secondsTimeout) {
+    @Override public Optional<WSolution> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters, Long secondsTimeout) {
+        return solve(target, availableSalts, availableWaters, secondsTimeout,
+                     (intvars) -> Search.domOverWDegSearch(intvars));
+    }
+
+    @Override public Optional<WSolution> solve(
+            Water target,
+            List<Salt> availableSalts,
+            List<Water> availableWaters,
+            Long secondsTimeout,
+            Function<IntVar[], AbstractStrategy<IntVar>> strategyProvider) {
+
         logger.info("target {}", target);
         logger.info("waters {}", availableWaters);
         logger.info("salts {}", availableSalts);
@@ -49,6 +64,11 @@ public class ChocoSolver implements WaterSolver {
         List<IntVar> toWatch = new ArrayList<>(waterVars.values());
         toWatch.addAll(saltVars.values());
 
+        logger.debug("waterVars [{}]: {}", waterVars.size(), waterVars);
+        logger.debug("saltVars [{}]: {}", saltVars.size(), saltVars);
+
+        solver.setSearch(strategyProvider.apply(toArray(waterVars.values(), saltVars.values())));
+
         Recipe recipe = null;
         while(solver.solve()) {
             recipe = new Recipe(
@@ -62,11 +82,20 @@ public class ChocoSolver implements WaterSolver {
                             .collect(Collectors.toList()),
                     cost.getValue()
             );
+//            solver.printStatistics();
+//            solver.showDecisions();
+//            completed = solver.isSearchCompleted();
         }
 
+        solver.printStatistics();
         logger.info("recipe: {}", recipe);
 
-        return Optional.ofNullable(recipe);
+
+        return Optional.ofNullable(new WSolution(recipe, solver.getMeasures().getSearchState().equals(SearchState.TERMINATED)));
+    }
+
+    private IntVar[] toArray(Collection<IntVar> values, Collection<IntVar> values1) {
+        return Iterables.toArray(Iterables.concat(values, values1), IntVar.class);
     }
 
     private IntVar cost(Model model, int targetLiters, WaterProfile target, Map<WaterProfile, IntVar> waterVars, Map<SaltProfile, IntVar> saltVars) {

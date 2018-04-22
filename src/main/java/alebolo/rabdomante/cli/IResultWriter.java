@@ -1,7 +1,7 @@
 package alebolo.rabdomante.cli;
 
-import alebolo.rabdomante.core.Recipe;
+import alebolo.rabdomante.core.WSolution;
 
 public interface IResultWriter {
-    void write(Recipe res);
+    void write(WSolution res);
 }

@@ -4,6 +4,7 @@ import alebolo.rabdomante.cli.IResultWriter;
 import alebolo.rabdomante.cli.RabdoException;
 import alebolo.rabdomante.core.Recipe;
 import alebolo.rabdomante.core.Salt;
+import alebolo.rabdomante.core.WSolution;
 import alebolo.rabdomante.core.Water;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 
 import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
@@ -27,12 +29,13 @@ public class ResultWriter implements IResultWriter {
     }
 
     @Override
-    public void write(Recipe recipe) {
+    public void write(WSolution solution) {
         logger.info("inizio scrittura su {}", input);
 
         FileInputStream fis = null;
 
         try {
+            Recipe recipe = solution.recipe;
             fis = new FileInputStream(input);
             try (Workbook wb = WorkbookFactory.create(fis)) {
                 wb.removeSheetAt(wb.getSheetIndex(RESULT.uiName));
@@ -48,7 +51,7 @@ public class ResultWriter implements IResultWriter {
                 rowNum = spacer(sheet, rowNum);
                 rowNum = writeTotals(recipe, sheet, defaultFont, rowNum);
                 rowNum = spacer(sheet, rowNum);
-                rowNum = timestamp(sheet, rowNum);
+                rowNum = timestamp(sheet, rowNum, solution.searchCompleted);
 
                 Utils.autoSizeColumns(wb);
 
@@ -63,8 +66,10 @@ public class ResultWriter implements IResultWriter {
         logger.info("fine scrittura");
     }
 
-    private int timestamp(Sheet sheet, int rowNum) {
-        getOrCreate(sheet, rowNum++).createCell(0).setCellValue("Aggiornato @" + LocalDate.now().toString());
+    private int timestamp(Sheet sheet, int rowNum, boolean searchCompleted) {
+        getOrCreate(sheet, rowNum++).createCell(0).setCellValue("Aggiornato @" + LocalDateTime.now().toString());
+        String msg = searchCompleted ? "Ricerca completata con successo" : "Ricerca incompleta, il risultato potrebbe non essere ottimale";
+        getOrCreate(sheet, rowNum++).createCell(0).setCellValue(msg);
         return rowNum;
     }
 

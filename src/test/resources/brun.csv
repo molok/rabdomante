@@ -1,0 +1,67 @@
+ID;NAME;CA;MG;NA;SO4CL;HCO3
+0;Achouffe;29;4;12;12;35;70
+0;Amber Balanced;50;10;15;75;63;40
+0;Amber Dry;50;15;15;110;50;45
+0;Amber Full;50;5;15;55;65;35
+0;American Lager;13;6;8;37;13;20
+0;Antwerpen/Anvers (boiled);39;7;16;48;30;80
+0;Antwerpen/Anvers;65;7;16;48;30;159
+0;Ardennes (boiled);20;13;11;25;24;80
+0;Ardennes;60;13;11;25;24;200
+0;Beerse (boiled);57;13;52;125;80;80
+0;Beerse;73;13;52;125;80;128
+0;Black Balanced;50;10;33;57;44;142
+0;Black Dry;50;15;33;84;39;145
+0;Black Full;50;5;33;35;45;140
+0;Brabant (boiled);49;12;14;74;40;80
+0;Brabant;111;12;14;74;40;270
+0;Brown Balanced;50;10;27;70;55;90
+0;Brown Dry;50;15;27;99;45;95
+0;Brown Full;50;5;27;50;60;85
+0;Brugse (boiled);51;13;20;99;38;80
+0;Brugse;132;13;20;99;38;326
+0;Brussels (boiled);44;11;18;70;41;80
+0;Brussels;100;11;18;70;41;250
+0;Burton (boiled);255;40;25;610;35;210
+0;Burton;275;40;25;610;35;270
+0;Chimay (boiled);29;7;7;21;21;80
+0;Chimay;70;7;7;21;21;205
+0;Dortmund;230;15;40;330;130;235
+0;Dublin (boiled);43;4;12;55;19;80
+0;Dublin;120;4;12;55;19;315
+0;Dusseldorf (boiled);39;15;25;80;45;80
+0;Dusseldorf;40;15;25;80;45;81
+0;East Flanders (boiled);4;22;52;76;47;80
+0;East Flanders;134;22;52;76;47;475
+0;Edinburgh (boiled);33;20;55;140;50;80
+0;Edinburgh;100;20;55;140;50;285
+0;Henegouwen/Hainaut (boiled);36;17;15;65;41;80
+0;Henegouwen/Hainaut;113;17;15;65;41;315
+0;Hoegaarden (boiled);60;11;16;82;53;80
+0;Hoegaarden;90;11;16;82;53;171
+0;Jever (boiled);46;5;15;75;30;60
+0;London (boiled);42;6;15;40;38;80
+0;London;70;6;15;40;38;166
+0;Luik/Liege (boiled);18;15;11;28;24;80
+0;Luik/Liege;60;15;11;28;24;210
+0;Mild Ale Profile;50;0;20;40;65;45
+0;Munich (boiled);12;17;4;18;8;100
+0;Munich;77;17;4;18;8;295
+0;Orval (boiled);34;4;5;25;13;80
+0;Orval;96;4;5;25;13;270
+0;Pale Ale Profile;140;18;25;300;55;110
+0;Pilsen;7;2;2;8;6;16
+0;PseudoBohPils;20;0;8;15;35;0
+0;Rochefort (boiled);28;10;6;32;17;80
+0;Rochefort;82;10;6;32;17;245
+0;User Custom;0;0;0;0;0;0
+0;Vienna (boiled);27;15;10;60;15;80
+0;Vienna;75;15;10;60;15;225
+0;West Flanders (boiled);40;10;125;145;139;80
+0;West Flanders;114;10;125;145;139;305
+0;Wicklow Mtn;18;2;13;22;20;35
+0;Willebroek (boiled);48;8;33;70;60;80
+0;Willebroek;68;8;33;70;60;143
+0;Yellow Balanced;50;7;5;75;60;0
+0;Yellow Dry;50;10;5;105;45;0
+0;Yellow Full;50;5;5;55;70;0
