@@ -53,8 +53,8 @@ public class WaterSolverTest {
 
     @Test public void brun() {
         WaterProfileParser parser = new WaterProfileParser();
-        List<Water> all = parser.parse(this.getClass().getResourceAsStream("/brun.csv"));
-        assertThat(all.size()).isEqualTo(66);
+        List<Water> all = parser.parse(this.getClass().getResourceAsStream("/common_profiles.csv"));
+        assertThat(all.size()).isEqualTo(65);
     }
 
         /* mistero: 14s */
@@ -131,7 +131,7 @@ public class WaterSolverTest {
                 new Water( WaterProfiles.SANBERARDO, Integer.MAX_VALUE)
         );
 
-        Water test = new WaterProfileParser().parse(this.getClass().getResourceAsStream("/brun.csv")).get(27);
+        Water test = new WaterProfileParser().parse(this.getClass().getResourceAsStream("/common_profiles.csv")).get(27);
 
         Water target = new Water(test, 30);
         System.out.println("name:" + target.nome);
@@ -165,7 +165,7 @@ public class WaterSolverTest {
 
         long totStart = System.currentTimeMillis();
         int curr = 0;
-        List<Water> tests = new WaterProfileParser().parse(this.getClass().getResourceAsStream("/brun.csv")).subList(25, 30);
+        List<Water> tests = new WaterProfileParser().parse(this.getClass().getResourceAsStream("/common_profiles.csv")).subList(25, 30);
         tests.add(new Water(new WaterProfile("Inspiegabilmente Lento", 100, 100, 100, 100, 100, 100), 30));
         for (Water xtarget : tests) {
             long thisStart = System.currentTimeMillis();

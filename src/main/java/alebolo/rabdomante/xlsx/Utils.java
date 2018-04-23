@@ -1,24 +1,29 @@
 package alebolo.rabdomante.xlsx;
 
 import org.apache.commons.text.WordUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.util.Iterator;
 
 public class Utils {
-    public static final java.awt.Color COLOR_LIGHT_YELLOW = new java.awt.Color(255, 255, 102);
-    public static final java.awt.Color COLOR_LIGHT_BLUE = new java.awt.Color(50, 150, 200);
+    public static final java.awt.Color COLOR_USER_INPUT = new java.awt.Color(223, 255, 255);
+    public static final java.awt.Color COLOR_OUTPUT = new java.awt.Color(255, 255, 153);
 
     static String capitalize(String s) {
         return WordUtils.capitalizeFully(s, ' ', '\'');
     }
     static int toInt(double numericCellValue) {
         return (int) Math.round(numericCellValue);
+    }
+
+    public static void orderSheets(Workbook wb) {
+        for (Constants.SHEETS s: Constants.SHEETS.values()) {
+            wb.setSheetOrder(s.uiName, s.ordinal());
+        }
     }
 
     public static void autoSizeColumns(Workbook workbook) {

@@ -5,22 +5,20 @@ import alebolo.rabdomante.core.SaltProfile;
 import alebolo.rabdomante.core.SaltProfiles;
 import alebolo.rabdomante.core.Water;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import static alebolo.rabdomante.xlsx.ResultWriter.close;
-
 import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
 import static alebolo.rabdomante.xlsx.ResultWriter.getOrCreate;
-import static alebolo.rabdomante.xlsx.ResultWriter.styledCell;
 
 public class DefaultFileGenerator {
+    private final WaterProfileParser waterProfileParser = new WaterProfileParser();
     public static final List<SaltProfile> DEFAULT_SALTS = Arrays.asList(
             SaltProfiles.TABLE_SALT,
             SaltProfiles.GYPSUM,
@@ -32,149 +30,81 @@ public class DefaultFileGenerator {
             SaltProfiles.MAGNESIUM_CHLORIDE
     );
 
+    private XSSFCellStyle headerStyle;
+    private XSSFCellStyle baseStyle;
+    private XSSFCellStyle userInputStyle;
+
     public void generate(File file) {
         try {
             if (file.exists()) { throw new RabdoException("File already exists"); }
 
-            writeWaterSheet(file);
-            writeSaltsSheet(file);
-            writeTargetSheet(file);
-            writeResultSheet(file);
-            writeKnownWatersSheet(file);
+            try (Workbook wb = new XSSFWorkbook()) {
+                userInputStyle = userInputStyle(wb);
+                baseStyle = baseStyle(wb);
+                headerStyle = headerStyle(wb);
 
-            cleanup(file);
+                writeWatersSheet(wb);
+                writeSaltsSheet(wb);
+                writeTargetSheet(wb);
+                writeResultSheet(wb);
+                writeParsedWaters(wb, Constants.SHEETS.KNOWN_WATERS, waterProfileParser.parse(this.getClass().getResourceAsStream("/waters.csv")));
+                writeParsedWaters(wb, Constants.SHEETS.COMMON_PROFILES, waterProfileParser.parse(this.getClass().getResourceAsStream("/common_profiles.csv")));
 
-        } catch (Exception e) {
-            throw new RabdoException(e);
-        }
-    }
-
-    private void writeKnownWatersSheet(File file) {
-        final WaterProfileParser waterProfileParser = new WaterProfileParser();
-        List<Water> waters = waterProfileParser.parse(knownWaterSet());
-
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            try (Workbook wb = WorkbookFactory.create(fis)) {
-                Sheet sheet = wb.createSheet(Constants.SHEETS.KNOWN_WATERS.uiName);
-                int rowNum = 0;
-                Font font = wb.createFont();
-
-                ResultWriter.commonHeader(getOrCreate(sheet, rowNum), font);
-                rowNum++;
-
-                for (Water w : waters) {
-                    Row row = getOrCreate(sheet, rowNum++);
-                    row.createCell(NAME.ordinal()).setCellValue(w.nome);
-                    row.createCell(CA.ordinal()).setCellValue(w.ca);
-                    row.createCell(MG.ordinal()).setCellValue(w.mg);
-                    row.createCell(NA.ordinal()).setCellValue(w.na);
-                    row.createCell(SO4.ordinal()).setCellValue(w.so4);
-                    row.createCell(CL.ordinal()).setCellValue(w.cl);
-                    row.createCell(HCO3.ordinal()).setCellValue(w.hco3);
-                }
-
-                wb.write(new FileOutputStream(file));
-            }
-        } catch (Exception e) {
-            throw new RabdoException(e);
-        } finally {
-            if (fis != null) close(fis);
-        }
-    }
-
-    private InputStream knownWaterSet() {
-        return this.getClass().getResourceAsStream("/waters.csv");
-    }
-
-    private void cleanup(File file) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            try (Workbook wb = WorkbookFactory.create(fis)) {
                 wb.setActiveSheet(wb.getSheetIndex(Constants.SHEETS.WATER.uiName));
-                Utils.autoSizeColumns(wb);
+
+                cleanup(wb);
+
                 wb.write(new FileOutputStream(file));
+
+            } catch (Exception e) {
+                throw new RabdoException(e);
             }
+
         } catch (Exception e) {
             throw new RabdoException(e);
-        } finally {
-            if (fis != null) close(fis);
         }
     }
 
-    private void writeResultSheet(File file) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            try (Workbook wb = WorkbookFactory.create(fis)) {
-                Sheet sheet = wb.createSheet(Constants.SHEETS.RESULT.uiName);
-                Utils.colorTab(sheet, Utils.COLOR_LIGHT_BLUE);
-                wb.write(new FileOutputStream(file));
+    private void writeWatersSheet(Workbook wb) {
+        Sheet sheet = wb.createSheet(Constants.SHEETS.WATER.uiName);
+        Utils.colorTab(sheet, Utils.COLOR_USER_INPUT);
+
+        int rowNum = 0;
+
+        Row headerRow = getOrCreate(sheet, rowNum);
+        waterHeader(headerRow);
+        rowNum++;
+
+        for (; rowNum <= 10; rowNum++) {
+            Row currRow = getOrCreate(sheet, rowNum);
+            for (int c = 0; c < headerRow.getLastCellNum(); c++) {
+                styledCell(currRow, userInputStyle, c);
             }
-        } catch (Exception e) {
-            throw new RabdoException(e);
-        } finally {
-            if (fis != null) close(fis);
         }
     }
 
-    private void writeTargetSheet(File file) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            try (Workbook wb = WorkbookFactory.create(fis)) {
-                Sheet sheet = wb.createSheet(Constants.SHEETS.TARGET.uiName);
-                Utils.colorTab(sheet, Utils.COLOR_LIGHT_YELLOW);
+    private void writeSaltsSheet(Workbook wb) {
+        Sheet sheet = wb.createSheet(Constants.SHEETS.SALTS.uiName);
+        Utils.colorTab(sheet, Utils.COLOR_USER_INPUT);
 
-                Font font = wb.createFont();
-                targetHeader(font, getOrCreate(sheet, 0));
+        int rowNum = 0;
 
-                wb.write(new FileOutputStream(file));
-            }
-        } catch (Exception e) {
-            throw new RabdoException(e);
-        } finally {
-            if (fis != null) close(fis);
-        }
+        saltsHeader(getOrCreate(sheet, rowNum));
+        rowNum++;
+
+        rowNum = salts(sheet, rowNum);
     }
 
-    private void writeSaltsSheet(File file) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            try (Workbook wb = WorkbookFactory.create(fis)) {
-                CellStyle style = wb.createCellStyle();
-                style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.index);
-                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+    private void writeParsedWaters(Workbook wb, Constants.SHEETS sheetName, List<Water> parse) {
+        List<Water> waters = parse;
+        Sheet sheet = wb.createSheet(sheetName.uiName);
+        int rowNum = 0;
 
-                Sheet sheet = wb.createSheet(Constants.SHEETS.SALTS.uiName);
-                Utils.colorTab(sheet, Utils.COLOR_LIGHT_YELLOW);
+        ResultWriter.commonHeader(getOrCreate(sheet, rowNum), headerStyle);
+        rowNum++;
 
-                int rowNum = 0;
-                Font font = wb.createFont();
-
-                saltsHeader(font, getOrCreate(sheet, rowNum));
-                rowNum++;
-
-                rowNum = salts(sheet, rowNum, style);
-
-                wb.write(new FileOutputStream(file));
-            }
-        } catch (Exception e) {
-            throw new RabdoException(e);
-        } finally {
-            if (fis != null) close(fis);
-        }
-    }
-
-    private int salts(Sheet sheet, int rowNum, CellStyle userInputStyle) {
-        for (SaltProfile w : DEFAULT_SALTS) {
+        for (Water w : waters) {
             Row row = getOrCreate(sheet, rowNum++);
-            Cell cell = row.createCell(QTY.ordinal());
-            cell.setCellStyle(userInputStyle); cell.setCellValue(0);
-
             row.createCell(NAME.ordinal()).setCellValue(w.nome);
             row.createCell(CA.ordinal()).setCellValue(w.ca);
             row.createCell(MG.ordinal()).setCellValue(w.mg);
@@ -183,48 +113,90 @@ public class DefaultFileGenerator {
             row.createCell(CL.ordinal()).setCellValue(w.cl);
             row.createCell(HCO3.ordinal()).setCellValue(w.hco3);
         }
-        return rowNum;
     }
 
-    private void writeWaterSheet(File file) {
-        try {
-            try (Workbook wb = new XSSFWorkbook()) {
-                Sheet sheet = wb.createSheet(Constants.SHEETS.WATER.uiName);
-                Utils.colorTab(sheet, Utils.COLOR_LIGHT_YELLOW);
+    private void cleanup(Workbook wb) {
+        wb.setActiveSheet(wb.getSheetIndex(Constants.SHEETS.WATER.uiName));
+        Utils.autoSizeColumns(wb);
+        Utils.orderSheets(wb);
+    }
 
-                int rowNum = 0;
-                Font font = wb.createFont();
+    private void writeResultSheet(Workbook wb) {
+        Sheet sheet = wb.createSheet(Constants.SHEETS.RESULT.uiName);
+        Utils.colorTab(sheet, Utils.COLOR_OUTPUT);
+    }
 
-                waterHeader(font, getOrCreate(sheet, rowNum));
-                rowNum++;
+    private void writeTargetSheet(Workbook wb) {
+        Sheet sheet = wb.createSheet(Constants.SHEETS.TARGET.uiName);
+        Utils.colorTab(sheet, Utils.COLOR_USER_INPUT);
 
-                rowNum = waters(sheet, rowNum);
+        Row headerRow = getOrCreate(sheet, 0);
+        targetHeader(headerRow);
 
-                wb.write(new FileOutputStream(file));
-            }
-        } catch (Exception e) {
-            throw new RabdoException(e);
-        } finally {
+        Row targetInputRow = getOrCreate(sheet, 1);
+        for (int c = 0; c < headerRow.getLastCellNum(); c++) {
+            styledCell(targetInputRow, userInputStyle, c);
         }
     }
 
-    private int waters(Sheet sheet, int rowNum) {
-        // TODO valutare se inserire acque
+    private int salts(Sheet sheet, int rowNum) {
+        for (SaltProfile w : DEFAULT_SALTS) {
+            Row row = getOrCreate(sheet, rowNum++);
+            Cell cell = styledCell(row, userInputStyle, QTY.ordinal());
+            cell.setCellValue(0);
+
+            int ordinal = NAME.ordinal();
+            styledCell(row, baseStyle, NAME.ordinal()).setCellValue(w.nome);
+            styledCell(row, baseStyle, CA.ordinal()).setCellValue(w.ca);
+            styledCell(row, baseStyle, MG.ordinal()).setCellValue(w.mg);
+            styledCell(row, baseStyle, NA.ordinal()).setCellValue(w.na);
+            styledCell(row, baseStyle, SO4.ordinal()).setCellValue(w.so4);
+            styledCell(row, baseStyle, CL.ordinal()).setCellValue(w.cl);
+            styledCell(row, baseStyle, HCO3.ordinal()).setCellValue(w.hco3);
+        }
         return rowNum;
     }
 
-    private void saltsHeader(Font font, Row row) {
-        ResultWriter.writeWatersHeader(row, font);
-        styledCell(row, QTY.ordinal(), font).setCellValue("Grammi disponibili (g)");
+    private XSSFCellStyle baseStyle(Workbook workbook) {
+        XSSFCellStyle res = (XSSFCellStyle) workbook.createCellStyle();
+        res.setBorderBottom(BorderStyle.THIN);
+        res.setBorderTop(BorderStyle.THIN);
+        res.setBorderLeft(BorderStyle.THIN);
+        res.setBorderRight(BorderStyle.THIN);
+        return res;
     }
 
-    private void targetHeader(Font font, Row row) {
-        ResultWriter.writeWatersHeader(row, font);
-        styledCell(row, QTY.ordinal(), font).setCellValue("Litri Necessari (L)");
+    private Cell styledCell(Row row, XSSFCellStyle style, int ordinal) {
+        Cell cell = row.createCell(ordinal);
+        cell.setCellStyle(style);
+        return cell;
     }
 
-    private void waterHeader(Font font, Row row) {
-        ResultWriter.writeWatersHeader(row, font);
-        styledCell(row, QTY.ordinal(), font).setCellValue("Litri Disponibili (L)");
+    private XSSFCellStyle userInputStyle(Workbook wb) {
+        XSSFCellStyle res = (XSSFCellStyle) wb.createCellStyle();
+        res.setFillForegroundColor(new XSSFColor(Utils.COLOR_USER_INPUT));
+        res.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        res.setBorderBottom(BorderStyle.THIN);
+        res.setBorderTop(BorderStyle.THIN);
+        res.setBorderLeft(BorderStyle.THIN);
+        res.setBorderRight(BorderStyle.THIN);
+        return res;
+    }
+
+    private void saltsHeader(Row row) {
+        ResultWriter.writeWatersHeader(row, headerStyle);
+        styledCell(row, headerStyle, QTY.ordinal()).setCellValue("Grammi disponibili (g)");
+    }
+
+    private XSSFCellStyle headerStyle(Workbook workbook) { return baseStyle(workbook); }
+
+    private void targetHeader(Row row) {
+        ResultWriter.writeWatersHeader(row, headerStyle);
+        styledCell(row, headerStyle, QTY.ordinal()).setCellValue("Litri Necessari (L)");
+    }
+
+    private void waterHeader(Row row) {
+        ResultWriter.writeWatersHeader(row, headerStyle);
+        styledCell(row, headerStyle, QTY.ordinal()).setCellValue("Litri Disponibili (L)");
     }
 }

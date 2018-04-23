@@ -90,7 +90,6 @@ public class ChocoSolver implements WaterSolver {
         solver.printStatistics();
         logger.info("recipe: {}", recipe);
 
-
         return Optional.ofNullable(new WSolution(recipe, solver.getMeasures().getSearchState().equals(SearchState.TERMINATED)));
     }
 

@@ -5,7 +5,6 @@ import alebolo.rabdomante.core.Salt;
 import alebolo.rabdomante.core.WSolution;
 import alebolo.rabdomante.core.Water;
 import alebolo.rabdomante.xlsx.ResultWriter;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -33,6 +32,6 @@ public class ResultWriterTest {
         assertThat(input.exists()).isTrue();
         ResultWriter it = new ResultWriter(input, output);
         it.write(new WSolution(new Recipe( Arrays.asList(new Water(DISTILLED, 10), new Water(BOARIO, 20)),
-                             Arrays.asList(new Salt(GYPSUM, 10), new Salt(TABLE_SALT, 20)), 100 ), true));
+                             Arrays.asList(new Salt(GYPSUM, 10), new Salt(TABLE_SALT, 20)), 100 ), true), secondsElapsed);
     }
 }

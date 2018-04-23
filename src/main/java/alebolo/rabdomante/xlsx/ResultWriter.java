@@ -7,13 +7,13 @@ import alebolo.rabdomante.core.Salt;
 import alebolo.rabdomante.core.WSolution;
 import alebolo.rabdomante.core.Water;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Iterator;
+import java.time.format.DateTimeFormatter;
 
 import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
 import static alebolo.rabdomante.xlsx.Constants.SHEETS.RESULT;
@@ -28,8 +28,29 @@ public class ResultWriter implements IResultWriter {
         this.output = output;
     }
 
+    private XSSFCellStyle baseStyle(Workbook workbook) {
+        XSSFCellStyle res = (XSSFCellStyle) workbook.createCellStyle();
+        res.setBorderBottom(BorderStyle.THIN);
+        res.setBorderTop(BorderStyle.THIN);
+        res.setBorderLeft(BorderStyle.THIN);
+        res.setBorderRight(BorderStyle.THIN);
+        return res;
+    }
+
+    private XSSFCellStyle headerStyle(Workbook workbook) {
+        XSSFCellStyle res = (XSSFCellStyle) workbook.createCellStyle();
+        res.setBorderBottom(BorderStyle.THIN);
+        res.setBorderTop(BorderStyle.THIN);
+        res.setBorderLeft(BorderStyle.THIN);
+        res.setBorderRight(BorderStyle.THIN);
+        return res;
+    }
+
+    private XSSFCellStyle baseStyle;
+    private XSSFCellStyle headerStyle;
+
     @Override
-    public void write(WSolution solution) {
+    public void write(WSolution solution, long secondsElapsed) {
         logger.info("inizio scrittura su {}", input);
 
         FileInputStream fis = null;
@@ -38,22 +59,24 @@ public class ResultWriter implements IResultWriter {
             Recipe recipe = solution.recipe;
             fis = new FileInputStream(input);
             try (Workbook wb = WorkbookFactory.create(fis)) {
+                baseStyle = baseStyle(wb);
+                headerStyle = headerStyle(wb);
                 wb.removeSheetAt(wb.getSheetIndex(RESULT.uiName));
                 Sheet sheet = wb.createSheet(RESULT.uiName);
-                Utils.colorTab(sheet, Utils.COLOR_LIGHT_BLUE);
-
-                Font defaultFont = wb.createFont();
+                Utils.colorTab(sheet, Utils.COLOR_OUTPUT);
 
                 int rowNum = 0;
-                rowNum = writeWaters(recipe, sheet, defaultFont, rowNum);
+                rowNum = writeWaters(recipe, sheet, rowNum);
                 rowNum = spacer(sheet, rowNum);
-                rowNum = writeSalts(recipe, sheet, defaultFont, rowNum);
+                rowNum = writeSalts(recipe, sheet, rowNum);
                 rowNum = spacer(sheet, rowNum);
-                rowNum = writeTotals(recipe, sheet, defaultFont, rowNum);
+                rowNum = writeTotals(recipe, sheet, rowNum);
                 rowNum = spacer(sheet, rowNum);
-                rowNum = timestamp(sheet, rowNum, solution.searchCompleted);
+                rowNum = spacer(sheet, rowNum);
+                rowNum = timestamp(sheet, rowNum, solution.searchCompleted, secondsElapsed);
 
                 Utils.autoSizeColumns(wb);
+                Utils.orderSheets(wb);
 
                 wb.write(new FileOutputStream(output));
             }
@@ -66,22 +89,23 @@ public class ResultWriter implements IResultWriter {
         logger.info("fine scrittura");
     }
 
-    private int timestamp(Sheet sheet, int rowNum, boolean searchCompleted) {
-        getOrCreate(sheet, rowNum++).createCell(0).setCellValue("Aggiornato @" + LocalDateTime.now().toString());
-        String msg = searchCompleted ? "Ricerca completata con successo" : "Ricerca incompleta, il risultato potrebbe non essere ottimale";
+    private int timestamp(Sheet sheet, int rowNum, boolean searchCompleted, long secondsElapsed) {
+        getOrCreate(sheet, rowNum++).createCell(0).setCellValue("Aggiornato @" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        String msg = searchCompleted ? "Ricerca completata con successo in " + secondsElapsed + "s"
+                                     : "Il risultato potrebbe non essere ottimale, la ricerca è stata interrotta dopo " + secondsElapsed + "s";
         getOrCreate(sheet, rowNum++).createCell(0).setCellValue(msg);
         return rowNum;
     }
 
-    private int writeTotals(Recipe recipe, Sheet sheet, Font defaultFont, int rowNum) {
-        writeWatersHeader(getOrCreate(sheet, rowNum), defaultFont);
+    private int writeTotals(Recipe recipe, Sheet sheet, int rowNum) {
+        writeWatersHeader(getOrCreate(sheet, rowNum), headerStyle);
         rowNum++;
         writeTotal(sheet, recipe, rowNum);
         return rowNum;
     }
 
-    private int writeSalts(Recipe recipe, Sheet sheet, Font defaultFont, int rowNum) {
-        writeSaltHeader(getOrCreate(sheet, rowNum), defaultFont);
+    private int writeSalts(Recipe recipe, Sheet sheet, int rowNum) {
+        writeSaltHeader(getOrCreate(sheet, rowNum));
         rowNum++;
         for (Salt w : recipe.salts) {
             writeSalt(sheet, rowNum, w);
@@ -91,13 +115,12 @@ public class ResultWriter implements IResultWriter {
     }
 
     private int spacer(Sheet sheet, int rowNum) {
-        getOrCreate(sheet, rowNum); //spacer
-        rowNum++;
+        getOrCreate(sheet, rowNum++); //spacer
         return rowNum;
     }
 
-    private int writeWaters(Recipe recipe, Sheet sheet, Font defaultFont, int rowNum) {
-        writeWatersHeader(getOrCreate(sheet, rowNum), defaultFont);
+    private int writeWaters(Recipe recipe, Sheet sheet, int rowNum) {
+        writeWatersHeader(getOrCreate(sheet, rowNum), headerStyle);
         rowNum++;
         for (Water w : recipe.waters) {
             writeWater(sheet, rowNum, w);
@@ -116,29 +139,29 @@ public class ResultWriter implements IResultWriter {
         }
     }
 
-    private static void writeSaltHeader(Row row, Font font) {
-        styledCell(row, QTY.ordinal(), font).setCellValue("Grammi (g)");
-        commonHeader(row, font);
+    private void writeSaltHeader(Row row) {
+        styledCell(row, QTY.ordinal(), headerStyle).setCellValue("Grammi (g)");
+        commonHeader(row, headerStyle);
     }
 
-    public static void writeWatersHeader(Row row, Font font) {
-        styledCell(row, QTY.ordinal(), font).setCellValue("Litri (L)");
-        commonHeader(row, font);
+    public static void writeWatersHeader(Row row, XSSFCellStyle style) {
+        styledCell(row, QTY.ordinal(), style).setCellValue("Litri (L)");
+        commonHeader(row, style);
     }
 
-    public static void commonHeader(Row row, Font font) {
-        styledCell(row, NAME.ordinal(), font).setCellValue("Nome");
-        styledCell(row, CA.ordinal(), font).setCellValue("Calcio (Ca)");
-        styledCell(row, MG.ordinal(), font).setCellValue("Magnesio (Mg)");
-        styledCell(row, NA.ordinal(), font).setCellValue("Sodio (Na)");
-        styledCell(row, SO4.ordinal(), font).setCellValue("Solfati (SO4)");
-        styledCell(row, CL.ordinal(), font).setCellValue("Cloruri (Cl)");
-        styledCell(row, HCO3.ordinal(), font).setCellValue("Bicarbonati (HCO3)");
+    public static void commonHeader(Row row, XSSFCellStyle style) {
+        styledCell(row, NAME.ordinal(), style).setCellValue("Nome");
+        styledCell(row, CA.ordinal(), style).setCellValue("Calcio (Ca)");
+        styledCell(row, MG.ordinal(), style).setCellValue("Magnesio (Mg)");
+        styledCell(row, NA.ordinal(), style).setCellValue("Sodio (Na)");
+        styledCell(row, SO4.ordinal(), style).setCellValue("Solfati (SO4)");
+        styledCell(row, CL.ordinal(), style).setCellValue("Cloruri (Cl)");
+        styledCell(row, HCO3.ordinal(), style).setCellValue("Bicarbonati (HCO3)");
     }
 
-    public static Cell styledCell(Row row, int pos, Font font) {
+    public static Cell styledCell(Row row, int pos, XSSFCellStyle style) {
         Cell cell = row.createCell(pos);
-        cell.getCellStyle().setFont(font);
+        cell.setCellStyle(style);
         return cell;
     }
 
@@ -184,15 +207,5 @@ public class ResultWriter implements IResultWriter {
             res = sheet.createRow(rowNum);
         }
         return res;
-    }
-
-    private void removePreviousRecipe(Sheet sheet) {
-        for (int i = sheet.getFirstRowNum(); i < sheet.getLastRowNum(); i++) {
-            Iterator<Row> rowIte =  sheet.iterator();
-            while(rowIte.hasNext()){
-                rowIte.next();
-                rowIte.remove();
-            }
-        }
     }
 }

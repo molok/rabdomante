@@ -109,7 +109,8 @@ public class Cli {
                     uiReader.waters(),
                     timeout);
 
-            new ResultWriter(input, output).write(solution.orElseThrow(() -> {throw new RabdoException("Nessuna soluzione trovata");}));
+            long secondsElapsed = (System.currentTimeMillis() - start) / 1000;
+            new ResultWriter(input, output).write(solution.orElseThrow(() -> {throw new RabdoException("Nessuna soluzione trovata");}), secondsElapsed);
 
             System.out.println(solution.get().searchCompleted ? "Soluzione trovata!" : "Ricerca incompleta!");
 
