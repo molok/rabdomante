@@ -15,16 +15,71 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class Cli {
-    static Logger logger = LoggerFactory.getLogger(Cli.class);
     public static final String DEFAULT_FILENAME = "rabdomante.xlsx";
 
-    public static void printUsage() {
+    public static void main(String[] args) { System.exit(new Cli().doMain(args)); }
+
+    public int doMain(String[] args) {
+        long start = System.currentTimeMillis();
+
+        try {
+            CommandLine opts = new DefaultParser().parse(cliOptions(), args);
+
+            if (opts.hasOption("help")) {
+                printUsage();
+                return 1;
+            }
+
+            if (opts.hasOption("verbose")) {
+                setLogLevel(Level.TRACE);
+            } else {
+                setLogLevel(Level.WARN);
+            }
+
+            File input = opts.hasOption("input") ? new File(opts.getOptionValue("input")) : new File(DEFAULT_FILENAME);
+            File output = opts.hasOption("output") ? new File(opts.getOptionValue("output")) : new File(DEFAULT_FILENAME);
+
+            if (!input.exists()) {
+                System.out.println("File non presente, genero template "+input.getAbsolutePath());
+                new DefaultFileGenerator().generate(input);
+                System.out.println("Template generato");
+                return 1;
+            }
+
+            IUserInputReader uiReader = new UserInputReader(input);
+
+            Long timeout = parseLong(opts.getOptionValue("timeout", "60"));
+
+            Optional<WSolution> solution = new ChocoSolver().solve(
+                    uiReader.target(),
+                    uiReader.salts(),
+                    uiReader.waters(),
+                    timeout);
+
+            long secondsElapsed = (System.currentTimeMillis() - start) / 1000;
+            new ResultWriter(input, output).write(solution.orElseThrow(() -> {throw new RabdoException("Nessuna soluzione trovata");}), secondsElapsed);
+
+            System.out.println(solution.get().searchCompleted ? "Soluzione ottimale trovata!" : "Ricerca incompleta!");
+
+            return 0;
+        } catch (Throwable e) {
+            System.err.println("Soluzione NON trovata!");
+            System.err.println("==================================== ERROR =====================================");
+            e.printStackTrace();
+            System.err.println("================================================================================");
+            return 66;
+        } finally {
+            System.out.println("Execution time: " + String.format("%.03f", (System.currentTimeMillis() - start) / 1000.) + "s");
+        }
+    }
+
+    public void printUsage() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp( "java -jar rabdomante.jar", cliOptions() );
         System.out.println("\n version: " + fetchVersion());
     }
 
-    private static Options cliOptions() {
+    private Options cliOptions() {
         Options opts = new Options();
 
         opts.addOption(Option.builder("h")
@@ -65,73 +120,17 @@ public class Cli {
         return opts;
     }
 
-    public static void main(String[] args) { System.exit(doMain(args)); }
-
-    private static void setLogLevel(Level level) {
+    private void setLogLevel(Level level) {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         root.setLevel(level);
     }
 
-    public static int doMain(String[] args) {
-        long start = System.currentTimeMillis();
-
-        try {
-            CommandLine opts = new DefaultParser().parse(cliOptions(), args);
-
-            if (opts.hasOption("help")) {
-                printUsage();
-                return 1;
-            }
-
-            if (opts.hasOption("verbose")) {
-                setLogLevel(Level.TRACE);
-            } else {
-                setLogLevel(Level.WARN);
-            }
-
-            File input = opts.hasOption("input") ? new File(opts.getOptionValue("input")) : new File(DEFAULT_FILENAME);
-            File output = opts.hasOption("output") ? new File(opts.getOptionValue("output")) : new File(DEFAULT_FILENAME);
-
-            if (!input.exists()) {
-                System.out.println("File non presente, genero template "+input.getAbsolutePath());
-                new DefaultFileGenerator().generate(input);
-                System.out.println("Template generato");
-                return 1;
-            }
-
-            IUserInputReader uiReader = new UserInputReader(input);
-
-            Long timeout = parseLong(opts.getOptionValue("timeout", "60"));
-
-            Optional<WSolution> solution = new ChocoSolver().solve(
-                    uiReader.target(),
-                    uiReader.salts(),
-                    uiReader.waters(),
-                    timeout);
-
-            long secondsElapsed = (System.currentTimeMillis() - start) / 1000;
-            new ResultWriter(input, output).write(solution.orElseThrow(() -> {throw new RabdoException("Nessuna soluzione trovata");}), secondsElapsed);
-
-            System.out.println(solution.get().searchCompleted ? "Soluzione trovata!" : "Ricerca incompleta!");
-
-            return 0;
-        } catch (Throwable e) {
-            System.err.println("Soluzione NON trovata!");
-            System.err.println("==================================== ERROR =====================================");
-            e.printStackTrace();
-            System.err.println("================================================================================");
-            return 66;
-        } finally {
-            System.out.println("Execution time: " + String.format("%.03f", (System.currentTimeMillis() - start) / 1000.) + "s");
-        }
-    }
-
-    private static Long parseLong(String s) {
+    private Long parseLong(String s) {
         if (s == null || "".equals(s)) { return null; }
         return Long.parseLong(s);
     }
 
-    public static String fetchVersion() {
+    public String fetchVersion() {
         String version = null;
 
         // try to load from maven properties first

@@ -27,11 +27,11 @@ public class ResultWriterTest {
     @Rule public TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Test public void writes() throws IOException {
-        File output = tmpDir.newFile("porcamadonna.xlsx");
+        File output = tmpDir.newFile("testfile.xlsx");
         File input = new File(this.getClass().getResource("/input.xlsx").getFile());
         assertThat(input.exists()).isTrue();
         ResultWriter it = new ResultWriter(input, output);
         it.write(new WSolution(new Recipe( Arrays.asList(new Water(DISTILLED, 10), new Water(BOARIO, 20)),
-                             Arrays.asList(new Salt(GYPSUM, 10), new Salt(TABLE_SALT, 20)), 100 ), true), secondsElapsed);
+                             Arrays.asList(new Salt(GYPSUM, 10), new Salt(TABLE_SALT, 20)), 100 ), true), 100);
     }
 }
