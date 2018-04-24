@@ -1,5 +1,6 @@
 package alebolo.rabdomante.xlsx;
 
+import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.RabdoException;
 import alebolo.rabdomante.core.SaltProfile;
 import alebolo.rabdomante.core.SaltProfiles;
@@ -18,6 +19,7 @@ import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
 import static alebolo.rabdomante.xlsx.ResultWriter.getOrCreate;
 
 public class DefaultFileGenerator {
+
     private final WaterProfileParser waterProfileParser = new WaterProfileParser();
     public static final List<SaltProfile> DEFAULT_SALTS = Arrays.asList(
             SaltProfiles.TABLE_SALT,
@@ -36,7 +38,7 @@ public class DefaultFileGenerator {
 
     public void generate(File file) {
         try {
-            if (file.exists()) { throw new RabdoException("File already exists"); }
+            if (file.exists()) { throw new RabdoException(Msg.fileAlreadyExists()); }
 
             try (Workbook wb = new XSSFWorkbook()) {
                 userInputStyle = userInputStyle(wb);

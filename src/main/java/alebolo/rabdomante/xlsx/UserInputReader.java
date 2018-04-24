@@ -1,5 +1,6 @@
 package alebolo.rabdomante.xlsx;
 
+import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.IUserInputReader;
 import alebolo.rabdomante.cli.RabdoInputException;
 import alebolo.rabdomante.core.Salt;
@@ -29,9 +30,9 @@ public class UserInputReader implements IUserInputReader {
     @Override public Water target() {
         List<Water> res = readWaters(Constants.SHEETS.TARGET);
         if (res.size() == 0) {
-            throw new RabdoInputException("File non corretto, target non configurato");
+            throw new RabdoInputException(Msg.targetProfileNotConfigured());
         } else if (res.size() > 1) {
-            throw new RabdoInputException("File non corretto, solo un target permesso, trovati " + res.size());
+            throw new RabdoInputException(Msg.tooManyTargetProfiles() + res.size());
         } else {
             return res.get(0);
         }
@@ -61,7 +62,7 @@ public class UserInputReader implements IUserInputReader {
                     .collect(Collectors.toList());
 
             if (res.size() == 0) {
-                throw new RabdoInputException("File non corretto, nessuna acqua disponibile configurata");
+                throw new RabdoInputException(Msg.wrongFileNoWaterProvided());
             } else {
                 return res;
             }
@@ -92,7 +93,7 @@ public class UserInputReader implements IUserInputReader {
                     .collect(Collectors.toList());
 
             if (res.size() == 0) {
-                throw new RabdoInputException("File non corretto, nessuna acqua disponibile configurata");
+                throw new RabdoInputException(Msg.wrongFileNoWaterProvided());
             } else {
                 return res;
             }

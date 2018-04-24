@@ -4,6 +4,7 @@ import alebolo.rabdomante.core.Recipe;
 import alebolo.rabdomante.core.Salt;
 import alebolo.rabdomante.core.WSolution;
 import alebolo.rabdomante.core.Water;
+import alebolo.rabdomante.xlsx.Constants;
 import alebolo.rabdomante.xlsx.ResultWriter;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,6 +26,10 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class ResultWriterTest {
     @Rule public TemporaryFolder tmpDir = new TemporaryFolder();
+
+    @Test public void x() {
+        System.out.println(Constants.SHEETS.RESULT.uiName);
+    }
 
     @Test public void writes() throws IOException {
         File output = tmpDir.newFile("testfile.xlsx");

@@ -1,5 +1,6 @@
 package alebolo.rabdomante.xlsx;
 
+import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.IResultWriter;
 import alebolo.rabdomante.cli.RabdoException;
 import alebolo.rabdomante.core.Recipe;
@@ -19,6 +20,12 @@ import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
 import static alebolo.rabdomante.xlsx.Constants.SHEETS.RESULT;
 
 public class ResultWriter implements IResultWriter {
+    public static final String AGGIORNATO = "Aggiornato @";
+    public static final String RICERCA_COMPLETATA_CON_SUCCESSO_IN = "Ricerca completata con successo in ";
+    public static final String IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_È_STATA_INTERROTTA_DOPO = "Il risultato potrebbe non essere ottimale, la ricerca è stata interrotta dopo ";
+    public static final String GRAMMI_G = "Grammi (g)";
+    public static final String LITRI_L = "Litri (L)";
+    public static final String NOME = "Nome";
     Logger logger = LoggerFactory.getLogger(this.getClass());
     private final File output;
     private final File input;
@@ -90,9 +97,9 @@ public class ResultWriter implements IResultWriter {
     }
 
     private int timestamp(Sheet sheet, int rowNum, boolean searchCompleted, long secondsElapsed) {
-        getOrCreate(sheet, rowNum++).createCell(0).setCellValue("Aggiornato @" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        String msg = searchCompleted ? "Ricerca completata con successo in " + secondsElapsed + "s"
-                                     : "Il risultato potrebbe non essere ottimale, la ricerca è stata interrotta dopo " + secondsElapsed + "s";
+        getOrCreate(sheet, rowNum++).createCell(0).setCellValue(AGGIORNATO + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        String msg = searchCompleted ? RICERCA_COMPLETATA_CON_SUCCESSO_IN + secondsElapsed + "s"
+                                     : IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_È_STATA_INTERROTTA_DOPO + secondsElapsed + "s";
         getOrCreate(sheet, rowNum++).createCell(0).setCellValue(msg);
         return rowNum;
     }
@@ -140,23 +147,23 @@ public class ResultWriter implements IResultWriter {
     }
 
     private void writeSaltHeader(Row row) {
-        styledCell(row, QTY.ordinal(), headerStyle).setCellValue("Grammi (g)");
+        styledCell(row, QTY.ordinal(), headerStyle).setCellValue(GRAMMI_G);
         commonHeader(row, headerStyle);
     }
 
     public static void writeWatersHeader(Row row, XSSFCellStyle style) {
-        styledCell(row, QTY.ordinal(), style).setCellValue("Litri (L)");
+        styledCell(row, QTY.ordinal(), style).setCellValue(LITRI_L);
         commonHeader(row, style);
     }
 
     public static void commonHeader(Row row, XSSFCellStyle style) {
-        styledCell(row, NAME.ordinal(), style).setCellValue("Nome");
-        styledCell(row, CA.ordinal(), style).setCellValue("Calcio (Ca)");
-        styledCell(row, MG.ordinal(), style).setCellValue("Magnesio (Mg)");
-        styledCell(row, NA.ordinal(), style).setCellValue("Sodio (Na)");
-        styledCell(row, SO4.ordinal(), style).setCellValue("Solfati (SO4)");
-        styledCell(row, CL.ordinal(), style).setCellValue("Cloruri (Cl)");
-        styledCell(row, HCO3.ordinal(), style).setCellValue("Bicarbonati (HCO3)");
+        styledCell(row, NAME.ordinal(), style).setCellValue(NOME);
+        styledCell(row, CA.ordinal(), style).setCellValue(Msg.calcium());
+        styledCell(row, MG.ordinal(), style).setCellValue(Msg.magnesium());
+        styledCell(row, NA.ordinal(), style).setCellValue(Msg.sodium());
+        styledCell(row, SO4.ordinal(), style).setCellValue(Msg.sulfate());
+        styledCell(row, CL.ordinal(), style).setCellValue(Msg.chloride());
+        styledCell(row, HCO3.ordinal(), style).setCellValue(Msg.bicarbonates());
     }
 
     public static Cell styledCell(Row row, int pos, XSSFCellStyle style) {
@@ -168,7 +175,7 @@ public class ResultWriter implements IResultWriter {
     private void writeTotal(Sheet sheet, Recipe recipe, int rowNum) {
         Row row = getOrCreate(sheet, rowNum);
         row.createCell(QTY.ordinal()).setCellValue(recipe.liters());
-        row.createCell(NAME.ordinal()).setCellValue("Totale");
+        row.createCell(NAME.ordinal()).setCellValue(Msg.total());
         row.createCell(CA.ordinal()).setCellValue(recipe.ca());
         row.createCell(MG.ordinal()).setCellValue(recipe.mg());
         row.createCell(NA.ordinal()).setCellValue(recipe.na());

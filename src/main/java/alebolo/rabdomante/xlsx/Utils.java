@@ -1,5 +1,6 @@
 package alebolo.rabdomante.xlsx;
 
+import alebolo.rabdomante.cli.RabdoException;
 import org.apache.commons.text.WordUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -22,6 +23,9 @@ public class Utils {
 
     public static void orderSheets(Workbook wb) {
         for (Constants.SHEETS s: Constants.SHEETS.values()) {
+            if (wb.getSheetIndex(s.uiName) == -1) {
+                throw new RabdoException("Sheet not found:"+s.uiName);
+            }
             wb.setSheetOrder(s.uiName, s.ordinal());
         }
     }
