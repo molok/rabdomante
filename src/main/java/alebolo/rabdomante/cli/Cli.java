@@ -7,6 +7,7 @@ import alebolo.rabdomante.xlsx.ResultWriter;
 import alebolo.rabdomante.xlsx.UserInputReader;
 import ch.qos.logback.classic.Level;
 import org.apache.commons.cli.*;
+import org.apache.commons.lang3.LocaleUtils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -24,6 +25,10 @@ public class Cli {
         try {
             CommandLine opts = new DefaultParser().parse(cliOptions(), args);
 
+            if (opts.hasOption("locale")) {
+                Msg.changeLocale(LocaleUtils.toLocale(opts.getOptionValue("locale")));
+            }
+
             if (opts.hasOption("help")) {
                 printUsage();
                 return 1;
@@ -34,12 +39,11 @@ public class Cli {
             } else {
                 setLogLevel(Level.WARN);
             }
-
             File input = opts.hasOption("input") ? new File(opts.getOptionValue("input")) : new File(DEFAULT_FILENAME);
             File output = opts.hasOption("output") ? new File(opts.getOptionValue("output")) : new File(DEFAULT_FILENAME);
 
             if (!input.exists()) {
-                System.out.println(Msg.fileNotFoundTemplateGenerated() +input.getAbsolutePath());
+                System.out.println(Msg.fileNotFoundTemplateGenerated() +" " +input.getAbsolutePath());
                 new DefaultFileGenerator().generate(input);
                 System.out.println(Msg.templateGenerated());
                 return 1;
@@ -56,7 +60,7 @@ public class Cli {
                     timeout);
 
             long secondsElapsed = (System.currentTimeMillis() - start) / 1000;
-            new ResultWriter(input, output).write(solution.orElseThrow(() -> {throw new RabdoException(Msg.noSolutionFound());}), secondsElapsed);
+            new ResultWriter(input, output).write(solution.orElseThrow(() -> new RabdoException(Msg.noSolutionFound())), secondsElapsed);
 
             System.out.println(solution.get().searchCompleted ? Msg.optimalSolutionFoudn() : Msg.searchInterrupted());
 
@@ -68,14 +72,14 @@ public class Cli {
             System.err.println("================================================================================");
             return 66;
         } finally {
-            System.out.println(Msg.executionTime() + " :" + String.format("%.03f", (System.currentTimeMillis() - start) / 1000.) + "s");
+            System.out.println(Msg.executionTime() + ": " + String.format("%.03f", (System.currentTimeMillis() - start) / 1000.) + "s");
         }
     }
 
     public void printUsage() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp( "java -jar rabdomante.jar", cliOptions() );
-        System.out.println("\n version: " + fetchVersion());
+        System.out.println("\nversion: " + fetchVersion());
     }
 
     private Options cliOptions() {
@@ -84,44 +88,37 @@ public class Cli {
         opts.addOption(Option.builder("h")
                 .longOpt("help")
                 .hasArg(false)
-                .optionalArg(true)
                 .desc(Msg.printsThisMessage())
                 .build());
 
         opts.addOption(Option.builder("v")
                 .longOpt("verbose")
                 .hasArg(false)
-                .optionalArg(true)
                 .desc(Msg.verboseDescription())
                 .build());
 
         opts.addOption(Option.builder("i")
                 .longOpt("input")
-                .hasArg(true)
-                .optionalArg(true)
+                .hasArg().argName("file")
                 .desc(Msg.inputFile())
                 .build());
 
         opts.addOption(Option.builder("o")
                 .longOpt("output")
-                .hasArg(true)
-                .optionalArg(true)
+                .hasArg().argName("file")
                 .desc(Msg.outputFile())
                 .build());
 
         opts.addOption(Option.builder("t")
                 .longOpt("timeout")
-                .hasArg(true)
-                .argName("timeout")
-                .optionalArg(true)
+                .hasArg().argName("timeout")
                 .desc(Msg.timeoutDescription())
                 .build());
 
         opts.addOption(Option.builder("l")
                 .longOpt("locale")
-                .hasArg()
-                .argName("locale")
-                .desc(Msg.language())
+                .hasArg().argName("locale")
+                .desc(Msg.locale())
                 .build());
         return opts;
     }

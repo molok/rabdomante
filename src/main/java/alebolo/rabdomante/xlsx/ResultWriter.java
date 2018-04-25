@@ -68,8 +68,8 @@ public class ResultWriter implements IResultWriter {
             try (Workbook wb = WorkbookFactory.create(fis)) {
                 baseStyle = baseStyle(wb);
                 headerStyle = headerStyle(wb);
-                wb.removeSheetAt(wb.getSheetIndex(RESULT.uiName));
-                Sheet sheet = wb.createSheet(RESULT.uiName);
+                wb.removeSheetAt(Utils.sheetIndex(wb, RESULT).getAsInt());
+                Sheet sheet = wb.createSheet(RESULT.localizedName());
                 Utils.colorTab(sheet, Utils.COLOR_OUTPUT);
 
                 int rowNum = 0;

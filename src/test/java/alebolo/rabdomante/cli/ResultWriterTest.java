@@ -28,7 +28,7 @@ public class ResultWriterTest {
     @Rule public TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Test public void x() {
-        System.out.println(Constants.SHEETS.RESULT.uiName);
+        System.out.println(Constants.SHEETS.RESULT.localizedName());
     }
 
     @Test public void writes() throws IOException {

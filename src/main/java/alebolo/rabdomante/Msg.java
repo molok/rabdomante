@@ -1,13 +1,23 @@
 package alebolo.rabdomante;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Msg {
-    static ResourceBundle local;
-    static {
-        local = ResourceBundle.getBundle("messages");
+    public static final String BUNDLE_NAME = "messages";
+    static ResourceBundle local= ResourceBundle.getBundle(BUNDLE_NAME);
+    public static void changeLocale(Locale locale) {
+        local = ResourceBundle.getBundle(
+                BUNDLE_NAME,
+                locale,
+                new ResourceBundle.Control() {
+                    public Locale getFallbackLocale(String baseName, Locale locale) {
+                        return Locale.ENGLISH;
+                    }
+                });
     }
 
+    public static String getString(String key) { return local.getString(key); }
     public static String calcium() { return local.getString("CALCIUM"); }
     public static String magnesium() { return local.getString("MAGNESIUM"); }
     public static String sodium() { return local.getString("SODIUM"); }
@@ -34,7 +44,7 @@ public class Msg {
     public static String recipe() {return local.getString("RECIPE"); }
     public static String bottledWaters() { return local.getString("BOTTLED_WATERS"); }
     public static String commonProfiles() { return local.getString("COMMON_PROFILES"); }
-    public static String language() { return local.getString("LANGUAGE"); }
+    public static String locale() { return local.getString("LOCALE"); }
     public static String templateGenerated() { return local.getString("TEMPLATE_GENERATED"); }
     public static String fileNotFoundTemplateGenerated() { return local.getString("FILE_NOT_FOUND_TEMPLATE_GENERATED"); }
     public static String noSolutionFound() { return local.getString("NO_SOLUTION_FOUND"); }
