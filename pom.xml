@@ -6,7 +6,7 @@
 
     <groupId>alebolo</groupId>
     <artifactId>rabdomante</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -96,6 +96,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>tools</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

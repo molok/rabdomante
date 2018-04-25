@@ -57,4 +57,6 @@ public class Msg {
     public static String timeoutDescription() { return local.getString("TIMEOUT_DESC"); }
     public static String executionTime() { return local.getString("EXECUTION_TIME"); }
     public static String solutionNotFound() { return local.getString("SOLUTION_NOT_FOUND"); }
+    public static String noGui() { return local.getString("NO_GUI");
+    }
 }

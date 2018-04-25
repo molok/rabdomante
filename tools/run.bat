@@ -20,6 +20,6 @@ if defined JavaCurrVersion (
     @echo %KEY_NAME%\%VALUE_NAME% not found.
 )
 @echo starting rabdo
-"%JBIN%" -jar rabdomante-1.0-SNAPSHOT.jar -v
+"%JBIN%" -jar rabdomante-${project.version}.jar -v
 @echo end rabdo
 pause

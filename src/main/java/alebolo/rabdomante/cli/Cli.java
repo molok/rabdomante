@@ -2,6 +2,7 @@ package alebolo.rabdomante.cli;
 
 import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.core.*;
+import alebolo.rabdomante.gui.HelloWorld;
 import alebolo.rabdomante.xlsx.DefaultFileGenerator;
 import alebolo.rabdomante.xlsx.ResultWriter;
 import alebolo.rabdomante.xlsx.UserInputReader;
@@ -39,30 +40,12 @@ public class Cli {
             } else {
                 setLogLevel(Level.WARN);
             }
-            File input = opts.hasOption("input") ? new File(opts.getOptionValue("input")) : new File(DEFAULT_FILENAME);
-            File output = opts.hasOption("output") ? new File(opts.getOptionValue("output")) : new File(DEFAULT_FILENAME);
 
-            if (!input.exists()) {
-                System.out.println(Msg.fileNotFoundTemplateGenerated() +" " +input.getAbsolutePath());
-                new DefaultFileGenerator().generate(input);
-                System.out.println(Msg.templateGenerated());
-                return 1;
+            if (opts.hasOption("no-gui")) {
+                return cli(start, opts);
+            } else {
+                HelloWorld.main(args);
             }
-
-            IUserInputReader uiReader = new UserInputReader(input);
-
-            Long timeout = parseLong(opts.getOptionValue("timeout", "60"));
-
-            Optional<WSolution> solution = new ChocoSolver().solve(
-                    uiReader.target(),
-                    uiReader.salts(),
-                    uiReader.waters(),
-                    timeout);
-
-            long secondsElapsed = (System.currentTimeMillis() - start) / 1000;
-            new ResultWriter(input, output).write(solution.orElseThrow(() -> new RabdoException(Msg.noSolutionFound())), secondsElapsed);
-
-            System.out.println(solution.get().searchCompleted ? Msg.optimalSolutionFoudn() : Msg.searchInterrupted());
 
             return 0;
         } catch (Throwable e) {
@@ -74,6 +57,34 @@ public class Cli {
         } finally {
             System.out.println(Msg.executionTime() + ": " + String.format("%.03f", (System.currentTimeMillis() - start) / 1000.) + "s");
         }
+    }
+
+    private int cli(long start, CommandLine opts) {
+        File input = opts.hasOption("input") ? new File(opts.getOptionValue("input")) : new File(DEFAULT_FILENAME);
+        File output = opts.hasOption("output") ? new File(opts.getOptionValue("output")) : new File(DEFAULT_FILENAME);
+
+        if (!input.exists()) {
+            System.out.println(Msg.fileNotFoundTemplateGenerated() +" " +input.getAbsolutePath());
+            new DefaultFileGenerator().generate(input);
+            System.out.println(Msg.templateGenerated());
+            return 1;
+        }
+
+        IUserInputReader uiReader = new UserInputReader(input);
+
+        Long timeout = parseLong(opts.getOptionValue("timeout", "60"));
+
+        Optional<WSolution> solution = new ChocoSolver().solve(
+                uiReader.target(),
+                uiReader.salts(),
+                uiReader.waters(),
+                timeout);
+
+        long secondsElapsed = (System.currentTimeMillis() - start) / 1000;
+        new ResultWriter(input, output).write(solution.orElseThrow(() -> new RabdoException(Msg.noSolutionFound())), secondsElapsed);
+
+        System.out.println(solution.get().searchCompleted ? Msg.optimalSolutionFoudn() : Msg.searchInterrupted());
+        return 0;
     }
 
     public void printUsage() {
@@ -119,6 +130,11 @@ public class Cli {
                 .longOpt("locale")
                 .hasArg().argName("locale")
                 .desc(Msg.locale())
+                .build());
+
+        opts.addOption(Option.builder("c")
+                .longOpt("no-gui")
+                .desc(Msg.noGui())
                 .build());
         return opts;
     }
