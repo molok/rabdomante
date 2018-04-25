@@ -1,5 +1,6 @@
 package alebolo.rabdomante.xlsx;
 
+import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.RabdoException;
 import alebolo.rabdomante.core.SaltProfile;
 import alebolo.rabdomante.core.SaltProfiles;
@@ -15,9 +16,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
+import static alebolo.rabdomante.xlsx.Constants.SHEETS.RESULT;
+import static alebolo.rabdomante.xlsx.Constants.SHEETS.TARGET;
+import static alebolo.rabdomante.xlsx.Constants.SHEETS.WATER;
 import static alebolo.rabdomante.xlsx.ResultWriter.getOrCreate;
 
 public class DefaultFileGenerator {
+
     private final WaterProfileParser waterProfileParser = new WaterProfileParser();
     public static final List<SaltProfile> DEFAULT_SALTS = Arrays.asList(
             SaltProfiles.TABLE_SALT,
@@ -36,7 +41,7 @@ public class DefaultFileGenerator {
 
     public void generate(File file) {
         try {
-            if (file.exists()) { throw new RabdoException("File already exists"); }
+            if (file.exists()) { throw new RabdoException(Msg.fileAlreadyExists()); }
 
             try (Workbook wb = new XSSFWorkbook()) {
                 userInputStyle = userInputStyle(wb);
@@ -50,7 +55,7 @@ public class DefaultFileGenerator {
                 writeParsedWaters(wb, Constants.SHEETS.KNOWN_WATERS, waterProfileParser.parse(this.getClass().getResourceAsStream("/waters.csv")));
                 writeParsedWaters(wb, Constants.SHEETS.COMMON_PROFILES, waterProfileParser.parse(this.getClass().getResourceAsStream("/common_profiles.csv")));
 
-                wb.setActiveSheet(wb.getSheetIndex(Constants.SHEETS.WATER.uiName));
+                wb.setActiveSheet(Utils.sheetIndex(wb, WATER).orElseThrow(() -> new RabdoException("Sheet not found:"+WATER.localizedName())));
 
                 cleanup(wb);
 
@@ -66,7 +71,7 @@ public class DefaultFileGenerator {
     }
 
     private void writeWatersSheet(Workbook wb) {
-        Sheet sheet = wb.createSheet(Constants.SHEETS.WATER.uiName);
+        Sheet sheet = wb.createSheet(WATER.localizedName());
         Utils.colorTab(sheet, Utils.COLOR_USER_INPUT);
 
         int rowNum = 0;
@@ -84,7 +89,7 @@ public class DefaultFileGenerator {
     }
 
     private void writeSaltsSheet(Workbook wb) {
-        Sheet sheet = wb.createSheet(Constants.SHEETS.SALTS.uiName);
+        Sheet sheet = wb.createSheet(Constants.SHEETS.SALTS.localizedName());
         Utils.colorTab(sheet, Utils.COLOR_USER_INPUT);
 
         int rowNum = 0;
@@ -97,7 +102,7 @@ public class DefaultFileGenerator {
 
     private void writeParsedWaters(Workbook wb, Constants.SHEETS sheetName, List<Water> parse) {
         List<Water> waters = parse;
-        Sheet sheet = wb.createSheet(sheetName.uiName);
+        Sheet sheet = wb.createSheet(sheetName.localizedName());
         int rowNum = 0;
 
         ResultWriter.commonHeader(getOrCreate(sheet, rowNum), headerStyle);
@@ -116,18 +121,18 @@ public class DefaultFileGenerator {
     }
 
     private void cleanup(Workbook wb) {
-        wb.setActiveSheet(wb.getSheetIndex(Constants.SHEETS.WATER.uiName));
+        wb.setActiveSheet(Utils.sheetIndex(wb, WATER).getAsInt());
         Utils.autoSizeColumns(wb);
         Utils.orderSheets(wb);
     }
 
     private void writeResultSheet(Workbook wb) {
-        Sheet sheet = wb.createSheet(Constants.SHEETS.RESULT.uiName);
+        Sheet sheet = wb.createSheet(RESULT.localizedName());
         Utils.colorTab(sheet, Utils.COLOR_OUTPUT);
     }
 
     private void writeTargetSheet(Workbook wb) {
-        Sheet sheet = wb.createSheet(Constants.SHEETS.TARGET.uiName);
+        Sheet sheet = wb.createSheet(TARGET.localizedName());
         Utils.colorTab(sheet, Utils.COLOR_USER_INPUT);
 
         Row headerRow = getOrCreate(sheet, 0);

@@ -1,5 +1,6 @@
 package alebolo.rabdomante.core;
 
+import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.RabdoInputException;
 
 import java.util.Objects;
@@ -38,7 +39,7 @@ public class WaterProfile {
         } else if (v == -1) {
             return 0; // I use -1 for N/A, in the future I may reject this too
         } else {
-            throw new RabdoInputException("Mineral value can't be < -1, was:"+v);
+            throw new RabdoInputException(Msg.mineralValueCanTBeLt1Was() +v);
         }
     }
 

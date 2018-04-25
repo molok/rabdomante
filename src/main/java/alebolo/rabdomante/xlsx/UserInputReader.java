@@ -1,6 +1,8 @@
 package alebolo.rabdomante.xlsx;
 
+import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.IUserInputReader;
+import alebolo.rabdomante.cli.RabdoException;
 import alebolo.rabdomante.cli.RabdoInputException;
 import alebolo.rabdomante.core.Salt;
 import alebolo.rabdomante.core.SaltProfile;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
+import static alebolo.rabdomante.xlsx.Constants.SHEETS.SALTS;
 
 public class UserInputReader implements IUserInputReader {
     private final File file;
@@ -29,9 +32,9 @@ public class UserInputReader implements IUserInputReader {
     @Override public Water target() {
         List<Water> res = readWaters(Constants.SHEETS.TARGET);
         if (res.size() == 0) {
-            throw new RabdoInputException("File non corretto, target non configurato");
+            throw new RabdoInputException(Msg.targetProfileNotConfigured());
         } else if (res.size() > 1) {
-            throw new RabdoInputException("File non corretto, solo un target permesso, trovati " + res.size());
+            throw new RabdoInputException(Msg.tooManyTargetProfiles() + res.size());
         } else {
             return res.get(0);
         }
@@ -39,7 +42,9 @@ public class UserInputReader implements IUserInputReader {
 
     List<Water> readWaters(Constants.SHEETS sheet) {
         try (Workbook wb = WorkbookFactory.create(file)) {
-            List<Water> res = Streams.stream(wb.getSheet(sheet.uiName).rowIterator())
+            List<Water> res = Streams.stream(Utils.searchSheet(wb, sheet)
+                                                  .orElseThrow(() -> new RabdoException("Sheet not found:"+sheet.localizedName()))
+                                                  .rowIterator())
                     .skip(Constants.HEADER_ROWS)
                     .filter(row -> {
                         Cell cell = row.getCell(NAME.ordinal());
@@ -61,7 +66,7 @@ public class UserInputReader implements IUserInputReader {
                     .collect(Collectors.toList());
 
             if (res.size() == 0) {
-                throw new RabdoInputException("File non corretto, nessuna acqua disponibile configurata");
+                throw new RabdoInputException(Msg.wrongFileNoWaterProvided());
             } else {
                 return res;
             }
@@ -72,7 +77,9 @@ public class UserInputReader implements IUserInputReader {
 
     @Override public List<Salt> salts() {
         try (Workbook wb = WorkbookFactory.create(file)) {
-            List<Salt> res = Streams.stream(wb.getSheet(Constants.SHEETS.SALTS.uiName).rowIterator())
+            List<Salt> res = Streams.stream(Utils.searchSheet(wb, SALTS)
+                                                 .orElseThrow(() -> new RabdoException("Sheet not found:"+SALTS.localizedName()))
+                                                 .rowIterator())
                     .skip(Constants.HEADER_ROWS)
                     .filter(row -> {
                         String name = row.getCell(NAME.ordinal()).getStringCellValue();
@@ -92,7 +99,7 @@ public class UserInputReader implements IUserInputReader {
                     .collect(Collectors.toList());
 
             if (res.size() == 0) {
-                throw new RabdoInputException("File non corretto, nessuna acqua disponibile configurata");
+                throw new RabdoInputException(Msg.wrongFileNoWaterProvided());
             } else {
                 return res;
             }
