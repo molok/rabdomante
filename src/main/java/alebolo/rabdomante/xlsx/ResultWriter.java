@@ -22,7 +22,7 @@ import static alebolo.rabdomante.xlsx.Constants.SHEETS.RESULT;
 public class ResultWriter implements IResultWriter {
     public static final String AGGIORNATO = "Aggiornato @";
     public static final String RICERCA_COMPLETATA_CON_SUCCESSO_IN = "Ricerca completata con successo in ";
-    public static final String IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_È_STATA_INTERROTTA_DOPO = "Il risultato potrebbe non essere ottimale, la ricerca è stata interrotta dopo ";
+    public static final String IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_E_STATA_INTERROTTA_DOPO = "Il risultato potrebbe non essere ottimale, la ricerca è stata interrotta dopo ";
     public static final String GRAMMI_G = "Grammi (g)";
     public static final String LITRI_L = "Litri (L)";
     public static final String NOME = "Nome";
@@ -45,12 +45,7 @@ public class ResultWriter implements IResultWriter {
     }
 
     private XSSFCellStyle headerStyle(Workbook workbook) {
-        XSSFCellStyle res = (XSSFCellStyle) workbook.createCellStyle();
-        res.setBorderBottom(BorderStyle.THIN);
-        res.setBorderTop(BorderStyle.THIN);
-        res.setBorderLeft(BorderStyle.THIN);
-        res.setBorderRight(BorderStyle.THIN);
-        return res;
+        return baseStyle(workbook);
     }
 
     private XSSFCellStyle baseStyle;
@@ -99,7 +94,7 @@ public class ResultWriter implements IResultWriter {
     private int timestamp(Sheet sheet, int rowNum, boolean searchCompleted, long secondsElapsed) {
         getOrCreate(sheet, rowNum++).createCell(0).setCellValue(AGGIORNATO + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         String msg = searchCompleted ? RICERCA_COMPLETATA_CON_SUCCESSO_IN + secondsElapsed + "s"
-                                     : IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_È_STATA_INTERROTTA_DOPO + secondsElapsed + "s";
+                                     : IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_E_STATA_INTERROTTA_DOPO + secondsElapsed + "s";
         getOrCreate(sheet, rowNum++).createCell(0).setCellValue(msg);
         return rowNum;
     }

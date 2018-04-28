@@ -1,5 +1,7 @@
 package alebolo.rabdomante.core;
 
+import alebolo.rabdomante.cli.IUserInputReader;
+import alebolo.rabdomante.xlsx.UserInputReader;
 import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
 import org.apache.commons.collections4.IteratorUtils;
@@ -14,6 +16,7 @@ import org.javatuples.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 

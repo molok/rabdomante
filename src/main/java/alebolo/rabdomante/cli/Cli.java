@@ -1,18 +1,15 @@
 package alebolo.rabdomante.cli;
 
 import alebolo.rabdomante.Msg;
-import alebolo.rabdomante.core.*;
-import alebolo.rabdomante.gui.HelloWorld;
-import alebolo.rabdomante.xlsx.DefaultFileGenerator;
-import alebolo.rabdomante.xlsx.ResultWriter;
-import alebolo.rabdomante.xlsx.UserInputReader;
+import alebolo.rabdomante.core.App;
+import alebolo.rabdomante.core.Defect;
+import alebolo.rabdomante.gui.Gui;
 import ch.qos.logback.classic.Level;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.LocaleUtils;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Optional;
 import java.util.Properties;
 
 public class Cli {
@@ -20,9 +17,16 @@ public class Cli {
 
     public static void main(String[] args) { System.exit(new Cli().doMain(args)); }
 
-    public int doMain(String[] args) {
-        long start = System.currentTimeMillis();
+    enum RetCode {
+        ok(0), incompleteSolution(1), noSolution(2), err(66);
 
+        private final int val;
+        RetCode(int val) {
+            this.val = val;
+        }
+    }
+
+    public int doMain(String[] args) {
         try {
             CommandLine opts = new DefaultParser().parse(cliOptions(), args);
 
@@ -42,49 +46,41 @@ public class Cli {
             }
 
             if (opts.hasOption("no-gui")) {
-                return cli(start, opts);
+                return cli(opts);
             } else {
-                HelloWorld.main(args);
+                Gui.main(args);
+                return RetCode.ok.val;
             }
-
-            return 0;
         } catch (Throwable e) {
             System.err.println(Msg.solutionNotFound());
             System.err.println("==================================== ERROR =====================================");
             e.printStackTrace();
             System.err.println("================================================================================");
-            return 66;
-        } finally {
-            System.out.println(Msg.executionTime() + ": " + String.format("%.03f", (System.currentTimeMillis() - start) / 1000.) + "s");
+            return RetCode.err.val;
         }
     }
 
-    private int cli(long start, CommandLine opts) {
+    private int cli(CommandLine opts) {
+        App app = new App();
+
         File input = opts.hasOption("input") ? new File(opts.getOptionValue("input")) : new File(DEFAULT_FILENAME);
         File output = opts.hasOption("output") ? new File(opts.getOptionValue("output")) : new File(DEFAULT_FILENAME);
 
         if (!input.exists()) {
             System.out.println(Msg.fileNotFoundTemplateGenerated() +" " +input.getAbsolutePath());
-            new DefaultFileGenerator().generate(input);
+            app.generate(input, false);
             System.out.println(Msg.templateGenerated());
             return 1;
         }
 
-        IUserInputReader uiReader = new UserInputReader(input);
+        App.Result solution = app.calc(input, output, parseLong(opts.getOptionValue("timeout", "60")));
 
-        Long timeout = parseLong(opts.getOptionValue("timeout", "60"));
-
-        Optional<WSolution> solution = new ChocoSolver().solve(
-                uiReader.target(),
-                uiReader.salts(),
-                uiReader.waters(),
-                timeout);
-
-        long secondsElapsed = (System.currentTimeMillis() - start) / 1000;
-        new ResultWriter(input, output).write(solution.orElseThrow(() -> new RabdoException(Msg.noSolutionFound())), secondsElapsed);
-
-        System.out.println(solution.get().searchCompleted ? Msg.optimalSolutionFoudn() : Msg.searchInterrupted());
-        return 0;
+        switch (solution.res) {
+            case NONE: System.out.println(Msg.noSolutionFound()); return RetCode.noSolution.val;
+            case INCOMPLETE: System.out.println(Msg.searchInterrupted()); return  RetCode.incompleteSolution.val;
+            case OPTIMAL: System.out.println(Msg.optimalSolutionFoudn()); return RetCode.ok.val;
+            default: throw new Defect("I shouldn't be here");
+        }
     }
 
     public void printUsage() {

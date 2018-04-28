@@ -1,28 +1,38 @@
 package alebolo.rabdomante.gui;
 
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
-public class HelloWorld extends Application {
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+
+public class HelloWorld {
+    File inputFile;
+
     public static void main(String[] args) {
-        launch(args);
+        SwingUtilities.invokeLater(() -> new HelloWorld().showGui());
     }
 
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("Hello World!");
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(event -> System.out.println("Hello World!"));
+    private void showGui() {
+        JFrame frame = new JFrame("Rabdomante");
+        JPanel outerPanel = new JPanel(new GridLayout(1, 2));
+        JLabel label = new JLabel("You need to generate the template first, then fill it with your spreadsheet software, then load it here.");
 
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
-        primaryStage.setScene(new Scene(root, 300, 250));
-        primaryStage.show();
+        JButton selectFile = new JButton("Save template");
+
+        selectFile.addActionListener(e -> {
+            JFileChooser save = new JFileChooser();
+            int res = save.showSaveDialog(outerPanel);
+            if (res == JFileChooser.APPROVE_OPTION) {
+                inputFile = save.getSelectedFile();
+            }
+        });
+
+
+        outerPanel.add(label);
+        outerPanel.add(selectFile);
+        frame.add(outerPanel);
+        frame.pack();
+        frame.setVisible(true);
     }
+
 }

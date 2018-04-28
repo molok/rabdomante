@@ -39,9 +39,9 @@ public class DefaultFileGenerator {
     private XSSFCellStyle baseStyle;
     private XSSFCellStyle userInputStyle;
 
-    public void generate(File file) {
+    public void generate(File file, boolean overwrite) {
         try {
-            if (file.exists()) { throw new RabdoException(Msg.fileAlreadyExists()); }
+            if (file.exists() && !overwrite) { throw new RabdoException(Msg.fileAlreadyExists()); }
 
             try (Workbook wb = new XSSFWorkbook()) {
                 userInputStyle = userInputStyle(wb);

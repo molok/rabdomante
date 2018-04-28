@@ -20,7 +20,7 @@ public class DefaultFileGeneratorTest {
     public void generate() throws IOException {
         File f = tmpDir.newFile("rabdomante_test.xlsx");
         assertThat(f.delete()).isTrue();
-        new DefaultFileGenerator().generate(f);
+        new DefaultFileGenerator().generate(f, true);
         System.out.println("fine");
     }
 }
