@@ -36,20 +36,20 @@ public class App {
                     uiReader.waters(),
                     timeout);
 
-            long secondsElapsed = timePast(start) / 1000;
+            long msElapsed = timePast(start);
 
             if (!maybeSolution.isPresent()) {
-                return new Result(SOLUTION.NONE, secondsElapsed);
+                return new Result(SOLUTION.NONE, msElapsed);
             } else {
                 WSolution solution = maybeSolution.get();
-                new ResultWriter(input, output).write(solution, secondsElapsed);
+                new ResultWriter(input, output).write(solution, msElapsed / 1000);
 
                 return solution.searchCompleted ?
-                        new Result(SOLUTION.OPTIMAL, secondsElapsed) :
-                        new Result(SOLUTION.INCOMPLETE, secondsElapsed);
+                        new Result(SOLUTION.OPTIMAL, msElapsed) :
+                        new Result(SOLUTION.INCOMPLETE, msElapsed);
             }
         } finally {
-            System.out.println(Msg.executionTime() + ": " + String.format("%.03f", timePast(start)/1000.) + "s");
+            System.out.println(Msg.executionTime() + ": " + String.format("%.03f", timePast(start) /1000.) + "s");
         }
     }
 
