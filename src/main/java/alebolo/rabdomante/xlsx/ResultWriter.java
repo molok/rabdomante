@@ -3,13 +3,18 @@ package alebolo.rabdomante.xlsx;
 import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.IResultWriter;
 import alebolo.rabdomante.cli.RabdoException;
-import alebolo.rabdomante.core.*;
+import alebolo.rabdomante.core.Recipe;
+import alebolo.rabdomante.core.Salt;
+import alebolo.rabdomante.core.WSolution;
+import alebolo.rabdomante.core.Water;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -23,7 +28,7 @@ public class ResultWriter implements IResultWriter {
     public static final String GRAMMI_G = Msg.grams() + " (g)";
     public static final String LITRI_L = Msg.liters() + " (L)";
     public static final String NOME = Msg.name();
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final File output;
     private final File input;
 
@@ -45,7 +50,6 @@ public class ResultWriter implements IResultWriter {
         return baseStyle(workbook);
     }
 
-    private XSSFCellStyle baseStyle;
     private XSSFCellStyle headerStyle;
 
     @Override
@@ -58,7 +62,7 @@ public class ResultWriter implements IResultWriter {
             Recipe recipe = solution.recipe;
             fis = new FileInputStream(input);
             try (Workbook wb = WorkbookFactory.create(fis)) {
-                baseStyle = baseStyle(wb);
+                XSSFCellStyle baseStyle = baseStyle(wb);
                 headerStyle = headerStyle(wb);
                 wb.removeSheetAt(Utils.sheetIndex(wb, RESULT).getAsInt());
                 Sheet sheet = wb.createSheet(RESULT.localizedName());

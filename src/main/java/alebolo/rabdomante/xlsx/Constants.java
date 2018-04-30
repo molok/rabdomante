@@ -1,7 +1,6 @@
 package alebolo.rabdomante.xlsx;
 
 import alebolo.rabdomante.Msg;
-import alebolo.rabdomante.cli.RabdoException;
 
 import java.util.Arrays;
 import java.util.Optional;

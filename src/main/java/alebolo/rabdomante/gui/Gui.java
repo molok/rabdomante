@@ -53,7 +53,7 @@ public class Gui extends Application {
     private TextField selectedFileTxt;
     private Button run;
     private ProgressIndicator progressIndicator;
-    private ButtonType openBtn = new ButtonType(Msg.openSpreadsheet(), ButtonBar.ButtonData.OK_DONE);
+    private final ButtonType openBtn = new ButtonType(Msg.openSpreadsheet(), ButtonBar.ButtonData.OK_DONE);
     private Spinner<Integer> timeLimit;
     private VersionProvider versionProvider = new VersionProvider();
 
@@ -228,7 +228,7 @@ public class Gui extends Application {
         leftRunBox.setAlignment(Pos.CENTER_LEFT);
         leftRunBox.setSpacing(10);
         Label labelTimeLimit = new Label(Msg.timeLimitSeconds());
-        timeLimit = new Spinner(1, 120, 1);
+        timeLimit = new Spinner<>(1, 120, 1);
         leftRunBox.getChildren().add(labelTimeLimit);
         leftRunBox.getChildren().add(timeLimit);
         timeLimit.setPrefWidth(60);

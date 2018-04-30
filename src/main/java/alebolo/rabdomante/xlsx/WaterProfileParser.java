@@ -10,13 +10,13 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static alebolo.rabdomante.xlsx.WaterProfileParser.COLUMNS.*;
 import static alebolo.rabdomante.xlsx.Utils.capitalize;
+import static alebolo.rabdomante.xlsx.WaterProfileParser.COLUMNS.*;
 
 public class WaterProfileParser {
     private static final char DELIMITATOR = ';';
     private static final char VUOTO = '\0';
-    enum COLUMNS { ID, NAME, CA, MG, NA, SO4, CL, HCO3 };
+    enum COLUMNS { ID, NAME, CA, MG, NA, SO4, CL, HCO3 }
 
     public List<Water> parse(InputStream csvStream) {
         CSVReader reader = null;

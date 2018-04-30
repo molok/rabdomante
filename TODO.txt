@@ -1,2 +1,0 @@
-[x] spostare più a destra il messaggio nel foglio della ricetta, fuori dalla tabella
-[x] inserire nel foglio della ricetta anche il confronto con target (sia target che delta)

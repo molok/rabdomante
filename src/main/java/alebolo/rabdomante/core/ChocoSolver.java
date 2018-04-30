@@ -15,12 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ChocoSolver implements WaterSolver {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override public Optional<WSolution> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters) {
         return solve(target, availableSalts, availableWaters, null);
@@ -132,14 +132,14 @@ public class ChocoSolver implements WaterSolver {
            quindi è inutile provare con 1kg di sale se già con 20g si è sforato
            il valore massimo di sodio */
         return Math.min
-                ( s.dg, Arrays.asList(
+                ( s.dg, Stream.of(
                                 ( s.ca == 0 ? 0 : ((target.ca * target.liters) / s.ca) * 2),
                                 ( s.mg == 0 ? 0 : ((target.mg * target.liters) / s.mg) * 2),
                                 ( s.na == 0 ? 0 : ((target.na * target.liters) / s.na) * 2),
                                 ( s.so4 == 0 ? 0 : ((target.so4 * target.liters) / s.so4) * 2),
                                 ( s.cl == 0 ? 0 : ((target.cl * target.liters) / s.cl) * 2),
                                 ( s.hco3 == 0 ? 0 : ((target.hco3 * target.liters) / s.hco3) * 2))
-                                .stream().mapToInt(i -> i).max().getAsInt());
+                        .mapToInt(i -> i).max().getAsInt());
     }
 
     private Map<WaterProfile, IntVar> waterVars(Model model, List<Water> waters, int targetLiters) {

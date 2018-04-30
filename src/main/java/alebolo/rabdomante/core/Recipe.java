@@ -54,7 +54,7 @@ public class Recipe {
         return (wSum + sSum)/ liters;
     }
 
-    private String ingredientsToString(List<? extends Object> list) {
+    private String ingredientsToString(List<?> list) {
         return list.stream()
             .map(e -> "\n" + e.toString())
             .collect(Collectors.joining()) + "\n";

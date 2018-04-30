@@ -16,9 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
-import static alebolo.rabdomante.xlsx.Constants.SHEETS.RESULT;
-import static alebolo.rabdomante.xlsx.Constants.SHEETS.TARGET;
-import static alebolo.rabdomante.xlsx.Constants.SHEETS.WATER;
+import static alebolo.rabdomante.xlsx.Constants.SHEETS.*;
 import static alebolo.rabdomante.xlsx.ResultWriter.getOrCreate;
 
 public class DefaultFileGenerator {
@@ -100,8 +98,7 @@ public class DefaultFileGenerator {
         rowNum = salts(sheet, rowNum);
     }
 
-    private void writeParsedWaters(Workbook wb, Constants.SHEETS sheetName, List<Water> parse) {
-        List<Water> waters = parse;
+    private void writeParsedWaters(Workbook wb, Constants.SHEETS sheetName, List<Water> waters) {
         Sheet sheet = wb.createSheet(sheetName.localizedName());
         int rowNum = 0;
 
