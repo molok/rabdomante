@@ -26,7 +26,7 @@ public class App {
         }
     }
 
-    public Result calc(File input, File output, Long timeout) {
+    public Result calc(File input, File output, Long timeLimit) {
         long start = System.currentTimeMillis();
         try {
             IUserInputReader uiReader = new UserInputReader(input);
@@ -34,7 +34,7 @@ public class App {
                     uiReader.target(),
                     uiReader.salts(),
                     uiReader.waters(),
-                    timeout);
+                    timeLimit);
 
             long msElapsed = timePast(start);
 

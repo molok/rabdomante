@@ -9,13 +9,13 @@ import java.util.function.Function;
 
 public interface WaterSolver {
     Optional<WSolution> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters);
-    Optional<WSolution> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters, Long secondsTimeout);
+    Optional<WSolution> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters, Long secondsTimeLimit);
 
     Optional<WSolution> solve(
             Water target,
             List<Salt> availableSalts,
             List<Water> availableWaters,
-            Long secondsTimeout,
+            Long secondsTimeLimit,
             Function<IntVar[], AbstractStrategy<IntVar>> strategyProvider
     );
 }

@@ -29,8 +29,8 @@ public class ChocoSolver implements WaterSolver {
         return solve(target, availableSalts, availableWaters, null);
     }
 
-    @Override public Optional<WSolution> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters, Long secondsTimeout) {
-        return solve(target, availableSalts, availableWaters, secondsTimeout,
+    @Override public Optional<WSolution> solve(Water target, List<Salt> availableSalts, List<Water> availableWaters, Long secondsTimeLimit) {
+        return solve(target, availableSalts, availableWaters, secondsTimeLimit,
                      (intvars) -> Search.domOverWDegSearch(intvars));
     }
 
@@ -38,7 +38,7 @@ public class ChocoSolver implements WaterSolver {
             Water target,
             List<Salt> availableSalts,
             List<Water> availableWaters,
-            Long secondsTimeout,
+            Long secondsTimeLimit,
             Function<IntVar[], AbstractStrategy<IntVar>> strategyProvider) {
 
         logger.info("target {}", target);
@@ -60,8 +60,8 @@ public class ChocoSolver implements WaterSolver {
         model.setObjective(Model.MINIMIZE, cost);
         Solver solver = model.getSolver();
 
-        if (secondsTimeout != null) {
-            solver.limitTime(secondsTimeout.longValue() * 1000);
+        if (secondsTimeLimit != null) {
+            solver.limitTime(secondsTimeLimit.longValue() * 1000);
         }
 
         List<IntVar> toWatch = new ArrayList<>(waterVars.values());

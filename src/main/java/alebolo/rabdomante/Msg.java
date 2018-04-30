@@ -54,7 +54,7 @@ public class Msg {
     public static String verboseDescription() { return local.getString("SHOWS_DETAILS_OF_THE_COMPUTATION"); }
     public static String inputFile() { return local.getString("INPUT_FILE"); }
     public static String outputFile() { return local.getString("OUTPUT_FILE"); }
-    public static String timeoutDescription() { return local.getString("TIMEOUT_DESC"); }
+    public static String timeLimitDescription() { return local.getString("TIMEOUT_DESC"); }
     public static String executionTime() { return local.getString("EXECUTION_TIME"); }
     public static String solutionNotFound() { return local.getString("SOLUTION_NOT_FOUND"); }
     public static String noGui() { return local.getString("NO_GUI"); }

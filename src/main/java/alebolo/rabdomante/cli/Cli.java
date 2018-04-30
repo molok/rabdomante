@@ -73,7 +73,7 @@ public class Cli {
             return 1;
         }
 
-        App.Result solution = app.calc(input, output, parseLong(opts.getOptionValue("timeout", "60")));
+        App.Result solution = app.calc(input, output, parseLong(opts.getOptionValue("timelimit", "60")));
 
         switch (solution.res) {
             case NONE: System.out.println(Msg.noSolutionFound()); return RetCode.noSolution.val;
@@ -117,9 +117,9 @@ public class Cli {
                 .build());
 
         opts.addOption(Option.builder("t")
-                .longOpt("timeout")
-                .hasArg().argName("timeout")
-                .desc(Msg.timeoutDescription())
+                .longOpt("timelimit")
+                .hasArg().argName("seconds")
+                .desc(Msg.timeLimitDescription())
                 .build());
 
         opts.addOption(Option.builder("l")

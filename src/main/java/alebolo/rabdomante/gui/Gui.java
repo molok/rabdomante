@@ -50,6 +50,7 @@ public class Gui extends Application {
     private Button run;
     private ProgressIndicator progressIndicator;
     private ButtonType openBtn = new ButtonType("Open Spreadsheet", ButtonBar.ButtonData.OK_DONE);
+    private Spinner<Integer> timeLimit;
 
     public static void main(String[] args) {
         launch(args);
@@ -221,11 +222,11 @@ public class Gui extends Application {
         leftRunBox.setFillHeight(true);
         leftRunBox.setAlignment(Pos.CENTER_LEFT);
         leftRunBox.setSpacing(10);
-        Label labelTimeout = new Label("Time Limit (minutes)");
-        Spinner timeout = new Spinner(1, 120, 1);
-        leftRunBox.getChildren().add(labelTimeout);
-        leftRunBox.getChildren().add(timeout);
-        timeout.setPrefWidth(60);
+        Label labelTimeLimit = new Label("Time Limit (minutes)");
+        timeLimit = new Spinner(1, 120, 1);
+        leftRunBox.getChildren().add(labelTimeLimit);
+        leftRunBox.getChildren().add(timeLimit);
+        timeLimit.setPrefWidth(60);
 
         run = new Button("Run!");
         run.setOnAction(e -> calc(run));
@@ -268,9 +269,10 @@ public class Gui extends Application {
         run.setDisable(true);
         progressIndicator.setProgress(-1.0f);
         progressIndicator.setVisible(true);
+        long secondsTimeLimit = timeLimit.getValue() * 60;
 
         CompletableFuture
-                .supplyAsync(() -> doCalc(ioFile))
+                .supplyAsync(() -> doCalc(ioFile, secondsTimeLimit))
                 .handle((res, err) -> handle(res, err, endOfCalc(run)));
     }
 
@@ -281,10 +283,10 @@ public class Gui extends Application {
         };
     }
 
-    private App.Result doCalc(File ioFile) {
+    private App.Result doCalc(File ioFile, long secondsTimeLimit) {
         log.info("start");
         try {
-            return app.calc(ioFile, ioFile, 9999L);
+            return app.calc(ioFile, ioFile, secondsTimeLimit);
         } finally {
             log.info("end");
         }
