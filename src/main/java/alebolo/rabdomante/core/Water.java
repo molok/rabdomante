@@ -21,7 +21,7 @@ public class Water extends WaterProfile {
                 ", so4=" + so4 +
                 ", cl=" + cl +
                 ", hco3=" + hco3 +
-                ", nome='" + nome + '\'' +
+                ", name='" + nome + '\'' +
                 ", liters=" + liters +
                 '}';
     }

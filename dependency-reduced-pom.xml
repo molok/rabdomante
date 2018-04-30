@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>alebolo</groupId>
   <artifactId>rabdomante</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2</version>
   <url>https://github.com/molok/rabdomante/</url>
   <build>
     <resources>

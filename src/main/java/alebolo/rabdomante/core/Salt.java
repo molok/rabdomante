@@ -5,7 +5,7 @@ import java.util.Objects;
 public class Salt extends SaltProfile {
     public final int dg;
     public Salt(SaltProfile salt, int dg) {
-        this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.nome, dg);
+        this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.name, dg);
     }
     Salt(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int dg) {
         super(nome, ca, mg, na, so4, cl, hco3);
@@ -21,7 +21,7 @@ public class Salt extends SaltProfile {
                 ", so4=" + so4 +
                 ", cl=" + cl +
                 ", hco3=" + hco3 +
-                ", nome='" + nome + '\'' +
+                ", name='" + name + '\'' +
                 ", g=" + dg/10. +
                 '}';
     }

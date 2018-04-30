@@ -9,7 +9,7 @@ public class SaltProfile {
     public final int so4;
     public final int cl;
     public final int hco3;
-    public final String nome;
+    public final String name;
 
     static class Builder {
         private final String nome;
@@ -30,14 +30,14 @@ public class SaltProfile {
         SaltProfile build() { return new SaltProfile(nome, ca, mg, na, so4, cl, hco3); }
     }
 
-    public SaltProfile(String nome, int ca, int mg, int na, int so4, int cl, int hco3) {
+    public SaltProfile(String name, int ca, int mg, int na, int so4, int cl, int hco3) {
         this.ca = ca;
         this.mg = mg;
         this.na = na;
         this.so4 = so4;
         this.cl = cl;
         this.hco3 = hco3;
-        this.nome = nome;
+        this.name = name;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class SaltProfile {
                 ", so4=" + so4 +
                 ", cl=" + cl +
                 ", hco3=" + hco3 +
-                ", nome='" + nome + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -73,11 +73,11 @@ public class SaltProfile {
                 so4 == that.so4 &&
                 cl == that.cl &&
                 hco3 == that.hco3 &&
-                Objects.equals(nome, that.nome);
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ca, mg, na, so4, cl, hco3, nome);
+        return Objects.hash(ca, mg, na, so4, cl, hco3, name);
     }
 }

@@ -51,7 +51,7 @@ public class WaterProfile {
                 ", so4=" + so4 +
                 ", cl=" + cl +
                 ", hco3=" + hco3 +
-                ", nome='" + nome + '\'' +
+                ", name='" + nome + '\'' +
                 '}';
     }
 

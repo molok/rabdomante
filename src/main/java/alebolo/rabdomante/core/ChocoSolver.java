@@ -1,7 +1,5 @@
 package alebolo.rabdomante.core;
 
-import alebolo.rabdomante.cli.IUserInputReader;
-import alebolo.rabdomante.xlsx.UserInputReader;
 import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
 import org.apache.commons.collections4.IteratorUtils;
@@ -16,7 +14,6 @@ import org.javatuples.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -125,7 +122,7 @@ public class ChocoSolver implements WaterSolver {
     private Map<SaltProfile, IntVar> saltVars(Model model, List<Salt> salts, Water target) {
         Map<SaltProfile, IntVar> saltVars = new HashMap<>();
         salts.stream()
-                .map(s -> new Pair<>(s, model.intVar(s.nome + " (dg)", range(saltUpperBound(s, target), 1))))
+                .map(s -> new Pair<>(s, model.intVar(s.name + " (dg)", range(saltUpperBound(s, target), 1))))
                 .forEach(s -> saltVars.put(s.getValue0(), s.getValue1()));
         return saltVars;
     }

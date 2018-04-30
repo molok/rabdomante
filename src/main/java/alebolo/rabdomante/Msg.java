@@ -1,12 +1,6 @@
 package alebolo.rabdomante;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Locale;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 public class Msg {
@@ -88,6 +82,15 @@ public class Msg {
     public static String menuHelp() { return m.getString("menu_help"); }
     public static String menuAbout() { return m.getString("menu_about"); }
     public static String delta() { return m.getString("recipe_delta"); }
-
     public static String openSpreadsheet() { return m.getString("open_spreadsheet"); }
+    public static String availableGrams() { return m.getString("available_grams"); }
+    public static String litersNeeded() { return m.getString("liters_needed"); }
+    public static String litersAvailable() { return m.getString("liters_available"); }
+    public static String name() { return m.getString("name"); }
+    public static String liters() { return m.getString("liters"); }
+    public static String grams() { return m.getString("grams"); }
+    public static String resultsheet_incomplete() { return m.getString("resultsheet_incomplete");}
+    public static String resultsheet_searchok() { return m.getString("resultsheet_searchok");}
+    public static String resultsheet_updated_at() { return m.getString("resultsheet_updated_at");
+    }
 }

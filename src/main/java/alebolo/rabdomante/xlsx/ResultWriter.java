@@ -17,12 +17,12 @@ import static alebolo.rabdomante.xlsx.Constants.CELLS.*;
 import static alebolo.rabdomante.xlsx.Constants.SHEETS.RESULT;
 
 public class ResultWriter implements IResultWriter {
-    public static final String AGGIORNATO = "Aggiornato @";
-    public static final String RICERCA_COMPLETATA_CON_SUCCESSO_IN = "Ricerca completata con successo in ";
-    public static final String IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_E_STATA_INTERROTTA_DOPO = "Il risultato potrebbe non essere ottimale, la ricerca è stata interrotta dopo ";
-    public static final String GRAMMI_G = "Grammi (g)";
-    public static final String LITRI_L = "Litri (L)";
-    public static final String NOME = "Nome";
+    public static final String AGGIORNATO = Msg.resultsheet_updated_at();
+    public static final String RICERCA_COMPLETATA_CON_SUCCESSO_IN = Msg.resultsheet_searchok();
+    public static final String IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_E_STATA_INTERROTTA_DOPO = Msg.resultsheet_incomplete();
+    public static final String GRAMMI_G = Msg.grams() + " (g)";
+    public static final String LITRI_L = Msg.liters() + " (L)";
+    public static final String NOME = Msg.name();
     Logger logger = LoggerFactory.getLogger(this.getClass());
     private final File output;
     private final File input;
@@ -90,9 +90,9 @@ public class ResultWriter implements IResultWriter {
     }
 
     private int timestamp(Sheet sheet, int rowNum, boolean searchCompleted, long secondsElapsed) {
-        getOrCreate(sheet, rowNum++).createCell(8).setCellValue(AGGIORNATO + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        String msg = searchCompleted ? RICERCA_COMPLETATA_CON_SUCCESSO_IN + secondsElapsed + "s"
-                                     : IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_E_STATA_INTERROTTA_DOPO + secondsElapsed + "s";
+        getOrCreate(sheet, rowNum++).createCell(8).setCellValue(AGGIORNATO + " " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        String msg = searchCompleted ? RICERCA_COMPLETATA_CON_SUCCESSO_IN + " " + secondsElapsed + "s"
+                                     : IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_E_STATA_INTERROTTA_DOPO + " " + secondsElapsed + "s";
         getOrCreate(sheet, rowNum++).createCell(8).setCellValue(msg);
         return rowNum;
     }
@@ -192,7 +192,7 @@ public class ResultWriter implements IResultWriter {
     private void writeSalt(Sheet sheet, int rowNum, Salt w) {
         Row row = getOrCreate(sheet, rowNum);
         row.createCell(QTY.ordinal()).setCellValue(w.dg / 10.);
-        row.createCell(NAME.ordinal()).setCellValue(w.nome);
+        row.createCell(NAME.ordinal()).setCellValue(w.name);
         row.createCell(CA.ordinal()).setCellValue(w.ca);
         row.createCell(MG.ordinal()).setCellValue(w.mg);
         row.createCell(NA.ordinal()).setCellValue(w.na);

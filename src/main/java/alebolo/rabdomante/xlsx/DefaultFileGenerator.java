@@ -151,7 +151,7 @@ public class DefaultFileGenerator {
             cell.setCellValue(0);
 
             int ordinal = NAME.ordinal();
-            styledCell(row, baseStyle, NAME.ordinal()).setCellValue(w.nome);
+            styledCell(row, baseStyle, NAME.ordinal()).setCellValue(w.name);
             styledCell(row, baseStyle, CA.ordinal()).setCellValue(w.ca);
             styledCell(row, baseStyle, MG.ordinal()).setCellValue(w.mg);
             styledCell(row, baseStyle, NA.ordinal()).setCellValue(w.na);
@@ -190,18 +190,18 @@ public class DefaultFileGenerator {
 
     private void saltsHeader(Row row) {
         ResultWriter.writeWatersHeader(row, headerStyle);
-        styledCell(row, headerStyle, QTY.ordinal()).setCellValue("Grammi disponibili (g)");
+        styledCell(row, headerStyle, QTY.ordinal()).setCellValue(Msg.availableGrams() + " (g)");
     }
 
     private XSSFCellStyle headerStyle(Workbook workbook) { return baseStyle(workbook); }
 
     private void targetHeader(Row row) {
         ResultWriter.writeWatersHeader(row, headerStyle);
-        styledCell(row, headerStyle, QTY.ordinal()).setCellValue("Litri Necessari (L)");
+        styledCell(row, headerStyle, QTY.ordinal()).setCellValue(Msg.litersNeeded() + " (L)");
     }
 
     private void waterHeader(Row row) {
         ResultWriter.writeWatersHeader(row, headerStyle);
-        styledCell(row, headerStyle, QTY.ordinal()).setCellValue("Litri Disponibili (L)");
+        styledCell(row, headerStyle, QTY.ordinal()).setCellValue(Msg.litersAvailable() + " (L)");
     }
 }
