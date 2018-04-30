@@ -49,7 +49,7 @@ import java.util.concurrent.CompletableFuture;
 import static alebolo.rabdomante.xlsx.Utils.COLOR_USER_INPUT;
 
 public class Gui extends Application {
-    public static final String WEBSITE = "https://github.com/molok/rabdomante/";
+    public static final String WEBSITE = "https://github.com/molok/rabdomante";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final App app = new App();
     private TextField selectedFileTxt;
@@ -319,7 +319,7 @@ public class Gui extends Application {
         run.setDisable(true);
 
         if (Utils.fileLocked(ioFile)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "The file is still open, please close it");
+            Alert alert = new Alert(Alert.AlertType.ERROR, Msg.fileLocked());
             alert.setTitle("Problem");
             alert.setHeaderText(null);
             alert.showAndWait();
@@ -332,7 +332,7 @@ public class Gui extends Application {
         long secondsTimeLimit = timeLimit.getValue() * 60;
 
         if (Utils.fileLocked(ioFile)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "The file is still open, please close it");
+            Alert alert = new Alert(Alert.AlertType.ERROR, Msg.fileLocked());
             alert.setTitle("Problem");
             alert.setHeaderText(null);
             alert.showAndWait();

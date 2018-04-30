@@ -83,8 +83,7 @@ public class Utils {
 
     public static boolean fileLocked(File file) {
         try {
-            file.renameTo(file);
-            return false;
+            return !file.renameTo(file);
         } catch (Exception e) {
             return true;
         }
