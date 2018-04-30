@@ -3,17 +3,17 @@ package alebolo.rabdomante.cli;
 import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.core.App;
 import alebolo.rabdomante.core.Defect;
+import alebolo.rabdomante.core.VersionProvider;
 import alebolo.rabdomante.gui.Gui;
 import ch.qos.logback.classic.Level;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.LocaleUtils;
 
 import java.io.File;
-import java.io.InputStream;
-import java.util.Properties;
 
 public class Cli {
     public static final String DEFAULT_FILENAME = "rabdomante.xlsx";
+    private final VersionProvider versionProvider = new VersionProvider();
 
     public static void main(String[] args) { System.exit(new Cli().doMain(args)); }
 
@@ -86,7 +86,7 @@ public class Cli {
     public void printUsage() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp( "java -jar rabdomante.jar", cliOptions() );
-        System.out.println("\nversion: " + fetchVersion());
+        System.out.println("\nversion: " + versionProvider.fetchVersion());
     }
 
     private Options cliOptions() {
@@ -145,37 +145,4 @@ public class Cli {
         return Long.parseLong(s);
     }
 
-    public String fetchVersion() {
-        String version = null;
-
-        // try to load from maven properties first
-        try {
-            Properties p = new Properties();
-            InputStream is = Cli.class.getResourceAsStream("/META-INF/maven/alebolo/rabdomante/pom.properties");
-            if (is != null) {
-                p.load(is);
-                version = p.getProperty("version", "");
-            }
-        } catch (Exception e) {
-            // ignore
-        }
-
-        // fallback to using Java API
-        if (version == null) {
-            Package aPackage = Cli.class.getPackage();
-            if (aPackage != null) {
-                version = aPackage.getImplementationVersion();
-                if (version == null) {
-                    version = aPackage.getSpecificationVersion();
-                }
-            }
-        }
-
-        if (version == null) {
-            // we could not compute the version so use a blank
-            version = "";
-        }
-
-        return version;
-    }
 }

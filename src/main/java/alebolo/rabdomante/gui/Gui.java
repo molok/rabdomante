@@ -4,6 +4,8 @@ import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.RabdoException;
 import alebolo.rabdomante.core.App;
 import alebolo.rabdomante.core.Defect;
+import alebolo.rabdomante.core.VersionProvider;
+import com.google.common.base.Charsets;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -11,15 +13,21 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +46,9 @@ public class Gui extends Application {
     private final App app = new App();
     private TextField selectedFileTxt;
     private Button run;
-    private Button stop;
     private CompletableFuture<Void> calculation;
     private ProgressIndicator progressIndicator;
-    private ButtonType openBtn = new ButtonType("Open result", ButtonBar.ButtonData.OK_DONE);
+    private ButtonType openBtn = new ButtonType("Open Spreadsheet", ButtonBar.ButtonData.OK_DONE);
 
     public static void main(String[] args) {
         launch(args);
@@ -50,13 +57,95 @@ public class Gui extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Rabdomante");
+
+        VBox all = new VBox();
+        all.getChildren().add(menuBar(primaryStage));
+        all.getChildren().add(mainGrid(primaryStage));
+
+        Scene scene = new Scene(all, 500, 350);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private MenuBar menuBar(Stage primaryStage) {
+        MenuBar menuBar = new MenuBar();
+        Menu menuFile = new Menu("File");
+        MenuItem exit = new MenuItem("Exit");
+        exit.setOnAction(a -> System.exit(0));
+        menuFile.getItems().add(exit);
+
+        Menu menuHelp = new Menu("Help");
+        MenuItem about = new MenuItem("About");
+        about.setOnAction(a -> displayAboutWindow(primaryStage));
+        menuHelp.getItems().add(about);
+
+
+        menuBar.getMenus().addAll(menuFile, menuHelp);
+        return menuBar;
+    }
+
+    private void displayAboutWindow(Stage parentStage) {
+        VBox grid = new VBox();
+        grid.setPadding(new Insets(25));
+        grid.setSpacing(10);
+
+        Label welcome = new Label("Rabdomante " + new VersionProvider().fetchVersion());
+        welcome.setMaxWidth(Double.MAX_VALUE);
+        welcome.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        welcome.setAlignment(Pos.CENTER);
+
+        grid.getChildren().add(welcome);
+
+        Label copyright = new Label("Copyright \u00a9 2018 Alessio Bolognino");
+        copyright.setFont(Font.font("Tahoma", FontWeight.NORMAL, 10));
+        copyright.setMaxWidth(Double.MAX_VALUE);
+        copyright.setAlignment(Pos.CENTER);
+        grid.getChildren().add(copyright);
+
+        Label license = new Label("License AGPL3");
+        license.setFont(Font.font("Tahoma", FontWeight.NORMAL, 10));
+        license.setMaxWidth(Double.MAX_VALUE);
+        license.setAlignment(Pos.CENTER);
+        grid.getChildren().add(license);
+
+        try {
+            TextArea fullLicense = new TextArea(IOUtils.toString(this.getClass().getResourceAsStream("/AGPL3.txt"), Charsets.UTF_8));
+            fullLicense.setFont(Font.font("Monospaced", FontWeight.NORMAL, 10));
+            grid.getChildren().add(fullLicense);
+
+        } catch (IOException e) {
+            throw new Defect("License not found", e);
+        }
+
+        Scene aboutScene = new Scene(grid, 500, 300);
+        Stage aboutWindow = new Stage();
+        aboutWindow.setTitle("About Rabdomante");
+        aboutWindow.initModality(Modality.WINDOW_MODAL);
+        aboutWindow.initOwner(parentStage);
+        aboutWindow.setScene(aboutScene);
+        aboutWindow.show();
+    }
+
+    private GridPane mainGrid(Stage primaryStage) {
         GridPane mainGrid = new GridPane();
+        ColumnConstraints c1 = new ColumnConstraints();
+        c1.setPercentWidth(100);
+        mainGrid.getColumnConstraints().add(c1);
         mainGrid.setHgap(10);
         mainGrid.setVgap(10);
-        mainGrid.setPadding(new Insets(25, 25, 25, 25));
+        mainGrid.setPadding(new Insets(15, 25, 25, 25));
+//        mainGrid.setGridLinesVisible(true);
+
+        int mainGridRow = 0;
+
+        Label welcome = new Label("Welcome to Rabdomante");
+        welcome.setAlignment(Pos.CENTER);
+        welcome.setMaxWidth(Double.MAX_VALUE);
+        welcome.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        mainGrid.add(welcome, 0, mainGridRow++, 2, 1);
 
         GridPane grid1 = new GridPane();
-        Text desc1 = new Text("0. Get the template");
+        Label desc1 = new Label("0. Get the template");
         desc1.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         Button createTemplate = new Button("Save it somewhere...");
         createTemplate.setOnAction(event -> createTemplate(primaryStage));
@@ -64,10 +153,10 @@ public class Gui extends Application {
         grid1.setHgap(10);
         grid1.setVgap(10);
         grid1.add(createTemplate, 0, 1);
-        mainGrid.add(grid1, 0, 0);
+        mainGrid.add(grid1, 0, mainGridRow++);
 
         GridPane grid2 = new GridPane();
-        Text desc2 = new Text("1. Open it and edit the file filling the cells in light blue");
+        Label desc2 = new Label("1. Open it and edit the file filling the cells in light blue");
         desc2.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         grid2.setHgap(10);
         grid2.setVgap(10);
@@ -78,21 +167,21 @@ public class Gui extends Application {
         blue.setStroke(Color.BLACK);
         grid2.add(blue, 1, 0);
 
-        mainGrid.add(grid2, 0, 1);
+        mainGrid.add(grid2, 0, mainGridRow++);
 
         GridPane grid3 = new GridPane();
-        Text desc3 = new Text("2. Save and close the file");
+        Label desc3 = new Label("2. Save and close the file");
         desc3.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         grid3.setHgap(10);
         grid3.setVgap(10);
         grid3.add(desc3, 0, 0);
-        mainGrid.add(grid3, 0, 2);
+        mainGrid.add(grid3, 0, mainGridRow++);
 
         GridPane grid4 = new GridPane();
         grid4.setHgap(10);
         grid4.setVgap(10);
 
-        Text desc4 = new Text("3. If you moved or renamed it, select the file (or drag it here)");
+        Label desc4 = new Label("3. If you moved or renamed it, select the file (or drag it here)");
         desc4.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         selectedFileTxt = new TextField();
         selectedFileTxt.setDisable(true);
@@ -103,10 +192,10 @@ public class Gui extends Application {
         grid4.add(selectedFileTxt, 0, 1);
         grid4.add(selectFile, 1, 1);
 
-        mainGrid.add(grid4, 0, 3);
+        mainGrid.add(grid4, 0, mainGridRow++);
 
         GridPane grid5 = new GridPane();
-        Text desc5 = new Text("4. Let Rabdomante find the best combination!");
+        Label desc5 = new Label("4. Let Rabdomante find the best combination!");
         desc5.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         grid5.setHgap(10);
         grid5.setVgap(10);
@@ -120,32 +209,17 @@ public class Gui extends Application {
 
         grid5.add(run, 0, 1);
 
-        stop = new Button("Stop");
-//        stop.setOnAction(e -> stopCalc());
-//        stop.setPrefWidth(80);
-//        stop.setAlignment(Pos.CENTER);
-//        stop.setVisible(false);
-//        grid5.add(stop, 1, 1);
-
         progressIndicator = new ProgressIndicator();
         progressIndicator.setVisible(false);
         grid5.add(progressIndicator, 1, 1);
 
-        mainGrid.add(grid5, 0, 4);
-
-        Scene scene = new Scene(mainGrid, 500, 300);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    private void stopCalc() {
-        // TODO
+        mainGrid.add(grid5, 0, mainGridRow++);
+        return mainGrid;
     }
 
     private void calc(Button run) {
         File ioFile = new File(Objects.requireNonNull(selectedFileTxt.getText()));
         run.setDisable(true);
-        stop.setVisible(true);
         progressIndicator.setProgress(-1.0f);
         progressIndicator.setVisible(true);
 
@@ -157,7 +231,6 @@ public class Gui extends Application {
     private Runnable endOfCalc(Button run) {
         return () -> {
             run.setDisable(false);
-            stop.setVisible(false);
             progressIndicator.setProgress(1.0f);
         };
     }
