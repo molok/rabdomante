@@ -20,6 +20,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -250,6 +253,26 @@ public class Gui extends Application {
         runBox.setRight(rightRunBox);
 
         grid5.add(runBox, 0, 1);
+
+        mainGrid.setOnDragOver((DragEvent e) -> {
+            Dragboard db = e.getDragboard();
+            if (db.hasFiles()) {
+                e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            }
+            e.consume();
+        });
+
+        mainGrid.setOnDragDropped((DragEvent e) ->
+        {
+            Dragboard db = e.getDragboard();
+            boolean res = false;
+            if (db.hasFiles()) {
+                selectedFileTxt.setText(db.getFiles().get(0).getAbsolutePath());
+                res = true;
+            }
+            e.setDropCompleted(res);
+            e.consume();
+        });
 
         mainGrid.add(grid5, 0, mainGridRow++);
         return mainGrid;
