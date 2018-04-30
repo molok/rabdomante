@@ -93,4 +93,8 @@ public class Msg {
     public static String resultsheet_searchok() { return m.getString("resultsheet_searchok");}
     public static String resultsheet_updated_at() { return m.getString("resultsheet_updated_at");
     }
+
+    public static String readLicense() { return m.getString("read_license"); }
+
+    public static String license() { return m.getString("license"); }
 }

@@ -21,6 +21,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -64,6 +66,7 @@ public class Gui extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Rabdomante " + versionProvider.fetchVersion());
+        primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/logo.png")));
 
         VBox all = new VBox();
         all.getChildren().add(menuBar(primaryStage));
@@ -100,8 +103,14 @@ public class Gui extends Application {
         welcome.setMaxWidth(Double.MAX_VALUE);
         welcome.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         welcome.setAlignment(Pos.CENTER);
-
         grid.getChildren().add(welcome);
+
+        ImageView logo = new ImageView(new Image(this.getClass().getResourceAsStream("/logo.png")));
+//        logo.setX(grid.getWidth()/2);
+        logo.setPreserveRatio(true);
+        logo.setFitHeight(100);
+        BorderPane bp = new BorderPane(logo);
+        grid.getChildren().add(bp);
 
         Label copyright = new Label("Copyright \u00a9 2018 Alessio Bolognino");
         copyright.setFont(Font.font("Tahoma", FontWeight.NORMAL, 10));
@@ -117,25 +126,41 @@ public class Gui extends Application {
         link.setAlignment(Pos.CENTER);
         grid.getChildren().add(link);
 
-        Label license = new Label("License AGPL3");
+        Label license = new Label(Msg.license() + " AGPL3");
         license.setFont(Font.font("Tahoma", FontWeight.NORMAL, 10));
         license.setMaxWidth(Double.MAX_VALUE);
         license.setAlignment(Pos.CENTER);
         grid.getChildren().add(license);
 
+        Button readLicense = new Button(Msg.readLicense());
+        grid.getChildren().add(new BorderPane(readLicense));
+
+        Scene aboutScene = new Scene(grid, 250, 300);
+        Stage aboutWindow = new Stage();
+        readLicense.setOnAction(__ -> displayFullLicense(aboutWindow));
+        aboutWindow.setTitle(Msg.menuAbout());
+        aboutWindow.initModality(Modality.WINDOW_MODAL);
+        aboutWindow.initOwner(parentStage);
+        aboutWindow.setScene(aboutScene);
+        aboutWindow.show();
+    }
+
+    private void displayFullLicense(Stage parentStage) {
+        BorderPane grid = new BorderPane();
+
         try {
             TextArea fullLicense = new TextArea(IOUtils.toString(this.getClass().getResourceAsStream("/AGPL3.txt"), Charsets.UTF_8));
-            fullLicense.setFont(Font.font("Monospaced", FontWeight.NORMAL, 10));
+            fullLicense.setFont(Font.font("Monospaced", FontWeight.NORMAL, 12));
             fullLicense.setWrapText(true);
-            grid.getChildren().add(fullLicense);
+            grid.setCenter(fullLicense);
 
         } catch (IOException e) {
             throw new Defect("License not found", e);
         }
 
-        Scene aboutScene = new Scene(grid, 500, 300);
+        Scene aboutScene = new Scene(grid, 600, 500);
         Stage aboutWindow = new Stage();
-        aboutWindow.setTitle(Msg.menuAbout() + " Rabdomante");
+        aboutWindow.setTitle(Msg.license());
         aboutWindow.initModality(Modality.WINDOW_MODAL);
         aboutWindow.initOwner(parentStage);
         aboutWindow.setScene(aboutScene);
