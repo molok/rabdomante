@@ -6,6 +6,7 @@ import alebolo.rabdomante.core.App;
 import alebolo.rabdomante.core.Defect;
 import alebolo.rabdomante.core.VersionProvider;
 import com.google.common.base.Charsets;
+import com.sun.javafx.application.HostServicesDelegate;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -42,6 +43,7 @@ import java.util.concurrent.CompletableFuture;
 import static alebolo.rabdomante.xlsx.Utils.COLOR_USER_INPUT;
 
 public class Gui extends Application {
+    public static final String WEBSITE = "https://github.com/molok/rabdo-cli/";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final App app = new App();
     private TextField selectedFileTxt;
@@ -102,6 +104,14 @@ public class Gui extends Application {
         copyright.setAlignment(Pos.CENTER);
         grid.getChildren().add(copyright);
 
+        Hyperlink link = new Hyperlink(WEBSITE);
+        link.setFont(Font.font("Tahoma", FontWeight.NORMAL, 10));
+        link.setOnAction(__ -> HostServicesDelegate.getInstance(this).showDocument(WEBSITE));
+        link.setMaxWidth(Double.MAX_VALUE);
+        link.setBorder(Border.EMPTY);
+        link.setAlignment(Pos.CENTER);
+        grid.getChildren().add(link);
+
         Label license = new Label("License AGPL3");
         license.setFont(Font.font("Tahoma", FontWeight.NORMAL, 10));
         license.setMaxWidth(Double.MAX_VALUE);
@@ -111,6 +121,7 @@ public class Gui extends Application {
         try {
             TextArea fullLicense = new TextArea(IOUtils.toString(this.getClass().getResourceAsStream("/AGPL3.txt"), Charsets.UTF_8));
             fullLicense.setFont(Font.font("Monospaced", FontWeight.NORMAL, 10));
+            fullLicense.setWrapText(true);
             grid.getChildren().add(fullLicense);
 
         } catch (IOException e) {
