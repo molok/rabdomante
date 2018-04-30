@@ -20,6 +20,6 @@ The input and output is a XLSX file. It can be run both with a graphical interfa
 
 Mostyl useful for homebrewing, maybe more. It supports the English and Italian locales
 
-Rabdomante is released under the AGPL3, if you need a less restrictive license feel free to contact me at [alessio.bolognino@gmail.com](mailto:alessio.bolognino@gmail.com)
+Rabdomante is released under the AGPL3, if you need a less restrictive license feel free to contact me at [alessio.bolognino+rabdo@gmail.com](mailto:alessio.bolognino+rabdo@gmail.com)
 
 Under the hood rabdomante uses [Choco Solver](https://github.com/chocoteam/choco-solver)
