@@ -48,7 +48,6 @@ public class Gui extends Application {
     private final App app = new App();
     private TextField selectedFileTxt;
     private Button run;
-    private CompletableFuture<Void> calculation;
     private ProgressIndicator progressIndicator;
     private ButtonType openBtn = new ButtonType("Open Spreadsheet", ButtonBar.ButtonData.OK_DONE);
 
@@ -195,7 +194,7 @@ public class Gui extends Application {
         Label desc4 = new Label("3. If you moved or renamed it, select the file (or drag it here)");
         desc4.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         selectedFileTxt = new TextField();
-        selectedFileTxt.setDisable(true);
+//        selectedFileTxt.setEditable(false);
         selectedFileTxt.setPrefWidth(240.0);
         Button selectFile = new Button("Choose file...");
         selectFile.setOnAction(e -> selectFile(primaryStage));
@@ -206,11 +205,27 @@ public class Gui extends Application {
         mainGrid.add(grid4, 0, mainGridRow++);
 
         GridPane grid5 = new GridPane();
+//        grid5.setGridLinesVisible(true);
+        ColumnConstraints c = new ColumnConstraints();
+        c.setPercentWidth(100);
+        grid5.getColumnConstraints().add(c);
         Label desc5 = new Label("4. Let Rabdomante find the best combination!");
         desc5.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         grid5.setHgap(10);
         grid5.setVgap(10);
         grid5.add(desc5, 0, 0);
+
+        BorderPane runBox = new BorderPane();
+
+        HBox leftRunBox = new HBox();
+        leftRunBox.setFillHeight(true);
+        leftRunBox.setAlignment(Pos.CENTER_LEFT);
+        leftRunBox.setSpacing(10);
+        Label labelTimeout = new Label("Time Limit (minutes)");
+        Spinner timeout = new Spinner(1, 120, 1);
+        leftRunBox.getChildren().add(labelTimeout);
+        leftRunBox.getChildren().add(timeout);
+        timeout.setPrefWidth(60);
 
         run = new Button("Run!");
         run.setOnAction(e -> calc(run));
@@ -218,14 +233,34 @@ public class Gui extends Application {
         run.setAlignment(Pos.CENTER);
         run.setDisable(true);
 
-        grid5.add(run, 0, 1);
+        selectedFileTxt.textProperty().addListener((__, ___, newValue) -> run.setDisable(!isValidPath(newValue)));
+
+        HBox rightRunBox = new HBox();
+        rightRunBox.setFillHeight(true);
+        rightRunBox.setAlignment(Pos.CENTER_RIGHT);
+        rightRunBox.setSpacing(10);
 
         progressIndicator = new ProgressIndicator();
         progressIndicator.setVisible(false);
-        grid5.add(progressIndicator, 1, 1);
+        rightRunBox.getChildren().add(progressIndicator);
+        rightRunBox.getChildren().add(run);
+
+        runBox.setLeft(leftRunBox);
+        runBox.setRight(rightRunBox);
+
+        grid5.add(runBox, 0, 1);
 
         mainGrid.add(grid5, 0, mainGridRow++);
         return mainGrid;
+    }
+
+    private boolean isValidPath(String candidate) {
+        try {
+            File f = new File(candidate);
+            return f.exists();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void calc(Button run) {
@@ -234,7 +269,7 @@ public class Gui extends Application {
         progressIndicator.setProgress(-1.0f);
         progressIndicator.setVisible(true);
 
-        calculation = CompletableFuture
+        CompletableFuture
                 .supplyAsync(() -> doCalc(ioFile))
                 .handle((res, err) -> handle(res, err, endOfCalc(run)));
     }
@@ -329,13 +364,8 @@ public class Gui extends Application {
     private void selectFile(Stage primaryStage) {
         File value = fileChooser().showOpenDialog(primaryStage);
         if (value != null) {
-            setSelectedFile(value);
+            selectedFileTxt.setText(value.getAbsolutePath());
         }
-    }
-
-    private void setSelectedFile(File value) {
-        selectedFileTxt.setText(value.getAbsolutePath());
-        run.setDisable(false);
     }
 
     private void createTemplate(Stage primaryStage) {
@@ -355,7 +385,7 @@ public class Gui extends Application {
     private void saveFile(File input) {
         try {
             app.generate(input, true);
-            setSelectedFile(input);
+            selectedFileTxt.setText(input.getAbsolutePath());
             Desktop.getDesktop().open(input);
         } catch (IOException e) {
             throw new RabdoException(e);
