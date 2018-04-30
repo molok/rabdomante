@@ -2,10 +2,11 @@ package alebolo.rabdomante.core;
 
 import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.IUserInputReader;
+import alebolo.rabdomante.cli.RabdoInputException;
 import alebolo.rabdomante.xlsx.DefaultFileGenerator;
 import alebolo.rabdomante.xlsx.ResultWriter;
 import alebolo.rabdomante.xlsx.UserInputReader;
-
+import alebolo.rabdomante.xlsx.Utils;
 import java.io.File;
 import java.util.Optional;
 
@@ -29,6 +30,9 @@ public class App {
     public Result calc(File input, File output, Long timeLimit) {
         long start = System.currentTimeMillis();
         try {
+            if (Utils.fileLocked(input)) { throw new RabdoInputException("The input file is locked"); }
+            if (Utils.fileLocked(output)) { throw new RabdoInputException("The output file is locked"); }
+
             IUserInputReader uiReader = new UserInputReader(input);
             Water target = uiReader.target();
             Optional<WSolution> maybeSolution = new ChocoSolver().solve(

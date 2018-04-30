@@ -88,4 +88,6 @@ public class Msg {
     public static String menuHelp() { return m.getString("menu_help"); }
     public static String menuAbout() { return m.getString("menu_about"); }
     public static String delta() { return m.getString("recipe_delta"); }
+
+    public static String openSpreadsheet() { return m.getString("open_spreadsheet"); }
 }

@@ -13,6 +13,9 @@ import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
@@ -70,5 +73,24 @@ public class Utils {
 
     static void colorTab(Sheet sheet, java.awt.Color color) {
         ((XSSFSheet) sheet).setTabColor(new XSSFColor(color));
+    }
+
+    public static void close(Closeable... toClose) {
+        for (Closeable c : toClose) {
+            try {
+                if (c != null) { c.close(); }
+            } catch (Throwable t) {
+                // ignoro, non mi interessa
+            }
+        }
+    }
+
+    public static boolean fileLocked(File file) {
+        try {
+            file.renameTo(file);
+            return false;
+        } catch (Exception e) {
+            return true;
+        }
     }
 }

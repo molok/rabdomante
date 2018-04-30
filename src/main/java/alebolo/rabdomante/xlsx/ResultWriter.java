@@ -3,10 +3,7 @@ package alebolo.rabdomante.xlsx;
 import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.IResultWriter;
 import alebolo.rabdomante.cli.RabdoException;
-import alebolo.rabdomante.core.Recipe;
-import alebolo.rabdomante.core.Salt;
-import alebolo.rabdomante.core.WSolution;
-import alebolo.rabdomante.core.Water;
+import alebolo.rabdomante.core.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.slf4j.Logger;
@@ -79,13 +76,14 @@ public class ResultWriter implements IResultWriter {
 
                 Utils.autoSizeColumns(wb);
                 Utils.orderSheets(wb);
+                wb.setActiveSheet(Utils.sheetIndex(wb, RESULT).getAsInt());
 
                 wb.write(new FileOutputStream(output));
             }
         } catch (Exception e) {
             throw new RabdoException(e);
         } finally {
-            if (fis != null) close(fis);
+            if (fis != null) Utils.close(fis);
         }
 
         logger.info("fine scrittura");
@@ -127,16 +125,6 @@ public class ResultWriter implements IResultWriter {
             rowNum++;
         }
         return rowNum;
-    }
-
-    public static void close(Closeable... toClose) {
-        for (Closeable c : toClose) {
-            try {
-                if (c != null) { c.close(); }
-            } catch (Throwable t) {
-                // ignoro, non mi interessa
-            }
-        }
     }
 
     private void writeSaltHeader(Row row) {

@@ -93,7 +93,11 @@ public class ChocoSolver implements WaterSolver {
         solver.printStatistics();
         logger.info("recipe: {}", recipe);
 
-        return Optional.ofNullable(new WSolution(recipe, solver.getMeasures().getSearchState().equals(SearchState.TERMINATED)));
+        if (recipe == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(new WSolution(recipe, solver.getMeasures().getSearchState().equals(SearchState.TERMINATED)));
+        }
     }
 
     private IntVar[] toArray(Collection<IntVar> values, Collection<IntVar> values1) {

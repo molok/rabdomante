@@ -5,6 +5,7 @@ import alebolo.rabdomante.cli.RabdoException;
 import alebolo.rabdomante.core.App;
 import alebolo.rabdomante.core.Defect;
 import alebolo.rabdomante.core.VersionProvider;
+import alebolo.rabdomante.xlsx.Utils;
 import com.google.common.base.Charsets;
 import com.sun.javafx.application.HostServicesDelegate;
 import javafx.application.Application;
@@ -52,7 +53,7 @@ public class Gui extends Application {
     private TextField selectedFileTxt;
     private Button run;
     private ProgressIndicator progressIndicator;
-    private ButtonType openBtn = new ButtonType("Open Spreadsheet", ButtonBar.ButtonData.OK_DONE);
+    private ButtonType openBtn = new ButtonType(Msg.openSpreadsheet(), ButtonBar.ButtonData.OK_DONE);
     private Spinner<Integer> timeLimit;
 
     public static void main(String[] args) {
@@ -290,13 +291,30 @@ public class Gui extends Application {
     private void calc(Button run) {
         File ioFile = new File(Objects.requireNonNull(selectedFileTxt.getText()));
         run.setDisable(true);
+
+        if (Utils.fileLocked(ioFile)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "The file is still open, please close it");
+            alert.setTitle("Problem");
+            alert.setHeaderText(null);
+            alert.showAndWait();
+            run.setDisable(false);
+            return;
+        }
+
         progressIndicator.setProgress(-1.0f);
         progressIndicator.setVisible(true);
         long secondsTimeLimit = timeLimit.getValue() * 60;
 
-        CompletableFuture
-                .supplyAsync(() -> doCalc(ioFile, secondsTimeLimit))
-                .handle((res, err) -> handle(res, err, endOfCalc(run)));
+        if (Utils.fileLocked(ioFile)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "The file is still open, please close it");
+            alert.setTitle("Problem");
+            alert.setHeaderText(null);
+            alert.showAndWait();
+        } else {
+            CompletableFuture
+                    .supplyAsync(() -> doCalc(ioFile, secondsTimeLimit))
+                    .handle((res, err) -> handle(res, err, endOfCalc(run)));
+        }
     }
 
     private Runnable endOfCalc(Button run) {
@@ -321,6 +339,7 @@ public class Gui extends Application {
                 run.run();
                 boolean shouldOpen;
                 if (err != null) {
+                    log.error("Errore inatteso", err);
                     shouldOpen = alertError(err);
                 } else {
                     switch (res.res) {
