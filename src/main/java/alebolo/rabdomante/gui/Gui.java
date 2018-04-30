@@ -47,7 +47,7 @@ import java.util.concurrent.CompletableFuture;
 import static alebolo.rabdomante.xlsx.Utils.COLOR_USER_INPUT;
 
 public class Gui extends Application {
-    public static final String WEBSITE = "https://github.com/molok/rabdo-cli/";
+    public static final String WEBSITE = "https://github.com/molok/rabdomante/";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final App app = new App();
     private TextField selectedFileTxt;
