@@ -55,6 +55,7 @@ public class Gui extends Application {
     private ProgressIndicator progressIndicator;
     private ButtonType openBtn = new ButtonType(Msg.openSpreadsheet(), ButtonBar.ButtonData.OK_DONE);
     private Spinner<Integer> timeLimit;
+    private VersionProvider versionProvider = new VersionProvider();
 
     public static void main(String[] args) {
         launch(args);
@@ -62,7 +63,7 @@ public class Gui extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Rabdomante");
+        primaryStage.setTitle("Rabdomante " + versionProvider.fetchVersion());
 
         VBox all = new VBox();
         all.getChildren().add(menuBar(primaryStage));
@@ -95,7 +96,7 @@ public class Gui extends Application {
         grid.setPadding(new Insets(25));
         grid.setSpacing(10);
 
-        Label welcome = new Label("Rabdomante " + new VersionProvider().fetchVersion());
+        Label welcome = new Label("Rabdomante " + versionProvider.fetchVersion());
         welcome.setMaxWidth(Double.MAX_VALUE);
         welcome.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         welcome.setAlignment(Pos.CENTER);
