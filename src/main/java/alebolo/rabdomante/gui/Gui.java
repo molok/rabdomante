@@ -74,13 +74,13 @@ public class Gui extends Application {
 
     private MenuBar menuBar(Stage primaryStage) {
         MenuBar menuBar = new MenuBar();
-        Menu menuFile = new Menu("File");
-        MenuItem exit = new MenuItem("Exit");
+        Menu menuFile = new Menu(Msg.menuFile());
+        MenuItem exit = new MenuItem(Msg.menuExit());
         exit.setOnAction(a -> System.exit(0));
         menuFile.getItems().add(exit);
 
-        Menu menuHelp = new Menu("Help");
-        MenuItem about = new MenuItem("About");
+        Menu menuHelp = new Menu(Msg.menuHelp());
+        MenuItem about = new MenuItem(Msg.menuAbout());
         about.setOnAction(a -> displayAboutWindow(primaryStage));
         menuHelp.getItems().add(about);
 
@@ -133,7 +133,7 @@ public class Gui extends Application {
 
         Scene aboutScene = new Scene(grid, 500, 300);
         Stage aboutWindow = new Stage();
-        aboutWindow.setTitle("About Rabdomante");
+        aboutWindow.setTitle(Msg.menuAbout() + " Rabdomante");
         aboutWindow.initModality(Modality.WINDOW_MODAL);
         aboutWindow.initOwner(parentStage);
         aboutWindow.setScene(aboutScene);
@@ -152,16 +152,16 @@ public class Gui extends Application {
 
         int mainGridRow = 0;
 
-        Label welcome = new Label("Welcome to Rabdomante");
+        Label welcome = new Label(Msg.welcome());
         welcome.setAlignment(Pos.CENTER);
         welcome.setMaxWidth(Double.MAX_VALUE);
         welcome.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         mainGrid.add(welcome, 0, mainGridRow++, 2, 1);
 
         GridPane grid1 = new GridPane();
-        Label desc1 = new Label("0. Get the template");
+        Label desc1 = new Label("0. " + Msg.getTheTemplate());
         desc1.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
-        Button createTemplate = new Button("Save it somewhere...");
+        Button createTemplate = new Button(Msg.saveItSomewhere());
         createTemplate.setOnAction(event -> createTemplate(primaryStage));
         grid1.add(desc1, 0, 0);
         grid1.setHgap(10);
@@ -170,7 +170,7 @@ public class Gui extends Application {
         mainGrid.add(grid1, 0, mainGridRow++);
 
         GridPane grid2 = new GridPane();
-        Label desc2 = new Label("1. Open it and edit the file filling the cells in light blue");
+        Label desc2 = new Label("1. " + Msg.editCells());
         desc2.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         grid2.setHgap(10);
         grid2.setVgap(10);
@@ -184,7 +184,7 @@ public class Gui extends Application {
         mainGrid.add(grid2, 0, mainGridRow++);
 
         GridPane grid3 = new GridPane();
-        Label desc3 = new Label("2. Save and close the file");
+        Label desc3 = new Label("2. " + Msg.saveAndCloseInput());
         desc3.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         grid3.setHgap(10);
         grid3.setVgap(10);
@@ -195,12 +195,12 @@ public class Gui extends Application {
         grid4.setHgap(10);
         grid4.setVgap(10);
 
-        Label desc4 = new Label("3. If you moved or renamed it, select the file (or drag it here)");
+        Label desc4 = new Label("3. " + Msg.selectOrDrag());
         desc4.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         selectedFileTxt = new TextField();
 //        selectedFileTxt.setEditable(false);
         selectedFileTxt.setPrefWidth(240.0);
-        Button selectFile = new Button("Choose file...");
+        Button selectFile = new Button(Msg.selectFile());
         selectFile.setOnAction(e -> selectFile(primaryStage));
         grid4.add(desc4, 0, 0, 2, 1);
         grid4.add(selectedFileTxt, 0, 1);
@@ -213,7 +213,7 @@ public class Gui extends Application {
         ColumnConstraints c = new ColumnConstraints();
         c.setPercentWidth(100);
         grid5.getColumnConstraints().add(c);
-        Label desc5 = new Label("4. Let Rabdomante find the best combination!");
+        Label desc5 = new Label("4. " + Msg.runTitle());
         desc5.setFont(Font.font("Tahoma", FontWeight.NORMAL, 14));
         grid5.setHgap(10);
         grid5.setVgap(10);
@@ -225,13 +225,13 @@ public class Gui extends Application {
         leftRunBox.setFillHeight(true);
         leftRunBox.setAlignment(Pos.CENTER_LEFT);
         leftRunBox.setSpacing(10);
-        Label labelTimeLimit = new Label("Time Limit (minutes)");
+        Label labelTimeLimit = new Label(Msg.timeLimitSeconds());
         timeLimit = new Spinner(1, 120, 1);
         leftRunBox.getChildren().add(labelTimeLimit);
         leftRunBox.getChildren().add(timeLimit);
         timeLimit.setPrefWidth(60);
 
-        run = new Button("Run!");
+        run = new Button(Msg.run());
         run.setOnAction(e -> calc(run));
         run.setPrefWidth(80);
         run.setAlignment(Pos.CENTER);
@@ -349,14 +349,14 @@ public class Gui extends Application {
     }
 
     private boolean alertError(Throwable err) {
-        return alert(Alert.AlertType.ERROR, "Unexpected error:"+ExceptionUtils.getStackTrace(err), "Error");
+        return alert(Alert.AlertType.ERROR, Msg.unexpectedError()+":"+ExceptionUtils.getStackTrace(err), Msg.error());
     }
 
     private boolean alertSuccess(double seconds) {
         return alert(
                 Alert.AlertType.INFORMATION,
-                String.format("Solution found in %.01f seconds! Check it in the %s sheet", seconds, Msg.recipe()),
-                "Success");
+                String.format(Msg.solutionFound(), seconds, Msg.recipe()),
+                Msg.success());
     }
 
     private boolean alert(Alert.AlertType type, String msg, String title) {
@@ -373,17 +373,15 @@ public class Gui extends Application {
     private boolean alertIncomplete(double seconds) {
         return alert(
                 Alert.AlertType.WARNING,
-                String.format("A solution was found after %.01f seconds! Check it in the %s sheet. " +
-                        "This may not be the optimal solution, the search was interrupted after timeout was reached. " +
-                        "Try to reduce the number of salts and/or waters", seconds, Msg.recipe()),
-                "Warning");
+                String.format(Msg.solutionIncomplete(), seconds, Msg.recipe()),
+                Msg.warning());
     }
 
     private boolean alertNoSolution(double seconds) {
         return alert(
                 Alert.AlertType.ERROR,
-                String.format("No solution could be found after %.01f seconds, sorry :(", seconds),
-                "Warning");
+                String.format(Msg.noSolutionFoundTime(), seconds),
+                Msg.warning());
     }
 
     private void selectFile(Stage primaryStage) {

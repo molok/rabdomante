@@ -9,12 +9,12 @@ import java.util.Optional;
 public class Constants {
     static public final int HEADER_ROWS = 1;
     public enum SHEETS {
-        WATER("AVAILABLE_WATERS", "U1"),
-        SALTS("SALTS", "U2"),
-        TARGET("TARGET", "U3"),
-        RESULT("RECIPE", "R"),
-        KNOWN_WATERS("BOTTLED_WATERS", "D1"),
-        COMMON_PROFILES("COMMON_PROFILES", "D2");
+        WATER("available_waters", "U1"),
+        SALTS("salts", "U2"),
+        TARGET("target", "U3"),
+        RESULT("recipe", "R"),
+        KNOWN_WATERS("bottled_waters", "D1"),
+        COMMON_PROFILES("common_profiles", "D2");
 
         public String localizedName() { return this.shortHand + ". " + Msg.getString(this.uiName); }
         private final String uiName;
