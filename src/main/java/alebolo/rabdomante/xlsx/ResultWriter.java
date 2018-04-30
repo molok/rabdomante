@@ -52,7 +52,7 @@ public class ResultWriter implements IResultWriter {
     private XSSFCellStyle headerStyle;
 
     @Override
-    public void write(WSolution solution, long secondsElapsed) {
+    public void write(WSolution solution, long secondsElapsed, Water target) {
         logger.info("inizio scrittura su {}", input);
 
         FileInputStream fis = null;
@@ -72,7 +72,7 @@ public class ResultWriter implements IResultWriter {
                 rowNum = spacer(sheet, rowNum);
                 rowNum = writeSalts(recipe, sheet, rowNum);
                 rowNum = spacer(sheet, rowNum);
-                rowNum = writeTotals(recipe, sheet, rowNum);
+                rowNum = writeTotals(recipe, sheet, rowNum, target);
                 rowNum = spacer(sheet, rowNum);
                 rowNum = spacer(sheet, rowNum);
                 rowNum = timestamp(sheet, rowNum, solution.searchCompleted, secondsElapsed);
@@ -92,18 +92,16 @@ public class ResultWriter implements IResultWriter {
     }
 
     private int timestamp(Sheet sheet, int rowNum, boolean searchCompleted, long secondsElapsed) {
-        getOrCreate(sheet, rowNum++).createCell(0).setCellValue(AGGIORNATO + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        getOrCreate(sheet, rowNum++).createCell(8).setCellValue(AGGIORNATO + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         String msg = searchCompleted ? RICERCA_COMPLETATA_CON_SUCCESSO_IN + secondsElapsed + "s"
                                      : IL_RISULTATO_POTREBBE_NON_ESSERE_OTTIMALE_LA_RICERCA_E_STATA_INTERROTTA_DOPO + secondsElapsed + "s";
-        getOrCreate(sheet, rowNum++).createCell(0).setCellValue(msg);
+        getOrCreate(sheet, rowNum++).createCell(8).setCellValue(msg);
         return rowNum;
     }
 
-    private int writeTotals(Recipe recipe, Sheet sheet, int rowNum) {
-        writeWatersHeader(getOrCreate(sheet, rowNum), headerStyle);
-        rowNum++;
-        writeTotal(sheet, recipe, rowNum);
-        return rowNum;
+    private int writeTotals(Recipe recipe, Sheet sheet, int rowNum, Water target) {
+        writeWatersHeader(getOrCreate(sheet, rowNum++), headerStyle);
+        return writeTotal(sheet, recipe, rowNum, target);
     }
 
     private int writeSalts(Recipe recipe, Sheet sheet, int rowNum) {
@@ -167,16 +165,40 @@ public class ResultWriter implements IResultWriter {
         return cell;
     }
 
-    private void writeTotal(Sheet sheet, Recipe recipe, int rowNum) {
-        Row row = getOrCreate(sheet, rowNum);
-        row.createCell(QTY.ordinal()).setCellValue(recipe.liters());
-        row.createCell(NAME.ordinal()).setCellValue(Msg.total());
-        row.createCell(CA.ordinal()).setCellValue(recipe.ca());
-        row.createCell(MG.ordinal()).setCellValue(recipe.mg());
-        row.createCell(NA.ordinal()).setCellValue(recipe.na());
-        row.createCell(SO4.ordinal()).setCellValue(recipe.so4());
-        row.createCell(CL.ordinal()).setCellValue(recipe.cl());
-        row.createCell(HCO3.ordinal()).setCellValue(recipe.hco3());
+    private int writeTotal(Sheet sheet, Recipe recipe, int rowNum, Water target) {
+        Row resultRow = getOrCreate(sheet, rowNum++);
+        resultRow.createCell(QTY.ordinal()).setCellValue(recipe.liters());
+        resultRow.createCell(NAME.ordinal()).setCellValue(Msg.recipe());
+        resultRow.createCell(CA.ordinal()).setCellValue(recipe.ca());
+        resultRow.createCell(MG.ordinal()).setCellValue(recipe.mg());
+        resultRow.createCell(NA.ordinal()).setCellValue(recipe.na());
+        resultRow.createCell(SO4.ordinal()).setCellValue(recipe.so4());
+        resultRow.createCell(CL.ordinal()).setCellValue(recipe.cl());
+        resultRow.createCell(HCO3.ordinal()).setCellValue(recipe.hco3());
+
+        Row targetRow = getOrCreate(sheet, rowNum++);
+        targetRow.createCell(QTY.ordinal()).setCellValue(recipe.liters());
+        targetRow.createCell(NAME.ordinal()).setCellValue(target.nome + " (" + Msg.target() + ")");
+        targetRow.createCell(CA.ordinal()).setCellValue(target.ca);
+        targetRow.createCell(MG.ordinal()).setCellValue(target.mg);
+        targetRow.createCell(NA.ordinal()).setCellValue(target.na);
+        targetRow.createCell(SO4.ordinal()).setCellValue(target.so4);
+        targetRow.createCell(CL.ordinal()).setCellValue(target.cl);
+        targetRow.createCell(HCO3.ordinal()).setCellValue(target.hco3);
+
+        Row deltaRow = getOrCreate(sheet, rowNum++);
+        deltaRow.createCell(QTY.ordinal()).setCellValue(Math.abs(recipe.liters() - target.liters));
+        deltaRow.createCell(NAME.ordinal()).setCellValue(Msg.delta());
+        deltaRow.createCell(CA.ordinal()).setCellValue(Math.abs(recipe.ca() - target.ca));
+        deltaRow.createCell(MG.ordinal()).setCellValue(Math.abs(recipe.mg() - target.mg));
+        deltaRow.createCell(NA.ordinal()).setCellValue(Math.abs(recipe.na() - target.na));
+        deltaRow.createCell(SO4.ordinal()).setCellValue(Math.abs(recipe.so4() - target.so4));
+        deltaRow.createCell(CL.ordinal()).setCellValue(Math.abs(recipe.cl() - target.cl));
+        deltaRow.createCell(HCO3.ordinal()).setCellValue(Math.abs(recipe.hco3() - target.hco3));
+
+        rowNum++;
+
+        return rowNum;
     }
 
     private void writeSalt(Sheet sheet, int rowNum, Salt w) {

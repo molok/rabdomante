@@ -30,8 +30,9 @@ public class App {
         long start = System.currentTimeMillis();
         try {
             IUserInputReader uiReader = new UserInputReader(input);
+            Water target = uiReader.target();
             Optional<WSolution> maybeSolution = new ChocoSolver().solve(
-                    uiReader.target(),
+                    target,
                     uiReader.salts(),
                     uiReader.waters(),
                     timeLimit);
@@ -42,7 +43,7 @@ public class App {
                 return new Result(SOLUTION.NONE, msElapsed);
             } else {
                 WSolution solution = maybeSolution.get();
-                new ResultWriter(input, output).write(solution, msElapsed / 1000);
+                new ResultWriter(input, output).write(solution, msElapsed / 1000, target);
 
                 return solution.searchCompleted ?
                         new Result(SOLUTION.OPTIMAL, msElapsed) :
