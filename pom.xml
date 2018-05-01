@@ -6,7 +6,7 @@
 
     <groupId>alebolo</groupId>
     <artifactId>rabdomante</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <url>https://github.com/molok/rabdomante/</url>
 
     <dependencies>

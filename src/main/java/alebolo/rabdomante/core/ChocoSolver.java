@@ -3,6 +3,7 @@ package alebolo.rabdomante.core;
 import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
 import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.IntegerSequence;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
@@ -163,9 +164,11 @@ public class ChocoSolver implements WaterSolver {
      */
     static public int[] range(int max, int perc) {
         int step = Math.max(1, (max * perc) / 100);
-        return Ints.toArray(
-                IteratorUtils.toList(
-                        new IntegerSequence.Range(0, max, step ).iterator()));
+        HashSet<Integer> res = new HashSet<>(IteratorUtils.toList(new IntegerSequence.Range(0, max, step).iterator()));
+        /* I have to include max otherwise in same cases I can't find a solution even
+           though there is enough water */
+        res.add(max);
+        return Ints.toArray(res);
     }
 
     private Optional<IntVar> sumSalt(Map<SaltProfile, IntVar> ss, Function<SaltProfile, Integer> f) {

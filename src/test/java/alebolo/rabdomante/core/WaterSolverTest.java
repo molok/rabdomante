@@ -366,6 +366,14 @@ public class WaterSolverTest {
         System.out.println(recipe);
     }
 
+    @Test public void range2() {
+        System.out.println(Arrays.toString(ChocoSolver.range(31, 10)));
+    }
+
+    @Test public void range3() {
+        System.out.println(Arrays.toString(ChocoSolver.range(1, 10)));
+    }
+
     @Test public void range() {
         assertThat(ChocoSolver.range(10000, 10)).hasSize(11);
     }
