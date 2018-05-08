@@ -95,4 +95,7 @@ public class Msg {
     public static String readLicense() { return m.getString("read_license"); }
     public static String license() { return m.getString("license"); }
     public static String fileLocked() { return m.getString("file_locked"); }
+    public static String copyErrorToClipboard() { return m.getString("copy_error_to_clipboard"); }
+    public static String inputError() { return m.getString("input_error"); }
+    public static String close() { return m.getString("close"); }
 }

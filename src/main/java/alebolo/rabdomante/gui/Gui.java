@@ -2,6 +2,7 @@ package alebolo.rabdomante.gui;
 
 import alebolo.rabdomante.Msg;
 import alebolo.rabdomante.cli.RabdoException;
+import alebolo.rabdomante.cli.RabdoInputException;
 import alebolo.rabdomante.core.App;
 import alebolo.rabdomante.core.Defect;
 import alebolo.rabdomante.core.VersionProvider;
@@ -23,9 +24,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -366,7 +365,11 @@ public class Gui extends Application {
                 boolean shouldOpen;
                 if (err != null) {
                     log.error("Errore inatteso", err);
-                    shouldOpen = alertError(err);
+                    if (RabdoInputException.class.isInstance(err.getCause())) {
+                        shouldOpen = inputErrorAlert(err.getCause().getMessage());
+                    } else {
+                        shouldOpen = unexpectedErrorAlert(err, true);
+                    }
                 } else {
                     switch (res.res) {
                         case NONE:
@@ -388,13 +391,46 @@ public class Gui extends Application {
                 }
             } catch (Throwable t) {
                 log.error("", t);
+                unexpectedErrorAlert(t, false);
             }
         });
         return null;
     }
 
-    private boolean alertError(Throwable err) {
-        return alert(Alert.AlertType.ERROR, Msg.unexpectedError()+":"+ExceptionUtils.getStackTrace(err), Msg.error());
+    private boolean unexpectedErrorAlert(Throwable err, boolean openFile) {
+        ButtonType copyError = new ButtonType(Msg.copyErrorToClipboard(), ButtonBar.ButtonData.HELP);
+        ButtonType closeBtn = new ButtonType(Msg.close(), ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alert;
+        // TODO FIXME sta schifezza
+        if (openFile) {
+            alert = new Alert(
+                    Alert.AlertType.ERROR,
+                    Msg.unexpectedError()+":"+ExceptionUtils.getStackTrace(err),
+                    openBtn, copyError, closeBtn
+            );
+        } else {
+            alert = new Alert(
+                    Alert.AlertType.ERROR,
+                    Msg.unexpectedError()+":"+ExceptionUtils.getStackTrace(err),
+                    copyError, closeBtn
+            );
+        }
+        alert.getDialogPane().setPrefHeight(600);
+        alert.setTitle(Msg.error());
+        alert.setHeaderText(null);
+        Optional<ButtonType> res = alert.showAndWait();
+        if (!res.isPresent()) {
+            return false;
+        } else {
+            ButtonType clicked = res.get();
+            if (copyError.equals(clicked)) {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(ExceptionUtils.getStackTrace(err));
+                clipboard.setContent(content);
+            }
+            return openBtn.equals(clicked);
+        }
     }
 
     private boolean alertSuccess(double seconds) {
@@ -413,6 +449,13 @@ public class Gui extends Application {
         alert.setHeaderText(null);
         Optional<ButtonType> res = alert.showAndWait();
         return (res.isPresent() && res.get().equals(openBtn));
+    }
+
+    private boolean inputErrorAlert(String msg) {
+        return alert(
+                Alert.AlertType.WARNING,
+                Msg.inputError()+ ": " + msg,
+                Msg.warning());
     }
 
     private boolean alertIncomplete(double seconds) {

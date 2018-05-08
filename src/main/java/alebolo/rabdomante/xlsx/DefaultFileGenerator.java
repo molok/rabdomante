@@ -147,7 +147,6 @@ public class DefaultFileGenerator {
             Cell cell = styledCell(row, userInputStyle, QTY.ordinal());
             cell.setCellValue(0);
 
-            int ordinal = NAME.ordinal();
             styledCell(row, baseStyle, NAME.ordinal()).setCellValue(w.name);
             styledCell(row, baseStyle, CA.ordinal()).setCellValue(w.ca);
             styledCell(row, baseStyle, MG.ordinal()).setCellValue(w.mg);

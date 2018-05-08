@@ -8,12 +8,21 @@ import alebolo.rabdomante.gui.Gui;
 import ch.qos.logback.classic.Level;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.LocaleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
 public class Cli {
     public static final String DEFAULT_FILENAME = "rabdomante.xlsx";
     private final VersionProvider versionProvider = new VersionProvider();
+
+    {
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            Logger log = LoggerFactory.getLogger("UNCAUGHT");
+            log.error("UNCAUGHT ERROR {}", t, e);
+        });
+    }
 
     public static void main(String[] args) { System.exit(new Cli().doMain(args)); }
 

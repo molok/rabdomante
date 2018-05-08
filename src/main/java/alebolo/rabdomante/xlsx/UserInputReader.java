@@ -70,8 +70,10 @@ public class UserInputReader implements IUserInputReader {
             } else {
                 return res;
             }
+        } catch (RabdoInputException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RabdoInputException(e);
+            throw new RabdoException(e);
         }
     }
 
@@ -104,7 +106,7 @@ public class UserInputReader implements IUserInputReader {
                 return res;
             }
         } catch (Exception e) {
-            throw new RabdoInputException(e);
+            throw new RabdoException(e);
         }
     }
 }
