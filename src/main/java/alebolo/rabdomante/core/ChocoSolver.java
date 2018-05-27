@@ -3,7 +3,6 @@ package alebolo.rabdomante.core;
 import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.IntegerSequence;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
@@ -147,7 +146,7 @@ public class ChocoSolver implements WaterSolver {
         Map<WaterProfile, IntVar> waterVars = new HashMap<>();
         waters.stream()
                 .map(w -> new HashMap.SimpleImmutableEntry<>
-                        (w, model.intVar(w.nome + " (L)", range(Math.min(targetLiters, w.liters), 10))))
+                        (w, model.intVar(w.name + " (L)", range(Math.min(targetLiters, w.liters), 10))))
                 .forEach(e -> waterVars.put(e.getKey(), e.getValue()));
         return waterVars;
     }

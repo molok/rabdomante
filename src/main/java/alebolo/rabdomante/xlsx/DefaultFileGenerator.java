@@ -107,7 +107,7 @@ public class DefaultFileGenerator {
 
         for (Water w : waters) {
             Row row = getOrCreate(sheet, rowNum++);
-            row.createCell(NAME.ordinal()).setCellValue(w.nome);
+            row.createCell(NAME.ordinal()).setCellValue(w.name);
             row.createCell(CA.ordinal()).setCellValue(w.ca);
             row.createCell(MG.ordinal()).setCellValue(w.mg);
             row.createCell(NA.ordinal()).setCellValue(w.na);

@@ -6,8 +6,13 @@
 
     <groupId>alebolo</groupId>
     <artifactId>rabdomante</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5-SNAPSHOT</version>
     <url>https://github.com/molok/rabdomante/</url>
+
+    <properties>
+        <jackson.version>2.9.5</jackson.version>
+        <spark.version>2.7.1</spark.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -100,6 +105,26 @@
             <artifactId>opencsv</artifactId>
             <version>2.3</version>
         </dependency>
+
+        <!-- ws -->
+        <dependency>
+            <groupId>com.amazonaws.serverless</groupId>
+            <artifactId>aws-serverless-java-container-spark</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <!-- end of ws -->
     </dependencies>
 
     <build>
@@ -127,6 +152,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.2</version>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -139,6 +167,19 @@
                                     <mainClass>alebolo.rabdomante.cli.Cli</mainClass>
                                 </transformer>
                             </transformers>
+                            <artifactSet>
+                                <excludes>
+                                    <!-- We exclude lots of Jetty stuff since we won't be running
+                                         the HTTP server. Our primary goal is to reduce the size
+                                         of the deployment package -->
+                                    <exclude>org.eclipse.jetty.websocket:*</exclude>
+                                    <exclude>org.eclipse.jetty:jetty-http</exclude>
+                                    <exclude>org.eclipse.jetty:jetty-client</exclude>
+                                    <exclude>org.eclipse.jetty:jetty-webapp</exclude>
+                                    <exclude>org.eclipse.jetty:jetty-xml</exclude>
+                                    <exclude>org.eclipse.jetty:jetty-io</exclude>
+                                </excludes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>

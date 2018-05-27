@@ -134,7 +134,7 @@ public class WaterSolverTest {
         Water test = new WaterProfileParser().parse(this.getClass().getResourceAsStream("/common_profiles.csv")).get(27);
 
         Water target = new Water(test, 30);
-        System.out.println("name:" + target.nome);
+        System.out.println("name:" + target.name);
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater, 10L, (intvars) -> Search.domOverWDegSearch(intvars)).map(s -> s.recipe);
         assertThat(solution).isPresent();
     }
@@ -181,7 +181,7 @@ public class WaterSolverTest {
             double totTime = (System.currentTimeMillis() - totStart) / 1000.;
 
             System.out.println("\n***********************************************");
-            System.out.println(desc + ": " + curr + "/67" + ", last:" + thisTime + ", tot:" + totTime + " [" + target.nome + "]");
+            System.out.println(desc + ": " + curr + "/67" + ", last:" + thisTime + ", tot:" + totTime + " [" + target.name + "]");
             System.out.println("***********************************************\n");
 
             if (thisTime > 60) {

@@ -1,14 +1,24 @@
 package alebolo.rabdomante.core;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class Water extends WaterProfile {
     public final int liters;
     public Water(WaterProfile profile, int liters) {
-        this(profile.ca, profile.mg, profile.na, profile.so4, profile.cl, profile.hco3, profile.nome, liters);
+        this(profile.ca, profile.mg, profile.na, profile.so4, profile.cl, profile.hco3, profile.name, liters);
     }
-    public Water(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int liters) {
-        super(nome, ca, mg, na, so4, cl, hco3);
+    public Water(
+            @JsonProperty(value = "ca", required = true)   int ca,
+            @JsonProperty(value = "mg", required = true)   int mg,
+            @JsonProperty(value = "na", required = true)   int na,
+            @JsonProperty(value = "so4", required = true)  int so4,
+            @JsonProperty(value = "cl", required = true)   int cl,
+            @JsonProperty(value = "hco3", required = true) int hco3,
+            @JsonProperty(value = "name", required = true) String name,
+            @JsonProperty(value = "l", required = true)    int liters) {
+        super(name, ca, mg, na, so4, cl, hco3);
         this.liters = liters;
     }
 
@@ -21,7 +31,7 @@ public class Water extends WaterProfile {
                 ", so4=" + so4 +
                 ", cl=" + cl +
                 ", hco3=" + hco3 +
-                ", name='" + nome + '\'' +
+                ", name='" + name + '\'' +
                 ", liters=" + liters +
                 '}';
     }

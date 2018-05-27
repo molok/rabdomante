@@ -1,0 +1,32 @@
+{
+    "waters": [ { 
+        "name": "Sant'anna", 
+        "l": 10, 
+        "ca": 200, 
+        "mg": 100,
+        "na": 1,
+        "so4": 1,
+        "cl": 1,
+        "hco3": 1
+    } ],
+    "salts": [ { 
+        "name": "Table Salt", 
+        "dg": 1000, 
+        "ca": 20, 
+        "mg": 10,
+        "na": 10,
+        "so4": 11,
+        "cl": 12,
+        "hco3": 13
+    } ],
+    "target": { 
+        "name": "Sant'anna", 
+        "l": 10, 
+        "ca": 200, 
+        "mg": 100,
+        "na": 100,
+        "so4": 100,
+        "cl": 100,
+        "hco3": 100
+    }
+}

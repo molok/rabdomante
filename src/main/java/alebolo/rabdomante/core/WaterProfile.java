@@ -12,7 +12,7 @@ public class WaterProfile {
     public final int so4;
     public final int cl;
     public final int hco3;
-    public final String nome;
+    public final String name;
 
     public static boolean sameProfile(WaterProfile a, WaterProfile b) {
         return a.ca == b.ca &&
@@ -23,8 +23,8 @@ public class WaterProfile {
                a.hco3 == b.hco3;
     }
 
-    public WaterProfile(String nome, int ca, int mg, int na, int so4, int cl, int hco3) {
-        this.nome = nome;
+    public WaterProfile(String name, int ca, int mg, int na, int so4, int cl, int hco3) {
+        this.name = name;
         this.ca = validate(ca);
         this.mg = validate(mg);
         this.na = validate(na);
@@ -51,7 +51,7 @@ public class WaterProfile {
                 ", so4=" + so4 +
                 ", cl=" + cl +
                 ", hco3=" + hco3 +
-                ", name='" + nome + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -66,11 +66,11 @@ public class WaterProfile {
                 so4 == that.so4 &&
                 cl == that.cl &&
                 hco3 == that.hco3 &&
-                Objects.equals(nome, that.nome);
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ca, mg, na, so4, cl, hco3, nome);
+        return Objects.hash(ca, mg, na, so4, cl, hco3, name);
     }
 }

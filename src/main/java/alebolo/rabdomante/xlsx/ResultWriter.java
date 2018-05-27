@@ -170,7 +170,7 @@ public class ResultWriter implements IResultWriter {
 
         Row targetRow = getOrCreate(sheet, rowNum++);
         targetRow.createCell(QTY.ordinal()).setCellValue(recipe.liters());
-        targetRow.createCell(NAME.ordinal()).setCellValue(target.nome + " (" + Msg.target() + ")");
+        targetRow.createCell(NAME.ordinal()).setCellValue(target.name + " (" + Msg.target() + ")");
         targetRow.createCell(CA.ordinal()).setCellValue(target.ca);
         targetRow.createCell(MG.ordinal()).setCellValue(target.mg);
         targetRow.createCell(NA.ordinal()).setCellValue(target.na);
@@ -208,7 +208,7 @@ public class ResultWriter implements IResultWriter {
     private void writeWater(Sheet sheet, int rowNum, Water w) {
         Row row = getOrCreate(sheet, rowNum);
         row.createCell(QTY.ordinal()).setCellValue(w.liters);
-        row.createCell(NAME.ordinal()).setCellValue(w.nome);
+        row.createCell(NAME.ordinal()).setCellValue(w.name);
         row.createCell(CA.ordinal()).setCellValue(w.ca);
         row.createCell(MG.ordinal()).setCellValue(w.mg);
         row.createCell(NA.ordinal()).setCellValue(w.na);

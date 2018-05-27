@@ -1,5 +1,7 @@
 package alebolo.rabdomante.core;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class Salt extends SaltProfile {
@@ -7,8 +9,16 @@ public class Salt extends SaltProfile {
     public Salt(SaltProfile salt, int dg) {
         this(salt.ca, salt.mg, salt.na, salt.so4, salt.cl, salt.hco3, salt.name, dg);
     }
-    Salt(int ca, int mg, int na, int so4, int cl, int hco3, String nome, int dg) {
-        super(nome, ca, mg, na, so4, cl, hco3);
+    public Salt(
+            @JsonProperty(value = "ca", required = true)   int ca,
+            @JsonProperty(value = "mg", required = true)   int mg,
+            @JsonProperty(value = "na", required = true)   int na,
+            @JsonProperty(value = "so4", required = true)  int so4,
+            @JsonProperty(value = "cl", required = true)   int cl,
+            @JsonProperty(value = "hco3", required = true) int hco3,
+            @JsonProperty(value = "name", required = true) String name,
+            @JsonProperty(value= "dg", required = true)   int dg) {
+        super(name, ca, mg, na, so4, cl, hco3);
         this.dg = dg;
     }
 

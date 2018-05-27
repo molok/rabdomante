@@ -12,7 +12,7 @@ public class SaltProfile {
     public final String name;
 
     static class Builder {
-        private final String nome;
+        private final String name;
         int ca = 0;
         int mg = 0;
         int na = 0;
@@ -20,14 +20,14 @@ public class SaltProfile {
         int cl = 0;
         int hco3 = 0;
 
-        Builder(String nome) { this.nome = nome; }
+        Builder(String name) { this.name = name; }
         Builder ca(int ca) { this.ca = ca; return this; }
         Builder mg(int mg) { this.mg = mg; return this; }
         Builder na(int na) { this.na = na; return this; }
         Builder so4(int so4) { this.so4 = so4; return this; }
         Builder cl(int cl) { this.cl = cl; return this; }
         Builder hco3(int hco3) { this.hco3 = hco3; return this; }
-        SaltProfile build() { return new SaltProfile(nome, ca, mg, na, so4, cl, hco3); }
+        SaltProfile build() { return new SaltProfile(name, ca, mg, na, so4, cl, hco3); }
     }
 
     public SaltProfile(String name, int ca, int mg, int na, int so4, int cl, int hco3) {
