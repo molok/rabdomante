@@ -1182,6 +1182,10 @@ constants-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/constants-browserify/-/constants-browserify-1.0.0.tgz#c20b96d8c617748aaf1c16021760cd27fcb8cb75"
 
+constrained@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/constrained/-/constrained-0.2.7.tgz#70c4a5535515a92a682aa99c7a380358d876c8e9"
+
 content-disposition@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/content-disposition/-/content-disposition-0.5.2.tgz#0cf68bb9ddf5f2be7961c3a85178cb85dba78cb4"

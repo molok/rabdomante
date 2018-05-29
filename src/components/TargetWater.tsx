@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Component} from 'react';
-import { FormGroup, Panel, Row } from "react-bootstrap";
+import {FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
 import {WaterDef} from "../model/index";
 import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
@@ -15,7 +15,7 @@ class TargetWater extends Component<TargetWaterProps, {}> {
         return (
             <Panel>
                 <Panel.Heading>
-                    <Panel.Title>Obiettivo</Panel.Title>
+                    <Panel.Title ><Glyphicon glyph="flag"/> Obiettivo</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body>
                     <FormGroup>
@@ -24,10 +24,16 @@ class TargetWater extends Component<TargetWaterProps, {}> {
                                 <MineralInput
                                     label="litri" symbol=""
                                     value={this.props.target.l}
-                                    onChange={this.targetChanged.bind(this, "l")}/>
+                                    onChange={this.targetChanged.bind(this, "l")}
+                                    editable={true}
+                                />
                             </Row>
                         </FormGroup>
-                        <MineralForm water={this.props.target} attrChanged={this.targetChanged.bind(this)}/>
+                        <MineralForm
+                            water={this.props.target}
+                            attrChanged={this.targetChanged.bind(this)}
+                            editable={true}
+                        />
                     </FormGroup>
                 </Panel.Body>
             </Panel>

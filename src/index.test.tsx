@@ -9,21 +9,11 @@ import Rabdo from "./containers/Rabdo";
 import {addSource} from "./actions";
 import {reducers} from "./reducers";
 import {createStore} from "redux";
-
 it('mount integration', () => {
     const defaultState =
         { target: water("target"),
             sources: [water("water #1"), water("water #2")],
-            salts: [
-                { g: 0, name: "gypsum", selected: false },
-                { g: 0, name: "table salt", selected: false },
-                { g: 0, name: "epsom salt", selected: false },
-                { g: 0, name: "calcium chloride", selected: false },
-                { g: 0, name: "baking soda", selected: false },
-                { g: 0, name: "chalk", selected: false },
-                { g: 0, name: "pickling lime", selected: false },
-                { g: 0, name: "magnesium chloride", selected: false },
-            ]
+            salts: [ ]
         };
     const store = createStore(reducers, defaultState);
     const component = mount(<Rabdo/>, { context: { store } });

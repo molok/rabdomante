@@ -1,16 +1,14 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {State} from "../model/index";
+import {State, water, Salt, WaterDef} from "../model/index";
 import {connect} from "react-redux";
 import {Button, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
 import './Rabdo.css'
-import {addSource, calculate, removeSource, saltSelectionChanged, sourceChanged, targetChanged} from "../actions";
-import {water} from "../model/index";
-import Select from 'react-select';
+import { addSalt, addSource, calculate, changedSalt, removeSalt, removeSource, sourceChanged, targetChanged } from "../actions";
 import 'react-select/dist/react-select.css'
 import TargetWater from "../components/TargetWater";
 import SourceWaters from "../components/SourceWaters";
-import {Salt, WaterDef} from "../model";
+import Salts from "../components/Salts";
 
 interface RabdoProps {
     target: WaterDef
@@ -21,19 +19,10 @@ interface RabdoProps {
     sourceChanged: (idx: number, w: WaterDef) => void
     targetChanged: (w: WaterDef) => void
     removeSource: (idx: number) => void
-    saltSelectionChanged: (salts: Array<string>) => void
+    addSalt: (s: Salt) => void
+    saltChanged: (idx: number, s: Salt) => void
+    removeSalt: (idx: number) => void
 }
-
-const RenderSalts = ({ salts, saltChanged } : { salts: Array<Salt>;
-                                                saltChanged: (e: any) => void }) => {
-    let options = salts.map(salt => ({ label: salt.name, value: salt.name}));
-    let value = salts
-        .filter(salt => salt.selected)
-        .map( salt => ({ label: salt.name, value: salt.name}));
-    return (
-        <Select multi value={value} options={options} onChange={saltChanged}></Select>
-    )
-};
 
 class XRabdo extends Component<RabdoProps, {}> {
     render() {
@@ -46,11 +35,14 @@ class XRabdo extends Component<RabdoProps, {}> {
                     <FormGroup>
                         <TargetWater target={this.props.target} targetChanged={this.props.targetChanged}/>
                         <SourceWaters sources={this.props.sources} removeSource={this.props.removeSource} sourceChanged={this.props.sourceChanged}/>
-                        <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> Aggiungi acqua base</Button>
+                        <Salts salts={this.props.salts} removeSalt={this.props.removeSalt} saltChanged={this.props.saltChanged} />
+                        <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> <Glyphicon glyph="list"/></Button>
+                        <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> <Glyphicon glyph="pencil"/></Button>
+                        <Button bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="unchecked"/></Button>
                     </FormGroup>
 
                     <FormGroup>
-                        <RenderSalts salts={this.props.salts} saltChanged={this.saltsChanged.bind(this)} />
+                        {/*<RenderSalts salts={this.props.salts} saltChanged={this.saltsChanged.bind(this)} />*/}
                     </FormGroup>
 
                     <FormGroup>
@@ -61,16 +53,41 @@ class XRabdo extends Component<RabdoProps, {}> {
         )
     }
 
-    addWater(e: any) {
+    addSalt(e: any) {
         e.preventDefault();
-        this.props.addWater(water());
+        let s:Salt = {
+            name: "",
+            g: 0,
+            ca: 0,
+            mg: 0,
+            na: 0,
+            so4: 0,
+            cl: 0,
+            hco3: 0,
+            visible: true,
+            custom: false
+        };
+        this.props.addSalt(s);
     }
 
-    saltsChanged(e: any) {
-        console.log("event:", e);
-        let salts = e.map((sel: any) => sel.value);
-        this.props.saltSelectionChanged(salts);
+    addCustomWater(e: any) {
+        e.preventDefault();
+        var w = water();
+        w.custom = true;
+        this.props.addWater(w);
     }
+
+    addWater(e: any) {
+        e.preventDefault();
+        var w = water();
+        w.custom = false;
+        this.props.addWater(w);
+    }
+    // saltsChanged(e: any) {
+    //     console.log("event:", e);
+    //     let salts = e.map((sel: any) => sel.value);
+    //     this.props.saltSelectionChanged(salts);
+    // }
 }
 
 function mapStateToProps (state: State) {
@@ -83,7 +100,9 @@ function mapDispatchToProps (dispatch: Function) {
         sourceChanged: (idx: number, w: WaterDef) => { dispatch(sourceChanged(idx, w))},
         targetChanged: (w: WaterDef) => { dispatch(targetChanged(w))},
         removeSource: (idx: number) => { dispatch(removeSource(idx))},
-        saltSelectionChanged: (salts: Array<string>) => { dispatch(saltSelectionChanged(salts))}
+        addSalt: (s: Salt) => { dispatch(addSalt(s))},
+        saltChanged: (idx: number, s: Salt) => { dispatch(changedSalt(idx, s))},
+        removeSalt: (idx: number) => { dispatch(removeSalt(idx))},
     }
 }
 

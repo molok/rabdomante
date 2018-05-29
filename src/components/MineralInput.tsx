@@ -7,8 +7,8 @@ interface MineralInputProps {
     symbol: string,
     value: number,
     onChange: (e: number) => void,
+    editable: boolean
 }
-
 class MineralInput extends React.Component<MineralInputProps, {}> {
     changed(e: ChangeEvent<HTMLInputElement>) {
         this.props.onChange(parseFloat(e.target.value));
@@ -16,11 +16,15 @@ class MineralInput extends React.Component<MineralInputProps, {}> {
 
     render() {
         let show = this.titleCase(this.props.label) + (this.props.symbol ? " (" + this.props.symbol + ")" : "");
+        let valuePresent = this.props.value != -1;
         return (
             <>
                 <Col componentClass={ControlLabel} sm={2}>{show}</Col>
-                <Col sm={1}> <FormControl value={this.props.value} bsSize="small" type="number" placeholder=""
-                                          onChange={this.changed.bind(this)}/></Col>
+                <Col sm={1}>
+                    <FormControl value={valuePresent ? this.props.value : "N/A"} bsSize="small" type={valuePresent ? "number" : "text"} placeholder=""
+                                 disabled={!this.props.editable}
+                                 onChange={this.changed.bind(this)}/>
+                </Col>
             </>
         )
     }

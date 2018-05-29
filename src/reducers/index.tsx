@@ -4,10 +4,13 @@ import {Salt, State, WaterDef} from "../model/index";
 
 function saltReducer(salts: Array<Salt>, action: any): Array<Salt> {
     switch (action.type) {
+        case act.SALT_ADD:
+            return [...salts, action.payload];
         case act.SALT_CHANGED:
-            return salts.map( salt => (salt.name === action.salt.name) ? action.salt : salt);
-        case act.SALT_SELECTION_CHANGED:
-            return salts.map( salt => ({ ...salt, selected: action.salts.includes(salt.name) }));
+            return salts.map(
+                (s, i) => i === action.payload.idx ? action.payload.salt : s);
+        case act.SALT_REMOVE:
+            return salts.filter((_, idx) => idx !== action.idx);
         default: return salts;
     }
 }
@@ -36,13 +39,13 @@ function sourceReducer(sources: Array<WaterDef>, action: any): Array<WaterDef> {
 }
 
 function coreReducer(state: State, action: any): State {
-    // console.log("action", action, "state before:", state);
+    console.log("action", action, "state before:", state);
     const nextState= {
         sources: sourceReducer(state.sources, action),
         target: targetReducer(state.target, action),
         salts: saltReducer(state.salts, action)
     };
-    // console.log("state after", nextState);
+    console.log("state after", nextState);
     return nextState;
 }
 

@@ -15,6 +15,6 @@ function render() {
             <Rabdo />
         </Provider>,
         document.getElementById('root') as HTMLElement );
-};
+}
 render();
 // registerServiceWorker();

@@ -7,7 +7,7 @@ import {shallow} from 'enzyme';
 it("diofa", () => {
     let callback = (e: any) => { console.log("chiamato!")};
     const component = renderer.create(
-        <MineralInput label="mylabel" symbol="symbol" value={666} onChange={callback}/>
+        <MineralInput label="mylabel" symbol="symbol" value={666} onChange={callback} editable={true} />
     );
     // console.log(component.toJSON());
     console.log(component.toTree());
