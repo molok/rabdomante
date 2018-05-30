@@ -10,7 +10,7 @@ function saltReducer(salts: Array<Salt>, action: any): Array<Salt> {
             return salts.map(
                 (s, i) => i === action.payload.idx ? action.payload.salt : s);
         case act.SALT_REMOVE:
-            return salts.filter((_, idx) => idx !== action.idx);
+            return salts.filter((_, idx) => idx !== action.payload);
         default: return salts;
     }
 }
@@ -32,7 +32,8 @@ function sourceReducer(sources: Array<WaterDef>, action: any): Array<WaterDef> {
             return sources.map(
                 (w, i) => i === action.payload.idx ? action.payload.water : w);
         case act.REMOVE_SOURCE:
-            return sources.filter((_, idx) => idx !== action.idx);
+            console.log('action:', action);
+            return sources.filter((_, idx) => idx !== action.payload);
         default:
             return sources;
     }

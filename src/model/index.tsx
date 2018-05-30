@@ -41,7 +41,7 @@ export interface State {
     readonly salts: Array<Salt>
 }
 
-const defaultSalt = ():Salt => {
+export const defaultSalt = ():Salt => {
     let s:Salt = {
         name: "",
         g: 0,
@@ -62,14 +62,4 @@ export const defaultState =
         target: water("target"),
         sources: [water()],
         salts: [defaultSalt()]
-        // salts: [
-        //     {g: 0, name: "gypsum", selected: false},
-        //     {g: 0, name: "table salt", selected: false},
-        //     {g: 0, name: "epsom salt", selected: false},
-        //     {g: 0, name: "calcium chloride", selected: false},
-        //     {g: 0, name: "baking soda", selected: false},
-        //     {g: 0, name: "chalk", selected: false},
-        //     {g: 0, name: "pickling lime", selected: false},
-        //     {g: 0, name: "magnesium chloride", selected: false},
-        // ]
     };

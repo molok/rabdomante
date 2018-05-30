@@ -14,7 +14,7 @@ export function targetChanged(water: WaterDef) { return { type: TARGET_CHANGED, 
 
 export function addSource(w: WaterDef) { return { type: ADD_SOURCE, payload: w } }
 export function sourceChanged(idx: number, water: WaterDef) { return { type: SOURCE_CHANGED, payload: { idx, water } } }
-export function removeSource(idx: number) { return { type: REMOVE_SOURCE, idx}}
+export function removeSource(idx: number) { return { type: REMOVE_SOURCE, payload: idx}}
 
 export function addSalt(s: Salt) { return { type: SALT_ADD, payload: s } }
 export function removeSalt(idx: number) { return { type: SALT_REMOVE, payload: idx } }

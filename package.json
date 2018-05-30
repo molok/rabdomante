@@ -40,6 +40,6 @@
     "jsdom-global": "^3.0.2",
     "react-test-renderer": "^16.2.0",
     "redux-test-utils": "^0.2.2",
-    "typescript": "^2.7.2"
+    "typescript": "2.8"
   }
 }
