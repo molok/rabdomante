@@ -6,9 +6,9 @@ import * as Adapter from 'enzyme-adapter-react-16';
 enzyme.configure({ adapter: new Adapter() });
 import {water} from "./model";
 import Rabdo from "./containers/Rabdo";
-import {addSource} from "./actions";
 import {reducers} from "./reducers";
 import {createStore} from "redux";
+import {Actions} from "./actions";
 it('mount integration', () => {
     const defaultState =
         { target: water("target"),
@@ -19,7 +19,7 @@ it('mount integration', () => {
     const component = mount(<Rabdo/>, { context: { store } });
     expect(component.find('.panel.waterPanel')).toHaveLength(2);
 
-    store.dispatch(addSource(water("water #3")));
+    store.dispatch(Actions.addWater(water("water #3")));
 
     const componentAfter = mount(<Rabdo/>, { context: { store } });
     expect(componentAfter.find('.panel.waterPanel')).toHaveLength(3);

@@ -4,7 +4,7 @@ import {State, water, Salt, WaterDef} from "../model/index";
 import {connect} from "react-redux";
 import {Button, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
 import './Rabdo.css'
-import { addSalt, addSource, calculate, changedSalt, removeSalt, removeSource, sourceChanged, targetChanged } from "../actions";
+import { Actions } from "../actions";
 import 'react-select/dist/react-select.css'
 import TargetWater from "../components/TargetWater";
 import SourceWaters from "../components/SourceWaters";
@@ -95,14 +95,14 @@ function mapStateToProps (state: State) {
 }
 function mapDispatchToProps (dispatch: Function) {
     return {
-        submit: () => { dispatch(calculate())},
-        addWater: (w :WaterDef) => { dispatch(addSource(w))},
-        sourceChanged: (idx: number, w: WaterDef) => { dispatch(sourceChanged(idx, w))},
-        targetChanged: (w: WaterDef) => { dispatch(targetChanged(w))},
-        removeSource: (idx: number) => { dispatch(removeSource(idx))},
-        addSalt: (s: Salt) => { dispatch(addSalt(s))},
-        saltChanged: (idx: number, s: Salt) => { dispatch(changedSalt(idx, s))},
-        removeSalt: (idx: number) => { dispatch(removeSalt(idx))},
+        submit: () => { dispatch(Actions.calculate())},
+        addWater: (w :WaterDef) => { dispatch(Actions.addWater(w))},
+        sourceChanged: (idx: number, w: WaterDef) => { dispatch(Actions.changedWater(idx, w))},
+        targetChanged: (w: WaterDef) => { dispatch(Actions.targetChanged(w))},
+        removeSource: (idx: number) => { dispatch(Actions.removeWater(idx))},
+        addSalt: (s: Salt) => { dispatch(Actions.addSalt(s))},
+        saltChanged: (idx: number, s: Salt) => { dispatch(Actions.changedSalt(idx, s))},
+        removeSalt: (idx: number) => { dispatch(Actions.removeSalt(idx))},
     }
 }
 

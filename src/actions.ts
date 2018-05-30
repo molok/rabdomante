@@ -1,23 +1,29 @@
 import {WaterDef} from "./model/index";
 import {Salt} from "./model/index";
+import {ActionUnions, createAction} from "./action-helper";
 
-export const ADD_SOURCE = 'ADD_SOURCE';
-export const CALCULATE = 'CALCULATE';
-export const SOURCE_CHANGED = 'SOURCE_CHANGED';
-export const TARGET_CHANGED = 'TARGET_CHANGED';
-export const REMOVE_SOURCE = 'REMOVE_SOURCE';
-export const SALT_ADD = 'SALT_ADD';
-export const SALT_REMOVE = 'SALT_REMOVE';
-export const SALT_CHANGED = 'SALT_CHANGED';
+export enum ActionTypes {
+    SALT_REMOVE = 'SALT_REMOVE',
+    SALT_ADD = 'SALT_ADD',
+    SALT_CHANGED = 'SALT_CHANGED',
+    WATER_REMOVE = 'WATER_REMOVE',
+    WATER_CHANGED = 'WATER_CHANGED',
+    WATER_ADD = 'WATER_ADD',
+    TARGET_CHANGED = 'TARGET_CHANGED',
+    CALCULATE = 'CALCULATE',
+}
 
-export function targetChanged(water: WaterDef) { return { type: TARGET_CHANGED, payload: water } }
+export const Actions = {
+    removeSalt: (idx: number) => createAction(ActionTypes.SALT_REMOVE, idx),
+    addSalt: (s: Salt) => createAction(ActionTypes.SALT_ADD, s),
+    changedSalt: (idx: number, salt: Salt) => createAction(ActionTypes.SALT_CHANGED, { idx, salt }),
+    addWater: (w: WaterDef) => createAction(ActionTypes.WATER_ADD, w),
+    changedWater: (idx: number, water: WaterDef) => createAction(ActionTypes.WATER_CHANGED, { idx, water }),
+    removeWater: (idx: number) => createAction(ActionTypes.WATER_REMOVE, idx),
 
-export function addSource(w: WaterDef) { return { type: ADD_SOURCE, payload: w } }
-export function sourceChanged(idx: number, water: WaterDef) { return { type: SOURCE_CHANGED, payload: { idx, water } } }
-export function removeSource(idx: number) { return { type: REMOVE_SOURCE, payload: idx}}
+    targetChanged: (water: WaterDef) => createAction(ActionTypes.TARGET_CHANGED, water),
 
-export function addSalt(s: Salt) { return { type: SALT_ADD, payload: s } }
-export function removeSalt(idx: number) { return { type: SALT_REMOVE, payload: idx } }
-export function changedSalt(idx: number, salt: Salt) { return { type: SALT_CHANGED, payload: { idx, salt } } }
+    calculate: () => createAction(ActionTypes.CALCULATE),
+};
 
-export function calculate() { return { type: CALCULATE } }
+export type Actions = ActionUnions<typeof Actions>

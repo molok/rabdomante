@@ -1,38 +1,37 @@
 import * as React from 'react';
-import * as act from '../actions';
 import {Salt, State, WaterDef} from "../model/index";
+import {Actions, ActionTypes} from "../actions";
 
-function saltReducer(salts: Array<Salt>, action: any): Array<Salt> {
+function saltReducer(salts: Array<Salt>, action: Actions): Array<Salt> {
     switch (action.type) {
-        case act.SALT_ADD:
+        case ActionTypes.SALT_REMOVE:
+            return salts.filter((_, idx) => idx !== action.payload);
+        case ActionTypes.SALT_ADD:
             return [...salts, action.payload];
-        case act.SALT_CHANGED:
+        case ActionTypes.SALT_CHANGED:
             return salts.map(
                 (s, i) => i === action.payload.idx ? action.payload.salt : s);
-        case act.SALT_REMOVE:
-            return salts.filter((_, idx) => idx !== action.payload);
         default: return salts;
     }
 }
 
-function targetReducer(target: WaterDef, action: any): WaterDef {
+function targetReducer(target: WaterDef, action: Actions): WaterDef {
     switch (action.type) {
-        case act.TARGET_CHANGED:
+        case ActionTypes.TARGET_CHANGED:
             return action.payload;
         default:
             return target;
     }
 }
 
-function sourceReducer(sources: Array<WaterDef>, action: any): Array<WaterDef> {
+function sourceReducer(sources: Array<WaterDef>, action: Actions): Array<WaterDef> {
     switch ( action.type ) {
-        case act.ADD_SOURCE:
+        case ActionTypes.WATER_ADD:
             return [...sources, action.payload];
-        case act.SOURCE_CHANGED:
+        case ActionTypes.WATER_CHANGED:
             return sources.map(
                 (w, i) => i === action.payload.idx ? action.payload.water : w);
-        case act.REMOVE_SOURCE:
-            console.log('action:', action);
+        case ActionTypes.WATER_REMOVE:
             return sources.filter((_, idx) => idx !== action.payload);
         default:
             return sources;
