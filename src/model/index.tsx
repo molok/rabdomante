@@ -57,9 +57,12 @@ export const defaultSalt = ():Salt => {
     return s;
 };
 
+let customWater: WaterDef = water();
+customWater.custom = false;
+
 export const defaultState =
     {
         target: water("target"),
-        sources: [water()],
+        sources: [customWater],
         salts: [defaultSalt()]
     };

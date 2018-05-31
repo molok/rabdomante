@@ -20,7 +20,6 @@ interface SaltsProps {
 
 function NameOrSelect(props: any) {
     const w = props.w;
-    console.log("w.name:" + w.name);
     if (w.custom) {
         return (
             <>
@@ -43,7 +42,6 @@ function NameOrSelect(props: any) {
 
 class Salts extends Component<SaltsProps, {}> {
     render() {
-        console.log('salts:', this.props.salts);
         let res = this.props.salts
             .map((s: Salt, idx: number) => this.saltToPanel(idx, s));
 
@@ -64,7 +62,6 @@ class Salts extends Component<SaltsProps, {}> {
     }
 
     saltChanged(idx: number, attrName: string, e: React.ChangeEvent<HTMLInputElement>) {
-        console.log("sourceChanged!");
         e.stopPropagation();
         this.props.saltChanged(idx, {...this.props.salts[idx], [attrName]: e.target.value});
     }
@@ -77,7 +74,6 @@ class Salts extends Component<SaltsProps, {}> {
 
     knownSaltChanged(idx: number, prevSalt: Salt, comboSelection: any): void {
         if (comboSelection == null || comboSelection.value == null) return;
-        console.log("cambiato", idx, comboSelection);
         let x = KNOWN_SALTS[comboSelection.value-1];
         let newSalt:MineralContent = {
             name: x.name,
@@ -92,7 +88,6 @@ class Salts extends Component<SaltsProps, {}> {
     }
 
     saltToPanel(idx: number, s: Salt) {
-        console.log('idx: ', idx, 'salt:', s);
         return <Panel key={idx} eventKey={idx}
                       className="saltPanel"
                       expanded={this.props.salts[idx].visible}
@@ -116,7 +111,7 @@ class Salts extends Component<SaltsProps, {}> {
                                           knownSaltChanged={this.knownSaltChanged.bind(this, idx, s)} />
                         </Col>
                         <MineralInput
-                            label="grammi" symbol=""
+                            label="grammi massimi" symbol="g"
                             value={s.g}
                             onChange={this.attrChanged.bind(this, idx, "g")}
                             editable={true} />

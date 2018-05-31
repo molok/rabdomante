@@ -24,7 +24,7 @@ function NameOrSelect(props: any) {
                          onChange={props.sourceChanged}/>
             </>);
     } else {
-        let options = KNOWN_WATERS.map(x => ({ label: x.name, value: x.id }));
+        let options = KNOWN_WATERS.map((x, idx) => ({ label: x.name, value: idx }));
         return (
             <>
             <Select clearable={false}
@@ -63,7 +63,7 @@ class SourceWaters extends Component<SourceWatersProps, {}> {
     knownWaterChanged(idx: number, prevWater: WaterDef, comboSelection: any): void {
         if (comboSelection == null || comboSelection.value == null) return;
         console.log("cambiato", idx, comboSelection);
-        let x = KNOWN_WATERS[comboSelection.value-1];
+        let x = KNOWN_WATERS[comboSelection.value];
         let newWater = {
             name: x.name,
             ca: x.ca,
@@ -101,7 +101,7 @@ class SourceWaters extends Component<SourceWatersProps, {}> {
                             />
                         </Col>
                         <MineralInput
-                            label="litri" symbol=""
+                            label="litri" symbol="L"
                             value={w.l}
                             onChange={this.attrChanged.bind(this, idx, "l")}
                             editable={true} />

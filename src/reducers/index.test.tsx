@@ -38,3 +38,14 @@ it('typescript is cool', () => {
     console.log(doit({ type: "A", payload: {a: 100}}));
     console.log(doit({ type: "B", payload: {b: 100}}));
 })
+
+it('mapped', () => {
+    type Point = { x: string, y: string};
+    var z : Point["x"] = "foo";
+    console.log(typeof z);
+    // var z: Readonly<Point> = { x: 10, y: 20};
+    // type Stringify<T> = {
+    //     [P in keyof T]: string;
+    // };
+    // console.log(keyof Point);
+})

@@ -29,13 +29,13 @@ class MineralForm extends Component<MineralFormProps, {}> {
                 </FormGroup>
                 <FormGroup>
                     <Row>
-                        <MineralInput label="solfati" symbol="SO4" value={this.props.water.so4}
+                        <MineralInput label="solfati" symbol={"SO\u2084\u00B2\u207B"} value={this.props.water.so4}
                                       onChange={this.props.attrChanged.bind(this.props, "so4")}
                                       editable={this.props.editable}/>
-                        <MineralInput label="cloruro" symbol="Cl" value={this.props.water.cl}
+                        <MineralInput label="cloruro" symbol={"Cl\u207B"} value={this.props.water.cl}
                                       onChange={this.props.attrChanged.bind(this.props, "cl")}
                                       editable={this.props.editable}/>
-                        <MineralInput label="bicarbonati" symbol="HCO3" value={this.props.water.hco3}
+                        <MineralInput label="bicarbonati" symbol={"HCO\u2083\u207B"} value={this.props.water.hco3}
                                       onChange={this.props.attrChanged.bind(this.props, "hco3")}
                                       editable={this.props.editable}/>
                     </Row>
