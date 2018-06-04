@@ -21,6 +21,14 @@ export interface WaterDef extends UiMineralContent {
     l: number,
 }
 
+export interface Recipe {
+    waters: [WaterDef],
+    salts: [Salt],
+    distance: number,
+    completed: boolean
+}
+
+
 export function water(name: string = "",
                       l: number = 0,
                       ca: number = 0,
@@ -36,9 +44,10 @@ export function water(name: string = "",
 }
 
 export interface State {
-    readonly target: WaterDef;
+    readonly target: WaterDef
     readonly sources: Array<WaterDef>
     readonly salts: Array<Salt>
+    readonly result: { recipe: Recipe|null, error: string|null }
 }
 
 export const defaultSalt = ():Salt => {

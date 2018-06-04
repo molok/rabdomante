@@ -38,12 +38,27 @@ function sourceReducer(sources: Array<WaterDef>, action: Actions): Array<WaterDe
     }
 }
 
+function recipeReducer(state: State, action: Actions): State {
+    switch ( action.type ) {
+        case ActionTypes.FIND_SUCCESS:
+            return {...state, result: { error: null, recipe: action.payload }};
+        case ActionTypes.FIND_FAILURE:
+            return {...state, result: { recipe: null, error: action.payload }};
+        default:
+            return state;
+    }
+}
+
 function coreReducer(state: State, action: any): State {
     console.log("action", action, "state before:", state);
-    const nextState= {
+    var nextState = {
         sources: sourceReducer(state.sources, action),
         target: targetReducer(state.target, action),
-        salts: saltReducer(state.salts, action)
+        salts: saltReducer(state.salts, action),
+        ...state
+    };
+    nextState = {
+        ...recipeReducer(nextState, action)
     };
     console.log("state after", nextState);
     return nextState;

@@ -14,7 +14,7 @@ interface RabdoProps {
     target: WaterDef
     sources: Array<WaterDef>
     salts: Array<Salt>
-    submit: () => void
+    findRecipe: () => void
     addWater: (w: WaterDef) => void
     sourceChanged: (idx: number, w: WaterDef) => void
     targetChanged: (w: WaterDef) => void
@@ -42,15 +42,16 @@ class XRabdo extends Component<RabdoProps, {}> {
                     </FormGroup>
 
                     <FormGroup>
-                        {/*<RenderSalts salts={this.props.salts} saltChanged={this.saltsChanged.bind(this)} />*/}
-                    </FormGroup>
-
-                    <FormGroup>
-                        <Button type="submit" bsStyle="primary" ><Glyphicon glyph="play"/> Calcola la combinazione migliore</Button>
+                        <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> la combinazione migliore</Button>
                     </FormGroup>
                 </Form>
             </div>
         )
+    }
+
+    findRecipe(e: any) {
+        e.preventDefault();
+        this.props.findRecipe();
     }
 
     addSalt(e: any) {
@@ -83,11 +84,6 @@ class XRabdo extends Component<RabdoProps, {}> {
         w.custom = false;
         this.props.addWater(w);
     }
-    // saltsChanged(e: any) {
-    //     console.log("event:", e);
-    //     let salts = e.map((sel: any) => sel.value);
-    //     this.props.saltSelectionChanged(salts);
-    // }
 }
 
 function mapStateToProps (state: State) {
@@ -95,7 +91,6 @@ function mapStateToProps (state: State) {
 }
 function mapDispatchToProps (dispatch: Function) {
     return {
-        submit: () => { dispatch(Actions.calculate())},
         addWater: (w :WaterDef) => { dispatch(Actions.addWater(w))},
         sourceChanged: (idx: number, w: WaterDef) => { dispatch(Actions.changedWater(idx, w))},
         targetChanged: (w: WaterDef) => { dispatch(Actions.targetChanged(w))},
@@ -103,6 +98,7 @@ function mapDispatchToProps (dispatch: Function) {
         addSalt: (s: Salt) => { dispatch(Actions.addSalt(s))},
         saltChanged: (idx: number, s: Salt) => { dispatch(Actions.changedSalt(idx, s))},
         removeSalt: (idx: number) => { dispatch(Actions.removeSalt(idx))},
+        findRecipe: () => { dispatch(Actions.findRecipe())}
     }
 }
 

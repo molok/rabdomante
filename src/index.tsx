@@ -1,13 +1,18 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import './index.css';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware } from 'redux';
 import {Provider} from 'react-redux';
 import Rabdo from "./containers/Rabdo";
 import {defaultState} from "./model";
 import {reducers} from "./reducers";
+import thunk from 'redux-thunk';
 
-let store = createStore(reducers, defaultState);
+let store = createStore(
+    reducers,
+    defaultState,
+    applyMiddleware(thunk)
+);
 
 function render() {
     ReactDOM.render(

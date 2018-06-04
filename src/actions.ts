@@ -1,6 +1,6 @@
-import {WaterDef} from "./model/index";
+import {defaultSalt, Recipe, State, water, WaterDef} from "./model/index";
 import {Salt} from "./model/index";
-import {ActionUnions, createAction} from "./action-helper";
+import {ActionUnions, createAction, Action} from "./action-helper";
 
 export enum ActionTypes {
     SALT_REMOVE = 'SALT_REMOVE',
@@ -10,7 +10,8 @@ export enum ActionTypes {
     WATER_CHANGED = 'WATER_CHANGED',
     WATER_ADD = 'WATER_ADD',
     TARGET_CHANGED = 'TARGET_CHANGED',
-    CALCULATE = 'CALCULATE',
+    FIND_SUCCESS = 'FIND_SUCCESS',
+    FIND_FAILURE = 'FIND_FAILURE',
 }
 
 export const Actions = {
@@ -23,7 +24,8 @@ export const Actions = {
 
     targetChanged: (water: WaterDef) => createAction(ActionTypes.TARGET_CHANGED, water),
 
-    calculate: () => createAction(ActionTypes.CALCULATE),
+    findRecipeSuccess: (recipe: Recipe) => createAction(ActionTypes.FIND_SUCCESS, recipe),
+    findRecipeFailure: (error: string) => createAction(ActionTypes.FIND_FAILURE, error)
 };
 
 export type Actions = ActionUnions<typeof Actions>
