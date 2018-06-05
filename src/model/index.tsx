@@ -36,7 +36,7 @@ export interface RecipeUi {
 }
 
 export function water(name: string = "",
-                      l: number = 0,
+                      l: number = 1,
                       ca: number = 0,
                       mg: number = 0,
                       na: number = 0,
@@ -49,17 +49,23 @@ export function water(name: string = "",
     return {name, l: l, ca, mg, na, so4, cl, hco3, visible, custom}
 }
 
+export interface Result {
+    solution: CalcResultUi|null,
+    error: string|null,
+    shouldScrollHere: boolean|null
+}
+
 export interface State {
     readonly target: WaterUi
     readonly sources: Array<WaterUi>
     readonly salts: Array<SaltUi>
-    readonly result: { solution: CalcResultUi|null, error: string|null }
+    readonly result: Result
 }
 
 export const defaultSalt = ():SaltUi => {
     let s:SaltUi = {
         name: "",
-        dg: 0,
+        dg: 1,
         ca: 0,
         mg: 0,
         na: 0,
@@ -72,13 +78,10 @@ export const defaultSalt = ():SaltUi => {
     return s;
 };
 
-let customWater: WaterUi = water();
-customWater.custom = false;
-
 export const defaultState:State =
     {
-        target: water("target"),
-        sources: [customWater],
-        salts: [defaultSalt()],
-        result: { solution: null, error: null }
+        target: { ...water("target"), l:1 },
+        sources: [{...water(), custom: false, l:1}],
+        salts: [{...defaultSalt(), dg:1}],
+        result: { solution: null, error: null, shouldScrollHere: false }
     };

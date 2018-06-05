@@ -14,6 +14,7 @@ export enum ActionTypes {
     FIND_FAILURE = 'FIND_FAILURE',
     SOLUTION_WATER_CHANGED = 'SOLUTION_WATER_CHANGED',
     SOLUTION_SALT_CHANGED = 'SOLUTION_SALT_CHANGED',
+    TOGGLE_SCROLL_TO_SOLUTION = 'TOGGLE_SCROLL_TO_SOLUTION',
 }
 
 export const Actions = {
@@ -31,6 +32,7 @@ export const Actions = {
 
     solutionWaterChanged: (idx: number, water: WaterUi) => createAction(ActionTypes.SOLUTION_WATER_CHANGED, { idx, water }),
     solutionSaltChanged: (idx: number, salt: SaltUi) => createAction(ActionTypes.SOLUTION_SALT_CHANGED, { idx, salt }),
+    toggleScrollToSolution: () => createAction(ActionTypes.TOGGLE_SCROLL_TO_SOLUTION)
 };
 
 export type Actions = ActionUnions<typeof Actions>

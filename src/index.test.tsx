@@ -38,7 +38,7 @@ it('solution waters', () => {
                     distance: 0
                 },
                 searchCompleted: true
-              }, error: null }
+              }, error: null, shouldScrollHere: false }
         };
     const store = createStore(reducers, defaultState)
     const component = mount(<Rabdo/>, { context: { store } });

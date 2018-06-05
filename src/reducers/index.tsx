@@ -10,7 +10,10 @@ function saltReducer(salts: Array<SaltUi>, action: Actions): Array<SaltUi> {
             return [...salts, action.payload];
         case ActionTypes.SALT_CHANGED:
             return salts.map(
-                (s, i) => i === action.payload.idx ? action.payload.salt : s);
+                (s, i) =>
+                    i === action.payload.idx
+                    ? action.payload.salt
+                    : s);
         default: return salts;
     }
 }
@@ -40,10 +43,19 @@ function sourceReducer(sources: Array<WaterUi>, action: Actions): Array<WaterUi>
 
 function recipeReducer(state: State, action: Actions): State {
     switch ( action.type ) {
+        case ActionTypes.TOGGLE_SCROLL_TO_SOLUTION:
+            return {...state, result: {...state.result, shouldScrollHere: state.result.shouldScrollHere ? false : true}};
         case ActionTypes.FIND_SUCCESS:
-            return {...state, result: { error: null, solution: action.payload }};
+            return {
+                ...state,
+                result: {
+                    ...state.result,
+                    error: null,
+                    solution: action.payload ,
+                    shouldScrollHere: true
+                }};
         case ActionTypes.FIND_FAILURE:
-            return {...state, result: { error: action.payload, solution: null }};
+            return {...state, result: { ...state.result, error: action.payload, solution: null }};
         case ActionTypes.SOLUTION_SALT_CHANGED:
             if (state.result.solution && state.result.solution.recipe) {
                 return {

@@ -13,8 +13,8 @@ enzyme.configure({ adapter: new Adapter() });
 
 
 it('target', () => {
-    let start = water("mytarget");
-    const targetChanged = (w: WaterUi) => { console.log("ricevuto ", w)};
-    let wrapper = shallow(<TargetWater target={start} targetChanged={targetChanged}/>);
+    // let start = water("mytarget");
+    // const targetChanged = (w: WaterUi) => { console.log("ricevuto ", w)};
+    // let wrapper = shallow(<TargetWater target={start} targetChanged={targetChanged}/>);
     // wrappter
 });

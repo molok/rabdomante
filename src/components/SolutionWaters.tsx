@@ -29,14 +29,16 @@ export class SolutionWaters extends Component<WatersProps, {}> {
     }
 
     private waterToPanel(idx: number, w: WaterUi) {
-        console.log("solWater", idx, w);
+        let qty = (w.l >= 0 ? w.l + "L " : "");
         return <Panel key={idx} eventKey={idx}
-                      className="waterPanel"
+                      className="waterPanel panel-success"
                       expanded={this.props.waters[idx].visible}
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><Glyphicon glyph="tint"/> {w.name || "Acqua base #" + (idx + 1)}</Panel.Title>
+                <Panel.Title toggle className="clearfix">
+                    <Glyphicon glyph="tint"/> {qty + w.name}
+                </Panel.Title>
             </Panel.Heading>
             <Panel.Body collapsible>
                 <FormGroup>

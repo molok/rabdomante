@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {State, water, SaltUi, WaterUi, CalcResult, Water, Salt, RecipeUi, CalcResultUi} from "../model/index";
+import {State, water, SaltUi, WaterUi, CalcResult, Water, Salt, RecipeUi, CalcResultUi, Result} from "../model/index";
 import {connect} from "react-redux";
 import {Button, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
 import './Rabdo.css'
@@ -12,12 +12,13 @@ import Salts from "../components/Salts";
 import {asyncFindRecipe} from "../Api";
 import {SolutionWaters} from "../components/SolutionWaters";
 import {SolutionSalts} from "../components/SolutionSalts";
+import {BottomAnchor} from "../components/BottomAnchor";
 
 interface RabdoProps {
     target: WaterUi
     sources: Array<WaterUi>
     salts: Array<SaltUi>
-    result: { solution: CalcResultUi|null, error: string|null }
+    result: Result
     findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => void
     addWater: (w: WaterUi) => void
     sourceChanged: (idx: number, w: WaterUi) => void
@@ -28,10 +29,11 @@ interface RabdoProps {
     removeSalt: (idx: number) => void
     resultWaterChanged: (idx: number, w: WaterUi) => void
     resultSaltChanged: (idx: number, s: SaltUi) => void
+    toggleScrollToSolution: () => void
 }
 
-export const wToUi = (w: Water): WaterUi => { return {...w, visible: true, custom: true} };
-export const sToUi = (s: Salt): SaltUi => { return {...s, visible: true, custom: true} };
+export const wToUi = (w: Water): WaterUi => { return {...w, visible: false, custom: true} };
+export const sToUi = (s: Salt): SaltUi => { return {...s, visible: false, custom: true} };
 
 class XRabdo extends Component<RabdoProps, {}> {
     renderSolution(solution: CalcResultUi) {
@@ -43,6 +45,11 @@ class XRabdo extends Component<RabdoProps, {}> {
         )
     }
 
+    validLiters(): boolean {
+        return (this.props.sources.map(w => w.l).reduce((a, b) => a+b))
+               >= this.props.target.l;
+    }
+
     render() {
         let resultComponent = this.props.result.solution ? (<>{this.renderSolution(this.props.result.solution)}</>) : (<></>);
 
@@ -51,10 +58,10 @@ class XRabdo extends Component<RabdoProps, {}> {
                 <PageHeader className={"text-center"}>Rabdomante <small>Water Profile Calculator</small></PageHeader>
                 <Form horizontal>
                     <FormGroup>
-                        <TargetWater target={this.props.target} targetChanged={this.props.targetChanged}/>
+                        <TargetWater target={this.props.target} targetChanged={this.props.targetChanged} enoughLiters={this.validLiters()}/>
                     </FormGroup>
                     <FormGroup>
-                        <Waters waters={this.props.sources} removeWater={this.props.removeSource} changedWater={this.props.sourceChanged}/>
+                        <Waters waters={this.props.sources} removeWater={this.props.removeSource} changedWater={this.props.sourceChanged} enoughLiters={this.validLiters()} />
                         <Salts salts={this.props.salts} removeSalt={this.props.removeSalt} saltChanged={this.props.saltChanged} />
                         <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> <Glyphicon glyph="list"/></Button>
                         <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> <Glyphicon glyph="pencil"/></Button>
@@ -67,6 +74,7 @@ class XRabdo extends Component<RabdoProps, {}> {
 
                     <FormGroup>
                         {resultComponent}
+                        <BottomAnchor toggleScroll={this.props.toggleScrollToSolution} shouldScrollToBottom={this.props.result.shouldScrollHere}/>
                     </FormGroup>
                 </Form>
             </div>
@@ -134,7 +142,7 @@ function mapDispatchToProps (dispatch: Function) {
                                     salts: (result.recipe) ? result.recipe.salts.map(s => sToUi(s)) : [],
                                     distance: (result.recipe) ? result.recipe.distance : 0
                                 },
-                                searchCompleted: result.searchCompleted
+                                searchCompleted: result.searchCompleted,
                             }));
                     } else {
                         dispatch(Actions.findRecipeFailure("No solution found!"));
@@ -144,6 +152,7 @@ function mapDispatchToProps (dispatch: Function) {
         },
         resultWaterChanged: (idx: number, w: WaterUi) => { dispatch(Actions.solutionWaterChanged(idx, w))},
         resultSaltChanged: (idx: number, s: SaltUi) => { dispatch(Actions.solutionSaltChanged(idx, s))},
+        toggleScrollToSolution: () => { dispatch(Actions.toggleScrollToSolution())}
     }
 }
 

@@ -11,6 +11,7 @@ interface WatersProps {
     waters: Array<WaterUi>
     removeWater: (idx: number) => void
     changedWater: (idx: number, w: WaterUi) => void
+    enoughLiters: boolean
 }
 
 function NameOrSelect(props: any) {
@@ -76,17 +77,18 @@ class Waters extends Component<WatersProps, {}> {
     }
 
     private waterToPanel(idx: number, w: WaterUi) {
+        let qty = (w.l >= 0 ? w.l + "L " : "");
         return <Panel key={idx} eventKey={idx}
-                      className="waterPanel"
+                      className={"waterPanel" + (this.props.enoughLiters ? "" : " panel-warning")}
                       expanded={this.props.waters[idx].visible}
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><Glyphicon glyph="tint"/> {w.name || "Acqua base #" + (idx + 1)}
+                <Panel.Title toggle className="clearfix">
+                    <Glyphicon glyph="tint"/> {qty + (w.name || "Acqua base #" + (idx + 1))}
                     <span className={"pull-right"}>
-                                <Button bsSize="xsmall" onClick={this.removeSource.bind(this, idx)}><Glyphicon
-                                    glyph="remove"/></Button>
-                            </span>
+                        <Button bsSize="xsmall" onClick={this.removeSource.bind(this, idx)}><Glyphicon glyph="remove"/></Button>
+                    </span>
                 </Panel.Title>
             </Panel.Heading>
             <Panel.Body collapsible>
@@ -99,11 +101,13 @@ class Waters extends Component<WatersProps, {}> {
                                           knownWaterChanged={this.knownWaterChanged.bind(this, idx, w)}
                             />
                         </Col>
+                        <div className={this.props.enoughLiters ? "" : "has-warning"}>
                         <MineralInput
                             label="litri" symbol="L"
                             value={w.l}
                             onChange={this.attrChanged.bind(this, idx, "l")}
                             editable={true} />
+                        </div>
                     </Row>
                 </FormGroup>
                 <MineralForm water={w} attrChanged={this.attrChanged.bind(this, idx)} editable={w.custom}/>

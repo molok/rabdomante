@@ -88,13 +88,14 @@ class Salts extends Component<SaltsProps, {}> {
     }
 
     saltToPanel(idx: number, s: SaltUi) {
+        let qty = (s.dg >= 0 ? s.dg + "g " : "");
         return <Panel key={idx} eventKey={idx}
                       className="saltPanel"
                       expanded={this.props.salts[idx].visible}
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><Glyphicon glyph="unchecked"/> {s.name || "Salt #" + (idx + 1)}
+                <Panel.Title toggle className="clearfix"><Glyphicon glyph="unchecked"/> {qty + (s.name || "Salt #" + (idx + 1))}
                     <span className={"pull-right"}>
                                 <Button bsSize="xsmall" onClick={this.removeSalt.bind(this, idx)}><Glyphicon
                                     glyph="remove"/></Button>

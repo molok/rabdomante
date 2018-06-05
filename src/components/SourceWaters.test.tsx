@@ -13,6 +13,6 @@ it('sources', () => {
     let sources: Array<WaterUi> = [ water("water1"), water("water2") ];
     const removeSources = (idx: number) => {};
     const sourceChanged = (idx: number, w:WaterUi) => {};
-    let wrapper = shallow(<Waters waters={sources} removeWater={removeSources} changedWater={sourceChanged}/>);
+    let wrapper = shallow(<Waters waters={sources} removeWater={removeSources} changedWater={sourceChanged} enoughLiters={true}/>);
     expect(wrapper.find('.waterPanel')).toHaveLength(2);
 });

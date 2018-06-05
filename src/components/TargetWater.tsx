@@ -6,20 +6,22 @@ import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
 
 interface TargetWaterProps {
-    target: WaterUi
-    targetChanged: (w: WaterUi) => void
+    target: WaterUi,
+    targetChanged: (w: WaterUi) => void,
+    enoughLiters: boolean
 }
 
 class TargetWater extends Component<TargetWaterProps, {}> {
     render() {
+        let qty = (this.props.target.l >= 0 ? this.props.target.l + "L " : "");
         return (
             <PanelGroup id="target_water">
-            <Panel>
+            <Panel className={this.props.enoughLiters ? "" : "panel-danger"}>
                 <Panel.Heading>
-                    <Panel.Title ><Glyphicon glyph="flag"/> Obiettivo</Panel.Title>
+                    <Panel.Title ><Glyphicon glyph="flag"/> {qty + "Obiettivo"}</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body>
-                    <FormGroup>
+                    <FormGroup className={this.props.enoughLiters ? "" : "has-error"}>
                         <Row>
                             <MineralInput
                                 label="litri" symbol="L"
