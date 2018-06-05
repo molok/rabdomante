@@ -15,13 +15,24 @@ export interface SaltUi extends UiIngredient, Salt { }
 export interface WaterUi extends UiIngredient, Water { }
 
 export interface CalcResult {
-    recipe: Recipe,
-    searchCompleted: boolean
+    readonly recipe: Recipe,
+    readonly searchCompleted: boolean
+}
+
+export interface CalcResultUi {
+    readonly recipe: RecipeUi,
+    readonly searchCompleted: boolean
 }
 export interface Recipe {
-    waters: [Water],
-    salts: [Salt],
-    distance: number,
+    readonly waters: Array<Water>,
+    readonly salts: Array<Salt>
+    readonly distance: number,
+}
+
+export interface RecipeUi {
+    readonly waters: Array<WaterUi>,
+    readonly salts: Array<SaltUi>
+    readonly distance: number,
 }
 
 export function water(name: string = "",
@@ -42,7 +53,7 @@ export interface State {
     readonly target: WaterUi
     readonly sources: Array<WaterUi>
     readonly salts: Array<SaltUi>
-    readonly result: { solution: CalcResult|null, error: string|null }
+    readonly result: { solution: CalcResultUi|null, error: string|null }
 }
 
 export const defaultSalt = ():SaltUi => {
@@ -64,9 +75,10 @@ export const defaultSalt = ():SaltUi => {
 let customWater: WaterUi = water();
 customWater.custom = false;
 
-export const defaultState =
+export const defaultState:State =
     {
         target: water("target"),
         sources: [customWater],
-        salts: [defaultSalt()]
+        salts: [defaultSalt()],
+        result: { solution: null, error: null }
     };

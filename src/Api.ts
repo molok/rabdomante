@@ -11,7 +11,9 @@ interface WSInput {
     salts: Array<WsSalt>
 }
 
-interface WSSolution extends CalcResult {
+interface WSSolution {
+    readonly recipe: Recipe,
+    readonly searchCompleted: boolean
 }
 
 interface WSResponse {
@@ -53,16 +55,13 @@ const toWsInput = (waters: Array<Water>, salts: Array<Salt>, target: Water) => {
     };
 };
 
-export const asyncFindRecipe = (waters: Array<Water>, salts: Array<Salt>, target: Water):Promise<WSSolution> => {
+export const asyncFindRecipe = (waters: Array<Water>, salts: Array<Salt>, target: Water):Promise<CalcResult> => {
     let input: WSInput = toWsInput(waters, salts, target);
     console.log("wsinput:", input);
     return fetch('https://m1ust5mpoa.execute-api.eu-west-1.amazonaws.com/Prod/calc', {
         body: JSON.stringify(input),
         method: 'POST',
         })
-        .then(resp => {console.log("XXX:", resp); return resp;})
         .then(resp => resp.text())
-        .then(resp => {console.log("resp:", resp); return resp;})
         .then(txt => JSON.parse(txt).output)
-        .catch((err) => console.log("err:", err))
 };

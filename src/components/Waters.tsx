@@ -7,21 +7,20 @@ import MineralInput from "./MineralInput";
 import Select from 'react-select';
 import KNOWN_WATERS from '../data/known_waters'
 
-interface SourceWatersProps {
-    sources: Array<WaterUi>
-    removeSource: (idx: number) => void
-    sourceChanged: (idx: number, w: WaterUi) => void
+interface WatersProps {
+    waters: Array<WaterUi>
+    removeWater: (idx: number) => void
+    changedWater: (idx: number, w: WaterUi) => void
 }
 
 function NameOrSelect(props: any) {
     const w = props.w;
-    console.log("w.name:" + w.name);
     if (w.custom) {
         return (
             <>
             <FormControl name="name" bsSize="small" type="text" placeholder=""
                          value={w.name}
-                         onChange={props.sourceChanged}/>
+                         onChange={props.changedWater}/>
             </>);
     } else {
         let options = KNOWN_WATERS.map((x, idx) => ({ label: x.name, value: idx }));
@@ -36,21 +35,21 @@ function NameOrSelect(props: any) {
     }
 }
 
-class SourceWaters extends Component<SourceWatersProps, {}> {
+class Waters extends Component<WatersProps, {}> {
     sourceChanged(idx: number, attrName: string, e: React.ChangeEvent<HTMLInputElement>) {
-        console.log("sourceChanged!");
+        console.log("changedWater!");
         e.stopPropagation();
-        this.props.sourceChanged(idx, {...this.props.sources[idx], [attrName]: e.target.value});
+        this.props.changedWater(idx, {...this.props.waters[idx], [attrName]: e.target.value});
     }
 
     removeSource(idx: number, e: any) {
         e.preventDefault();
         e.stopPropagation();
-        this.props.removeSource(idx);
+        this.props.removeWater(idx);
     }
 
     render() {
-        let res = this.props.sources
+        let res = this.props.waters
             .map((w: WaterUi, idx: number) => this.waterToPanel(idx, w));
 
         return (
@@ -73,13 +72,13 @@ class SourceWaters extends Component<SourceWatersProps, {}> {
             cl: x.cl,
             hco3: x.hco3
         };
-        this.props.sourceChanged(idx, {...prevWater, ...newWater});
+        this.props.changedWater(idx, {...prevWater, ...newWater});
     }
 
     private waterToPanel(idx: number, w: WaterUi) {
         return <Panel key={idx} eventKey={idx}
                       className="waterPanel"
-                      expanded={this.props.sources[idx].visible}
+                      expanded={this.props.waters[idx].visible}
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
@@ -113,13 +112,13 @@ class SourceWaters extends Component<SourceWatersProps, {}> {
     }
 
     attrChanged(idx: number, attrName: string, value: any) {
-        this.props.sourceChanged(idx, {...this.props.sources[idx], [attrName]: value});
+        this.props.changedWater(idx, {...this.props.waters[idx], [attrName]: value});
     }
 
     togglePanel(idx: number, e: any) {
         e.preventDefault();
-        this.attrChanged(idx, "visible", !this.props.sources[idx].visible);
+        this.attrChanged(idx, "visible", !this.props.waters[idx].visible);
     }
 }
 
-export default SourceWaters;
+export default Waters;

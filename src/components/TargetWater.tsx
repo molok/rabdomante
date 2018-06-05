@@ -13,30 +13,30 @@ interface TargetWaterProps {
 class TargetWater extends Component<TargetWaterProps, {}> {
     render() {
         return (
+            <PanelGroup id="target_water">
             <Panel>
                 <Panel.Heading>
                     <Panel.Title ><Glyphicon glyph="flag"/> Obiettivo</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body>
                     <FormGroup>
-                        <FormGroup>
-                            <Row>
-                                <MineralInput
-                                    label="litri" symbol="L"
-                                    value={this.props.target.l}
-                                    onChange={this.targetChanged.bind(this, "l")}
-                                    editable={true}
-                                />
-                            </Row>
-                        </FormGroup>
-                        <MineralForm
-                            water={this.props.target}
-                            attrChanged={this.targetChanged.bind(this)}
-                            editable={true}
-                        />
+                        <Row>
+                            <MineralInput
+                                label="litri" symbol="L"
+                                value={this.props.target.l}
+                                onChange={this.targetChanged.bind(this, "l")}
+                                editable={true}
+                            />
+                        </Row>
                     </FormGroup>
+                    <MineralForm
+                        water={this.props.target}
+                        attrChanged={this.targetChanged.bind(this)}
+                        editable={true}
+                    />
                 </Panel.Body>
             </Panel>
+        </PanelGroup>
         )
     }
 

@@ -44,6 +44,38 @@ function recipeReducer(state: State, action: Actions): State {
             return {...state, result: { error: null, solution: action.payload }};
         case ActionTypes.FIND_FAILURE:
             return {...state, result: { error: action.payload, solution: null }};
+        case ActionTypes.SOLUTION_SALT_CHANGED:
+            if (state.result.solution && state.result.solution.recipe) {
+                return {
+                    ...state,
+                    result: {
+                        ...state.result,
+                        solution: {
+                            ...state.result.solution,
+                            recipe: {
+                                ...state.result.solution.recipe,
+                                salts: [
+                                    ...state.result.solution.recipe.salts.map(
+                                        (w, i) => i === action.payload.idx ? action.payload.salt : w )]}}}}
+            } else {
+                return state;
+            }
+        case ActionTypes.SOLUTION_WATER_CHANGED:
+            if (state.result.solution && state.result.solution.recipe) {
+               return {
+                   ...state,
+                   result: {
+                       ...state.result,
+                       solution: {
+                           ...state.result.solution,
+                           recipe: {
+                               ...state.result.solution.recipe,
+                               waters: [
+                                   ...state.result.solution.recipe.waters.map(
+                                   (w, i) => i === action.payload.idx ? action.payload.water : w )]}}}}
+            } else {
+                return state;
+            }
         default:
             return state;
     }
@@ -61,6 +93,7 @@ function coreReducer(state: State, action: any): State {
         ...nextState,
         ...recipeReducer(nextState, action)
     };
+
     console.log("state after", nextState);
     return nextState;
 }

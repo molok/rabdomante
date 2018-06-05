@@ -6,12 +6,10 @@ import {Provider} from 'react-redux';
 import Rabdo from "./containers/Rabdo";
 import {defaultState} from "./model";
 import {reducers} from "./reducers";
-import thunk from 'redux-thunk';
 
 let store = createStore(
     reducers,
-    defaultState,
-    applyMiddleware(thunk)
+    defaultState
 );
 
 function render() {
