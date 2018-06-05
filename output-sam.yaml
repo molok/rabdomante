@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Serverless Rabdomante API
+Outputs:
+  RabdomanteApi:
+    Description: Rabdomante Api
+    Export:
+      Name: rabdomante-api
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/prod/calc
+Resources:
+  MyServiceFunction:
+    Properties:
+      CodeUri: s3://rabdo/9efd621604f00c3aaf56b3fce413639b
+      Events:
+        GetResource:
+          Properties:
+            Method: any
+            Path: /{proxy+}
+          Type: Api
+      Handler: alebolo.rabdomante.ws.StreamLambdaHandler::handleRequest
+      MemorySize: 512
+      Policies: AWSLambdaBasicExecutionRole
+      Runtime: java8
+      Timeout: 70
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31

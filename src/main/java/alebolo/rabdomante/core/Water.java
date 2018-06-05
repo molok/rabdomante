@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class Water extends WaterProfile {
-    public final int liters;
-    public Water(WaterProfile profile, int liters) {
-        this(profile.ca, profile.mg, profile.na, profile.so4, profile.cl, profile.hco3, profile.name, liters);
+    public final int l;
+    public Water(WaterProfile profile, int l) {
+        this(profile.ca, profile.mg, profile.na, profile.so4, profile.cl, profile.hco3, profile.name, l);
     }
     public Water(
             @JsonProperty(value = "ca", required = true)   int ca,
@@ -17,9 +17,9 @@ public class Water extends WaterProfile {
             @JsonProperty(value = "cl", required = true)   int cl,
             @JsonProperty(value = "hco3", required = true) int hco3,
             @JsonProperty(value = "name", required = true) String name,
-            @JsonProperty(value = "l", required = true)    int liters) {
+            @JsonProperty(value = "l", required = true)    int l) {
         super(name, ca, mg, na, so4, cl, hco3);
-        this.liters = liters;
+        this.l = l;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Water extends WaterProfile {
                 ", cl=" + cl +
                 ", hco3=" + hco3 +
                 ", name='" + name + '\'' +
-                ", liters=" + liters +
+                ", l=" + l +
                 '}';
     }
 
@@ -42,11 +42,11 @@ public class Water extends WaterProfile {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Water water = (Water) o;
-        return liters == water.liters;
+        return l == water.l;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), liters);
+        return Objects.hash(super.hashCode(), l);
     }
 }

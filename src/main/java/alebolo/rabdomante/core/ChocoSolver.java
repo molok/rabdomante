@@ -44,7 +44,7 @@ public class ChocoSolver implements WaterSolver {
 
         Model model = new Model("waterModel");
 
-        int targetLiters = target.liters;
+        int targetLiters = target.l;
 
         Map<WaterProfile, IntVar> waterVars = waterVars(model, availableWaters, targetLiters);
         Map<SaltProfile, IntVar> saltVars = saltVars(model, availableSalts, target);
@@ -133,12 +133,12 @@ public class ChocoSolver implements WaterSolver {
            il valore massimo di sodio */
         return Math.min
                 ( s.dg, Stream.of(
-                                ( s.ca == 0 ? 0 : ((target.ca * target.liters) / s.ca) * 2),
-                                ( s.mg == 0 ? 0 : ((target.mg * target.liters) / s.mg) * 2),
-                                ( s.na == 0 ? 0 : ((target.na * target.liters) / s.na) * 2),
-                                ( s.so4 == 0 ? 0 : ((target.so4 * target.liters) / s.so4) * 2),
-                                ( s.cl == 0 ? 0 : ((target.cl * target.liters) / s.cl) * 2),
-                                ( s.hco3 == 0 ? 0 : ((target.hco3 * target.liters) / s.hco3) * 2))
+                                ( s.ca == 0 ? 0 : ((target.ca * target.l) / s.ca) * 2),
+                                ( s.mg == 0 ? 0 : ((target.mg * target.l) / s.mg) * 2),
+                                ( s.na == 0 ? 0 : ((target.na * target.l) / s.na) * 2),
+                                ( s.so4 == 0 ? 0 : ((target.so4 * target.l) / s.so4) * 2),
+                                ( s.cl == 0 ? 0 : ((target.cl * target.l) / s.cl) * 2),
+                                ( s.hco3 == 0 ? 0 : ((target.hco3 * target.l) / s.hco3) * 2))
                         .mapToInt(i -> i).max().getAsInt());
     }
 
@@ -146,7 +146,7 @@ public class ChocoSolver implements WaterSolver {
         Map<WaterProfile, IntVar> waterVars = new HashMap<>();
         waters.stream()
                 .map(w -> new HashMap.SimpleImmutableEntry<>
-                        (w, model.intVar(w.name + " (L)", range(Math.min(targetLiters, w.liters), 10))))
+                        (w, model.intVar(w.name + " (L)", range(Math.min(targetLiters, w.l), 10))))
                 .forEach(e -> waterVars.put(e.getKey(), e.getValue()));
         return waterVars;
     }
