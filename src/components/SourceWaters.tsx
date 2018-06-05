@@ -1,16 +1,16 @@
 import * as React from 'react';
 import {Component} from 'react';
 import {Button, Col, ControlLabel, FormControl, FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
-import {WaterDef} from "../model/index";
+import {WaterUi} from "../model/index";
 import MineralForm from "./MineralForm";
 import MineralInput from "./MineralInput";
 import Select from 'react-select';
 import KNOWN_WATERS from '../data/known_waters'
 
 interface SourceWatersProps {
-    sources: Array<WaterDef>
+    sources: Array<WaterUi>
     removeSource: (idx: number) => void
-    sourceChanged: (idx: number, w: WaterDef) => void
+    sourceChanged: (idx: number, w: WaterUi) => void
 }
 
 function NameOrSelect(props: any) {
@@ -51,7 +51,7 @@ class SourceWaters extends Component<SourceWatersProps, {}> {
 
     render() {
         let res = this.props.sources
-            .map((w: WaterDef, idx: number) => this.waterToPanel(idx, w));
+            .map((w: WaterUi, idx: number) => this.waterToPanel(idx, w));
 
         return (
             <PanelGroup id="source_waters">
@@ -60,7 +60,7 @@ class SourceWaters extends Component<SourceWatersProps, {}> {
         );
     }
 
-    knownWaterChanged(idx: number, prevWater: WaterDef, comboSelection: any): void {
+    knownWaterChanged(idx: number, prevWater: WaterUi, comboSelection: any): void {
         if (comboSelection == null || comboSelection.value == null) return;
         console.log("cambiato", idx, comboSelection);
         let x = KNOWN_WATERS[comboSelection.value];
@@ -76,7 +76,7 @@ class SourceWaters extends Component<SourceWatersProps, {}> {
         this.props.sourceChanged(idx, {...prevWater, ...newWater});
     }
 
-    private waterToPanel(idx: number, w: WaterDef) {
+    private waterToPanel(idx: number, w: WaterUi) {
         return <Panel key={idx} eventKey={idx}
                       className="waterPanel"
                       expanded={this.props.sources[idx].visible}

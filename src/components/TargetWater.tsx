@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {Component} from 'react';
 import {FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
-import {WaterDef} from "../model/index";
+import {WaterUi} from "../model/index";
 import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
 
 interface TargetWaterProps {
-    target: WaterDef
-    targetChanged: (w: WaterDef) => void
+    target: WaterUi
+    targetChanged: (w: WaterUi) => void
 }
 
 class TargetWater extends Component<TargetWaterProps, {}> {

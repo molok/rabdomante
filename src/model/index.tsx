@@ -8,26 +8,21 @@ export interface MineralContent {
     hco3: number,
 }
 
-export interface UiMineralContent extends MineralContent {
-    visible: boolean,
-    custom: boolean
-}
+export interface UiIngredient { visible: boolean, custom: boolean }
+export interface Salt extends MineralContent { dg: number }
+export interface Water extends MineralContent { l: number }
+export interface SaltUi extends UiIngredient, Salt { }
+export interface WaterUi extends UiIngredient, Water { }
 
-export interface Salt extends UiMineralContent {
-    g: number
+export interface CalcResult {
+    recipe: Recipe,
+    searchCompleted: boolean
 }
-
-export interface WaterDef extends UiMineralContent {
-    l: number,
-}
-
 export interface Recipe {
-    waters: [WaterDef],
+    waters: [Water],
     salts: [Salt],
     distance: number,
-    completed: boolean
 }
-
 
 export function water(name: string = "",
                       l: number = 0,
@@ -39,21 +34,21 @@ export function water(name: string = "",
                       hco3: number = 0,
                       visible: boolean = true,
                       custom: boolean = true
-                      ):WaterDef {
-    return {name, l, ca, mg, na, so4, cl, hco3, visible, custom}
+                      ):WaterUi {
+    return {name, l: l, ca, mg, na, so4, cl, hco3, visible, custom}
 }
 
 export interface State {
-    readonly target: WaterDef
-    readonly sources: Array<WaterDef>
-    readonly salts: Array<Salt>
-    readonly result: { recipe: Recipe|null, error: string|null }
+    readonly target: WaterUi
+    readonly sources: Array<WaterUi>
+    readonly salts: Array<SaltUi>
+    readonly result: { solution: CalcResult|null, error: string|null }
 }
 
-export const defaultSalt = ():Salt => {
-    let s:Salt = {
+export const defaultSalt = ():SaltUi => {
+    let s:SaltUi = {
         name: "",
-        g: 0,
+        dg: 0,
         ca: 0,
         mg: 0,
         na: 0,
@@ -66,7 +61,7 @@ export const defaultSalt = ():Salt => {
     return s;
 };
 
-let customWater: WaterDef = water();
+let customWater: WaterUi = water();
 customWater.custom = false;
 
 export const defaultState =

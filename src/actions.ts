@@ -1,5 +1,5 @@
-import {defaultSalt, Recipe, State, water, WaterDef} from "./model/index";
-import {Salt} from "./model/index";
+import {CalcResult, defaultSalt, Recipe, State, water, WaterUi} from "./model/index";
+import {SaltUi} from "./model/index";
 import {ActionUnions, createAction, Action} from "./action-helper";
 
 export enum ActionTypes {
@@ -16,15 +16,15 @@ export enum ActionTypes {
 
 export const Actions = {
     removeSalt: (idx: number) => createAction(ActionTypes.SALT_REMOVE, idx),
-    addSalt: (s: Salt) => createAction(ActionTypes.SALT_ADD, s),
-    changedSalt: (idx: number, salt: Salt) => createAction(ActionTypes.SALT_CHANGED, { idx, salt }),
-    addWater: (w: WaterDef) => createAction(ActionTypes.WATER_ADD, w),
-    changedWater: (idx: number, water: WaterDef) => createAction(ActionTypes.WATER_CHANGED, { idx, water }),
+    addSalt: (s: SaltUi) => createAction(ActionTypes.SALT_ADD, s),
+    changedSalt: (idx: number, salt: SaltUi) => createAction(ActionTypes.SALT_CHANGED, { idx, salt }),
+    addWater: (w: WaterUi) => createAction(ActionTypes.WATER_ADD, w),
+    changedWater: (idx: number, water: WaterUi) => createAction(ActionTypes.WATER_CHANGED, { idx, water }),
     removeWater: (idx: number) => createAction(ActionTypes.WATER_REMOVE, idx),
 
-    targetChanged: (water: WaterDef) => createAction(ActionTypes.TARGET_CHANGED, water),
+    targetChanged: (water: WaterUi) => createAction(ActionTypes.TARGET_CHANGED, water),
 
-    findRecipeSuccess: (recipe: Recipe) => createAction(ActionTypes.FIND_SUCCESS, recipe),
+    findRecipeSuccess: (solution: CalcResult) => createAction(ActionTypes.FIND_SUCCESS, solution),
     findRecipeFailure: (error: string) => createAction(ActionTypes.FIND_FAILURE, error)
 };
 

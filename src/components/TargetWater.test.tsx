@@ -8,13 +8,13 @@ import * as Adapter from 'enzyme-adapter-react-16';
 import MineralForm from "./MineralForm";
 import TargetWater from "./TargetWater";
 import {water} from "../model/index";
-import {WaterDef} from "../model";
+import {WaterUi} from "../model";
 enzyme.configure({ adapter: new Adapter() });
 
 
 it('target', () => {
     let start = water("mytarget");
-    const targetChanged = (w: WaterDef) => { console.log("ricevuto ", w)};
+    const targetChanged = (w: WaterUi) => { console.log("ricevuto ", w)};
     let wrapper = shallow(<TargetWater target={start} targetChanged={targetChanged}/>);
     // wrappter
 });

@@ -9,12 +9,12 @@ import {Provider} from "react-redux";
 enzyme.configure({ adapter: new Adapter() });
 import {createMockStore} from 'redux-test-utils';
 import Rabdo from "../containers/Rabdo";
-import {WaterDef} from "../model";
+import {WaterUi} from "../model";
 
 it('sources', () => {
-    let sources: Array<WaterDef> = [ water("water1"), water("water2") ];
+    let sources: Array<WaterUi> = [ water("water1"), water("water2") ];
     const removeSources = (idx: number) => {};
-    const sourceChanged = (idx: number, w:WaterDef) => {};
+    const sourceChanged = (idx: number, w:WaterUi) => {};
     let wrapper = shallow(<SourceWaters sources={sources} removeSource={removeSources} sourceChanged={sourceChanged}/>);
     expect(wrapper.find('.waterPanel')).toHaveLength(2);
 });

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {State, water, Salt, WaterDef} from "../model/index";
+import {State, water, SaltUi, WaterUi} from "../model/index";
 import {connect} from "react-redux";
 import {Button, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
 import './Rabdo.css'
@@ -9,18 +9,19 @@ import 'react-select/dist/react-select.css'
 import TargetWater from "../components/TargetWater";
 import SourceWaters from "../components/SourceWaters";
 import Salts from "../components/Salts";
+import {asyncFindRecipe} from "../Api";
 
 interface RabdoProps {
-    target: WaterDef
-    sources: Array<WaterDef>
-    salts: Array<Salt>
-    findRecipe: () => void
-    addWater: (w: WaterDef) => void
-    sourceChanged: (idx: number, w: WaterDef) => void
-    targetChanged: (w: WaterDef) => void
+    target: WaterUi
+    sources: Array<WaterUi>
+    salts: Array<SaltUi>
+    findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => void
+    addWater: (w: WaterUi) => void
+    sourceChanged: (idx: number, w: WaterUi) => void
+    targetChanged: (w: WaterUi) => void
     removeSource: (idx: number) => void
-    addSalt: (s: Salt) => void
-    saltChanged: (idx: number, s: Salt) => void
+    addSalt: (s: SaltUi) => void
+    saltChanged: (idx: number, s: SaltUi) => void
     removeSalt: (idx: number) => void
 }
 
@@ -42,7 +43,7 @@ class XRabdo extends Component<RabdoProps, {}> {
                     </FormGroup>
 
                     <FormGroup>
-                        <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> la combinazione migliore</Button>
+                        <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> Cerca la combinazione migliore</Button>
                     </FormGroup>
                 </Form>
             </div>
@@ -51,14 +52,14 @@ class XRabdo extends Component<RabdoProps, {}> {
 
     findRecipe(e: any) {
         e.preventDefault();
-        this.props.findRecipe();
+        this.props.findRecipe(this.props.sources, this.props.salts, this.props.target);
     }
 
     addSalt(e: any) {
         e.preventDefault();
-        let s:Salt = {
+        let s:SaltUi = {
             name: "",
-            g: 0,
+            dg: 0,
             ca: 0,
             mg: 0,
             na: 0,
@@ -91,14 +92,18 @@ function mapStateToProps (state: State) {
 }
 function mapDispatchToProps (dispatch: Function) {
     return {
-        addWater: (w :WaterDef) => { dispatch(Actions.addWater(w))},
-        sourceChanged: (idx: number, w: WaterDef) => { dispatch(Actions.changedWater(idx, w))},
-        targetChanged: (w: WaterDef) => { dispatch(Actions.targetChanged(w))},
+        addWater: (w :WaterUi) => { dispatch(Actions.addWater(w))},
+        sourceChanged: (idx: number, w: WaterUi) => { dispatch(Actions.changedWater(idx, w))},
+        targetChanged: (w: WaterUi) => { dispatch(Actions.targetChanged(w))},
         removeSource: (idx: number) => { dispatch(Actions.removeWater(idx))},
-        addSalt: (s: Salt) => { dispatch(Actions.addSalt(s))},
-        saltChanged: (idx: number, s: Salt) => { dispatch(Actions.changedSalt(idx, s))},
+        addSalt: (s: SaltUi) => { dispatch(Actions.addSalt(s))},
+        saltChanged: (idx: number, s: SaltUi) => { dispatch(Actions.changedSalt(idx, s))},
         removeSalt: (idx: number) => { dispatch(Actions.removeSalt(idx))},
-        findRecipe: () => { dispatch(Actions.findRecipe())}
+        findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => {
+            asyncFindRecipe(waters, salts, target).then(
+                result => dispatch(Actions.findRecipeSuccess({ recipe: result.recipe, searchCompleted: result.searchCompleted }))
+            )
+        }
     }
 }
 

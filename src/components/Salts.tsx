@@ -1,4 +1,4 @@
-import {MineralContent, Salt} from "../model/index";
+import {MineralContent, SaltUi} from "../model/index";
 import * as React from "react";
 import {Button, FormControl, Glyphicon, PanelGroup} from "react-bootstrap";
 import * as Panel from "react-bootstrap/lib/Panel";
@@ -13,9 +13,9 @@ import {KNOWN_SALTS} from "../data/known_salts";
 import Select from 'react-select';
 
 interface SaltsProps {
-    salts: Array<Salt>
+    salts: Array<SaltUi>
     removeSalt: (idx: number) => void
-    saltChanged: (idx: number, s: Salt) => void
+    saltChanged: (idx: number, s: SaltUi) => void
 }
 
 function NameOrSelect(props: any) {
@@ -43,7 +43,7 @@ function NameOrSelect(props: any) {
 class Salts extends Component<SaltsProps, {}> {
     render() {
         let res = this.props.salts
-            .map((s: Salt, idx: number) => this.saltToPanel(idx, s));
+            .map((s: SaltUi, idx: number) => this.saltToPanel(idx, s));
 
         return (
             <PanelGroup id="salts">
@@ -72,7 +72,7 @@ class Salts extends Component<SaltsProps, {}> {
         this.props.removeSalt(idx);
     }
 
-    knownSaltChanged(idx: number, prevSalt: Salt, comboSelection: any): void {
+    knownSaltChanged(idx: number, prevSalt: SaltUi, comboSelection: any): void {
         if (comboSelection == null || comboSelection.value == null) return;
         let x = KNOWN_SALTS[comboSelection.value-1];
         let newSalt:MineralContent = {
@@ -87,7 +87,7 @@ class Salts extends Component<SaltsProps, {}> {
         this.props.saltChanged(idx, {...prevSalt, ...newSalt});
     }
 
-    saltToPanel(idx: number, s: Salt) {
+    saltToPanel(idx: number, s: SaltUi) {
         return <Panel key={idx} eventKey={idx}
                       className="saltPanel"
                       expanded={this.props.salts[idx].visible}
@@ -112,8 +112,8 @@ class Salts extends Component<SaltsProps, {}> {
                         </Col>
                         <MineralInput
                             label="grammi massimi" symbol="g"
-                            value={s.g}
-                            onChange={this.attrChanged.bind(this, idx, "g")}
+                            value={s.dg}
+                            onChange={this.attrChanged.bind(this, idx, "dg")}
                             editable={true} />
                     </Row>
                 </FormGroup>
