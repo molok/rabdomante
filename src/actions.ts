@@ -19,6 +19,7 @@ export enum ActionTypes {
     DELTA_CHANGED = 'DELTA_CHANGED',
     FIND_RUNNING ='FIND_RUNNING',
     FIND_START = 'FIND_START',
+    CLEAR_STATE = 'CLEAR_STATE',
 }
 
 export const Actions = {
@@ -40,7 +41,8 @@ export const Actions = {
     recipeWaterChanged: (w: WaterUi) => createAction(ActionTypes.RECIPE_CHANGED, w),
     deltaWaterChanged: (w: WaterUi) => createAction(ActionTypes.DELTA_CHANGED, w),
     searchRunning: (v: boolean) => createAction(ActionTypes.FIND_RUNNING, v),
-    findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => createAction(ActionTypes.FIND_START, {waters, salts, target})
+    findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => createAction(ActionTypes.FIND_START, {waters, salts, target}),
+    clearState: () => createAction(ActionTypes.CLEAR_STATE),
 };
 
 export type Actions = ActionUnions<typeof Actions>

@@ -27,14 +27,15 @@ class TargetWater extends Component<TargetWaterProps, {}> {
                                 label="litri" symbol="L"
                                 value={this.props.target.l}
                                 onChange={this.targetChanged.bind(this, "l")}
-                                editable={true}
+                                editable
+                                minValue={1}
                             />
                         </Row>
                     </FormGroup>
                     <MineralForm
                         water={this.props.target}
                         attrChanged={this.targetChanged.bind(this)}
-                        editable={true}
+                        editable
                     />
                 </Panel.Body>
             </Panel>

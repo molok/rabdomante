@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Component} from 'react';
 import {State, water, SaltUi, WaterUi, CalcResult, Water, Salt, RecipeUi, CalcResultUi, Result} from "../model/index";
 import {connect} from "react-redux";
-import {Button, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
+import {Button, ButtonGroup, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
 import './Rabdo.css'
 import { Actions } from "../actions";
 import 'react-select/dist/react-select.css'
@@ -13,6 +13,7 @@ import {SolutionWaters} from "../components/SolutionWaters";
 import {SolutionSalts} from "../components/SolutionSalts";
 import {BottomAnchor} from "../components/BottomAnchor";
 import {SaltIcon} from "../components/SaltIcon";
+import * as ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 
 interface RabdoProps {
     target: WaterUi
@@ -32,6 +33,7 @@ interface RabdoProps {
     recipeWaterChanged: (idx: number, w: WaterUi) => void
     deltaWaterChanged: (idx: number, w: WaterUi) => void
     toggleScrollToSolution: () => void
+    clearState: () => void
 }
 
 class XRabdo extends Component<RabdoProps, {}> {
@@ -48,10 +50,6 @@ class XRabdo extends Component<RabdoProps, {}> {
             <SolutionWaters waters={delta} changedWater={this.props.deltaWaterChanged}/>
             </>
         )
-        // return (<>
-        //     <SolutionWaterTable waters={solution.recipe.waters} />
-        //
-        //     </>)
     }
 
     validLiters(): boolean {
@@ -73,7 +71,12 @@ class XRabdo extends Component<RabdoProps, {}> {
                     </FormGroup>
                     <FormGroup>
                         <h3>Available Waters</h3>
-                        <Waters waters={this.props.sources} removeWater={this.props.removeSource} changedWater={this.props.sourceChanged} enoughLiters={this.validLiters()} />
+                        <Waters waters={this.props.sources}
+                                removeWater={this.props.removeSource}
+                                changedWater={this.props.sourceChanged}
+                                enoughLiters={this.validLiters()}
+                                supportInfinite
+                        />
                         <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/></Button>
                         <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> Custom</Button>
                         <h3>Available Salts</h3>
@@ -82,7 +85,10 @@ class XRabdo extends Component<RabdoProps, {}> {
                     </FormGroup>
 
                     <FormGroup>
-                        <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> {buttonMsg}</Button>
+                        <ButtonToolbar>
+                            <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> {buttonMsg}</Button>
+                            <Button className="pull-right" bsStyle="danger" onClick={this.clearState.bind(this)}><Glyphicon glyph="repeat"/> Clear all</Button>
+                        </ButtonToolbar>
                     </FormGroup>
 
                     <FormGroup>
@@ -92,6 +98,11 @@ class XRabdo extends Component<RabdoProps, {}> {
                 </Form>
             </div>
         )
+    }
+
+    clearState(e: any){
+        e.preventDefault();
+        this.props.clearState();
     }
 
     findRecipe(e: any) {
@@ -150,6 +161,7 @@ function mapDispatchToProps (dispatch: Function) {
         toggleScrollToSolution: () => { dispatch(Actions.toggleScrollToSolution())},
         recipeWaterChanged: (idx: number, w: WaterUi) => {dispatch(Actions.recipeWaterChanged(w))},
         deltaWaterChanged: (idx: number, w: WaterUi) => {dispatch(Actions.deltaWaterChanged(w))},
+        clearState: () => { dispatch(Actions.clearState())}
     }
 }
 

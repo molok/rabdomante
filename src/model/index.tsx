@@ -85,10 +85,9 @@ export const defaultSalt = ():SaltUi => {
     return s;
 };
 
-export const defaultState:State =
-    {
-        target: { ...water("target"), l:1 },
-        sources: [{...water(), custom: false, l:1}],
-        salts: [{...defaultSalt(), dg:1}],
-        result: { running: false, solution: null, error: null, shouldScrollHere: false }
-    };
+export const defaultState = ():State =>(
+    { target: { ...water("target"), l:1 },
+      sources: [{...water(), custom: false, l:Number.MAX_SAFE_INTEGER}],
+      salts: [{...defaultSalt(), dg:Number.MAX_SAFE_INTEGER}],
+      result: { running: false, solution: null, error: null, shouldScrollHere: false }
+    });

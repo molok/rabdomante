@@ -6,9 +6,11 @@ import * as Adapter from 'enzyme-adapter-react-16';
 enzyme.configure({ adapter: new Adapter() });
 import {State, water} from "./model";
 import Rabdo from "./containers/Rabdo";
-import {reducers} from "./reducers";
+import {reducers} from "./reducers/index";
 import {createStore} from "redux";
 import {Actions} from "./actions";
+import {titleCase} from "./components/utils";
+import known_waters from "./data/known_waters";
 it('mount integration', () => {
     const defaultState =
         { target: water("target"),
@@ -23,6 +25,10 @@ it('mount integration', () => {
 
     const componentAfter = mount(<Rabdo/>, { context: { store } });
     expect(componentAfter.find('.panel.waterPanel')).toHaveLength(3);
+});
+
+it('titlecase', () => {
+    expect(titleCase("sant'aNna vinadio")).toEqual("Sant'Anna Vinadio")
 });
 
 it('solution waters', () => {

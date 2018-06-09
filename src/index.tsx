@@ -5,14 +5,14 @@ import {createStore, applyMiddleware } from 'redux';
 import {Provider} from 'react-redux';
 import Rabdo from "./containers/Rabdo";
 import {defaultState, State} from "./model";
-import {reducers} from "./reducers";
+import {reducers} from "./reducers/index";
 import {apiMiddleware, filterMiddleware} from "./middlewares";
 
 const loadState = ():State => {
     try {
         const serializedState = localStorage.getItem('state');
         if (serializedState === null) {
-            return defaultState;
+            return defaultState();
         } else {
             return JSON.parse(serializedState);
         }

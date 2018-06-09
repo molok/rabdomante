@@ -6,12 +6,14 @@ import MineralForm from "./MineralForm";
 import MineralInput from "./MineralInput";
 import Select from 'react-select';
 import KNOWN_WATERS from '../data/known_waters'
+import {numberToQtyStr} from "./utils";
 
 interface WatersProps {
     waters: Array<WaterUi>
     removeWater: (idx: number) => void
     changedWater: (idx: number, w: WaterUi) => void
     enoughLiters: boolean
+    supportInfinite?: boolean
 }
 
 function NameOrSelect(props: any) {
@@ -37,6 +39,9 @@ function NameOrSelect(props: any) {
 }
 
 class Waters extends Component<WatersProps, {}> {
+    public static defaultProps:Partial<WatersProps> = {
+        supportInfinite: false
+    };
     sourceChanged(idx: number, attrName: string, e: React.ChangeEvent<HTMLInputElement>) {
         console.log("changedWater!");
         e.stopPropagation();
@@ -77,7 +82,6 @@ class Waters extends Component<WatersProps, {}> {
     }
 
     private waterToPanel(idx: number, w: WaterUi) {
-        let qty = (w.l >= 0 ? w.l + "L " : "");
         return <Panel key={idx} eventKey={idx}
                       className={"waterPanel" + (this.props.enoughLiters ? "" : " panel-warning")}
                       expanded={this.props.waters[idx].visible}
@@ -85,7 +89,7 @@ class Waters extends Component<WatersProps, {}> {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
                 <Panel.Title toggle className="clearfix">
-                    <Glyphicon glyph="tint"/> {qty + (w.name || "Acqua base #" + (idx + 1))}
+                    <Glyphicon glyph="tint"/> {numberToQtyStr(w.l, "L") + " " + (w.name || "Acqua base #" + (idx + 1))}
                     <span className={"pull-right"}>
                         <Button bsSize="xsmall" onClick={this.removeSource.bind(this, idx)}><Glyphicon glyph="remove"/></Button>
                     </span>
@@ -106,7 +110,9 @@ class Waters extends Component<WatersProps, {}> {
                             label="litri" symbol="L"
                             value={w.l}
                             onChange={this.attrChanged.bind(this, idx, "l")}
-                            editable={true} />
+                            minValue={1}
+                            supportInfinite
+                            editable />
                         </div>
                     </Row>
                 </FormGroup>

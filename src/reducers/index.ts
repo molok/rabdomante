@@ -1,5 +1,4 @@
-import * as React from 'react';
-import {SaltUi, State, WaterUi} from "../model/index";
+import {defaultState, SaltUi, State, WaterUi} from "../model/index";
 import {Actions, ActionTypes} from "../actions";
 
 function saltReducer(salts: Array<SaltUi>, action: Actions): Array<SaltUi> {
@@ -117,13 +116,25 @@ function recipeReducer(state: State, action: Actions): State {
     }
 }
 
+const clearReducer = (state: State, action: Actions) => {
+    switch (action.type) {
+        case ActionTypes.CLEAR_STATE:
+            return defaultState();
+        default:
+            return state
+    }
+}
+
 function coreReducer(state: State, action: any): State {
     console.log("action", action, "state before:", state);
-    var nextState = {
-        ...state,
-        sources: sourceReducer(state.sources, action),
-        target: targetReducer(state.target, action),
-        salts: saltReducer(state.salts, action),
+
+    var nextState = clearReducer(state, action);
+
+    nextState = {
+        ...nextState,
+        sources: sourceReducer(nextState.sources, action),
+        target: targetReducer(nextState.target, action),
+        salts: saltReducer(nextState.salts, action),
     };
     nextState = {
         ...nextState,

@@ -1,3 +1,5 @@
+import {titleCase} from "../components/utils";
+
 const KNOWN_WATERS = [
     { name: "ABRAU", ca: 26.0, mg: 12.5, na: 0.8, so4: -1, cl: -1, hco3: 140.0 }
     , { name: "ACETOSELLA", ca: 370.0, mg: 68.0, na: 90.0, so4: -1, cl: -1, hco3: 1290.0 }
@@ -436,4 +438,24 @@ const KNOWN_WATERS = [
     , { name: "Sabrinella", ca: 64.6, mg: 27.6, na: 29.1, so4: -1, cl: 41.8, hco3: 302.0 }
 ];
 
-export default KNOWN_WATERS;
+interface KWater {
+    name: string; ca: number; mg: number; na: number; so4: number; cl: number; hco3: number
+}
+
+const clean = (x: number):number => {
+    return Math.max(Math.round(x), 0);
+}
+
+const sanitize = (x: KWater):KWater => {
+    return {
+        name: titleCase(x.name),
+        ca: clean(x.ca),
+        mg: clean(x.mg),
+        na: clean(x.na),
+        so4: clean(x.so4),
+        cl: clean(x.cl),
+        hco3: clean(x.hco3)
+    }
+}
+
+export default KNOWN_WATERS.map(w => sanitize(w));
