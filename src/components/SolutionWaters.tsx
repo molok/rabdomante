@@ -17,7 +17,6 @@ export class SolutionWaters extends Component<WatersProps, {}> {
     }
 
     render() {
-        console.log('waters:', this.props.waters);
         let res = this.props.waters
             .map((w: WaterUi, idx: number) => this.waterToPanel(idx, w));
 

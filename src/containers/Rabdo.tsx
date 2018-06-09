@@ -9,7 +9,6 @@ import 'react-select/dist/react-select.css'
 import TargetWater from "../components/TargetWater";
 import Waters from "../components/Waters";
 import Salts from "../components/Salts";
-import {asyncFindRecipe} from "../Api";
 import {SolutionWaters} from "../components/SolutionWaters";
 import {SolutionSalts} from "../components/SolutionSalts";
 import {BottomAnchor} from "../components/BottomAnchor";
@@ -35,9 +34,6 @@ interface RabdoProps {
     toggleScrollToSolution: () => void
 }
 
-export const wToUi = (w: Water): WaterUi => { return {...w, visible: false, custom: true} };
-export const sToUi = (s: Salt): SaltUi => { return {...s, visible: false, custom: true} };
-
 class XRabdo extends Component<RabdoProps, {}> {
     renderSolution(solution: CalcResultUi) {
         let recipe = solution.recipe.recipe ? [solution.recipe.recipe] : [];
@@ -59,7 +55,7 @@ class XRabdo extends Component<RabdoProps, {}> {
     }
 
     validLiters(): boolean {
-        return (this.props.sources.map(w => w.l).reduce((a, b) => a+b))
+        return (this.props.sources.length > 0 && this.props.sources.map(w => w.l).reduce((a, b) => a+b))
                >= this.props.target.l;
     }
 
@@ -138,6 +134,7 @@ class XRabdo extends Component<RabdoProps, {}> {
 function mapStateToProps (state: State) {
     return state;
 }
+
 function mapDispatchToProps (dispatch: Function) {
     return {
         addWater: (w :WaterUi) => { dispatch(Actions.addWater(w))},
@@ -147,31 +144,7 @@ function mapDispatchToProps (dispatch: Function) {
         addSalt: (s: SaltUi) => { dispatch(Actions.addSalt(s))},
         saltChanged: (idx: number, s: SaltUi) => { dispatch(Actions.changedSalt(idx, s))},
         removeSalt: (idx: number) => { dispatch(Actions.removeSalt(idx))},
-        findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => {
-            dispatch(Actions.searchRunning(true));
-            asyncFindRecipe(waters, salts, target)
-                .then(
-                (result: CalcResult) => {
-                    dispatch(Actions.searchRunning(false));
-                    if (result && result.recipe) {
-                        dispatch(Actions.findRecipeSuccess(
-                            {
-                                recipe: {
-                                    waters: (result.recipe) ? result.recipe.waters.map(w => wToUi(w)) : [],
-                                    salts: (result.recipe) ? result.recipe.salts.map(s => sToUi(s)) : [],
-                                    distance: (result.recipe) ? result.recipe.distance : 0,
-                                    target: wToUi(result.recipe.target),
-                                    recipe: wToUi(result.recipe.recipe),
-                                    delta: wToUi(result.recipe.delta)
-                                },
-                                searchCompleted: result.searchCompleted,
-                            }));
-                    } else {
-                        dispatch(Actions.findRecipeFailure("No solution found!"));
-                    }
-                })
-                .catch(err => dispatch(Actions.findRecipeFailure("No solution found: " + err)));
-        },
+        findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => { dispatch(Actions.findRecipe(waters, salts, target)); },
         resultWaterChanged: (idx: number, w: WaterUi) => { dispatch(Actions.solutionWaterChanged(idx, w))},
         resultSaltChanged: (idx: number, s: SaltUi) => { dispatch(Actions.solutionSaltChanged(idx, s))},
         toggleScrollToSolution: () => { dispatch(Actions.toggleScrollToSolution())},

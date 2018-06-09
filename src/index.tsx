@@ -6,6 +6,7 @@ import {Provider} from 'react-redux';
 import Rabdo from "./containers/Rabdo";
 import {defaultState, State} from "./model";
 import {reducers} from "./reducers";
+import {apiMiddleware, filterMiddleware} from "./middlewares";
 
 const loadState = ():State => {
     try {
@@ -20,7 +21,8 @@ const loadState = ():State => {
 
 let store = createStore(
     reducers,
-    loadState()
+    loadState(),
+    applyMiddleware(filterMiddleware, apiMiddleware)
 );
 
 const saveState = (state: State) => {
