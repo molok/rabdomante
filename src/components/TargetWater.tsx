@@ -21,14 +21,14 @@ class TargetWater extends Component<TargetWaterProps, {}> {
                     <Panel.Title ><Glyphicon glyph="flag"/> {qty + "Target"}</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body>
-                    <FormGroup className={this.props.enoughLiters ? "" : "has-error"}>
+                    <FormGroup className={this.props.enoughLiters && this.props.target.l >= 1 ? "" : "has-error"}>
                         <Row>
                             <MineralInput
                                 label="litri" symbol="L"
                                 value={this.props.target.l}
                                 onChange={this.targetChanged.bind(this, "l")}
                                 editable
-                                minValue={1}
+                                minValue={0}
                             />
                         </Row>
                     </FormGroup>

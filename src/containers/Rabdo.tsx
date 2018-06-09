@@ -14,6 +14,7 @@ import {SolutionSalts} from "../components/SolutionSalts";
 import {BottomAnchor} from "../components/BottomAnchor";
 import {SaltIcon} from "../components/SaltIcon";
 import * as ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
+import * as Alert from "react-bootstrap/lib/Alert";
 
 interface RabdoProps {
     target: WaterUi
@@ -37,19 +38,35 @@ interface RabdoProps {
 }
 
 class XRabdo extends Component<RabdoProps, {}> {
-    renderSolution(solution: CalcResultUi) {
-        let recipe = solution.recipe.recipe ? [solution.recipe.recipe] : [];
-        let delta = solution.recipe.delta ? [solution.recipe.delta] : [];
-        return (
-            <>
-            <h3>Solution Ingredients</h3>
-            <SolutionWaters waters={solution.recipe.waters} changedWater={this.props.resultWaterChanged}/>
-            <SolutionSalts salts={solution.recipe.salts} saltChanged={this.props.resultSaltChanged}/>
-            <h3>Totals</h3>
-            <SolutionWaters waters={recipe} changedWater={this.props.recipeWaterChanged}/>
-            <SolutionWaters skipQty waters={delta} changedWater={this.props.deltaWaterChanged}/>
-            </>
-        )
+    renderSolution(result: Result) {
+        if (result.solution) {
+            let solution = result.solution;
+            let recipe = solution.recipe.recipe ? [solution.recipe.recipe] : [];
+            let delta = solution.recipe.delta ? [solution.recipe.delta] : [];
+            let incomplete  = solution.searchCompleted ? <></> :
+                              <Alert bsStyle="warning">
+                                  <p>Search was interrupted for taking too long, the result might no be optimal</p>
+                              </Alert>;
+            return (
+                <>
+                {incomplete}
+                <h3>Solution Ingredients</h3>
+                <SolutionWaters waters={solution.recipe.waters} changedWater={this.props.resultWaterChanged}/>
+                <SolutionSalts salts={solution.recipe.salts} saltChanged={this.props.resultSaltChanged}/>
+                <h3>Totals</h3>
+                <SolutionWaters waters={recipe} changedWater={this.props.recipeWaterChanged}/>
+                <SolutionWaters skipQty waters={delta} changedWater={this.props.deltaWaterChanged}/>
+                </>
+            )
+        } else if (result.error) {
+            return (
+                <Alert bsStyle="danger">
+                    <p>Problem: {result.error}</p>
+                </Alert>
+            )
+        } else {
+            return <></>
+        }
     }
 
     validLiters(): boolean {
@@ -58,7 +75,7 @@ class XRabdo extends Component<RabdoProps, {}> {
     }
 
     render() {
-        let resultComponent = this.props.result.solution ? (<>{this.renderSolution(this.props.result.solution)}</>) : (<></>);
+        let resultComponent = this.props.result ? (<>{this.renderSolution(this.props.result)}</>) : (<></>);
         let buttonMsg = this.props.result.running ? "Searching for the best combination..." : "Find the best combination";
 
         return (
