@@ -14,6 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class JacksonTest {
 
+    @Test public void serialize() {
+        ObjectMapper mapper = new ObjectMapper();
+    }
+
     @Ignore
     @Test public void deserialize() throws IOException {
         ObjectMapper mapper = new ObjectMapper();

@@ -1,12 +1,13 @@
 package alebolo.rabdomante.core;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
 public class Water implements IWaterProfile {
-    public final int l;
-    public final IWaterProfile profile;
+    private final int l;
+    private final IWaterProfile profile;
     public Water(IWaterProfile profile, int l) {
         this.profile = profile;
         this.l = l;
@@ -55,11 +56,12 @@ public class Water implements IWaterProfile {
 
     @Override public int hashCode() { return Objects.hash(l, profile); }
 
-    @Override public int ca() { return profile.ca(); }
-    @Override public int mg() { return profile.mg(); }
-    @Override public int na() { return profile.na(); }
-    @Override public int so4() { return profile.so4(); }
-    @Override public int cl() { return profile.cl(); }
-    @Override public int hco3() { return profile.hco3(); }
-    @Override public String name() { return profile.name(); }
+    @JsonGetter("l") public int l() { return l; }
+    @JsonGetter("ca") @Override public int ca() { return profile.ca(); }
+    @JsonGetter("mg") @Override public int mg() { return profile.mg(); }
+    @JsonGetter("na") @Override public int na() { return profile.na(); }
+    @JsonGetter("so4") @Override public int so4() { return profile.so4(); }
+    @JsonGetter("cl") @Override public int cl() { return profile.cl(); }
+    @JsonGetter("hco3") @Override public int hco3() { return profile.hco3(); }
+    @JsonGetter("name") @Override public String name() { return profile.name(); }
 }

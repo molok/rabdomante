@@ -17,21 +17,8 @@ public class RabdoService {
 
     public String calc(Request req, Response res) {
         try {
-            WsInput input = new ObjectMapper().readValue(req.body(), WsInput.class);
-
-            ObjectWriter respWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            SparkRouting.WsResponse wsResp = new SparkRouting.WsResponse();
-            wsResp.input = input;
-
-            Optional<WSolution> maybeSolution = new ChocoSolver().solve(
-                    input.target,
-                    input.salts,
-                    input.waters,
-                    TIME_LIMIS_S);
-
-            wsResp.output = maybeSolution.orElse(null);
-
-            String response = respWriter.writeValueAsString(wsResp);
+            String body = req.body();
+            String response = calc(body);
 
             res.status(200);
             return response;
@@ -40,5 +27,23 @@ public class RabdoService {
             return e.getMessage();
 //                throw(e);
         }
+    }
+
+    public String calc(String body) throws java.io.IOException {
+        WsInput input = new ObjectMapper().readValue(body, WsInput.class);
+
+        ObjectWriter respWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        SparkRouting.WsResponse wsResp = new SparkRouting.WsResponse();
+        wsResp.input = input;
+
+        Optional<WSolution> maybeSolution = new ChocoSolver().solve(
+                input.target,
+                input.salts,
+                input.waters,
+                TIME_LIMIS_S);
+
+        wsResp.output = maybeSolution.orElse(null);
+
+        return respWriter.writeValueAsString(wsResp);
     }
 }
