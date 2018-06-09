@@ -170,23 +170,23 @@ public class ResultWriter implements IResultWriter {
 
         Row targetRow = getOrCreate(sheet, rowNum++);
         targetRow.createCell(QTY.ordinal()).setCellValue(recipe.liters());
-        targetRow.createCell(NAME.ordinal()).setCellValue(target.name + " (" + Msg.target() + ")");
-        targetRow.createCell(CA.ordinal()).setCellValue(target.ca);
-        targetRow.createCell(MG.ordinal()).setCellValue(target.mg);
-        targetRow.createCell(NA.ordinal()).setCellValue(target.na);
-        targetRow.createCell(SO4.ordinal()).setCellValue(target.so4);
-        targetRow.createCell(CL.ordinal()).setCellValue(target.cl);
-        targetRow.createCell(HCO3.ordinal()).setCellValue(target.hco3);
+        targetRow.createCell(NAME.ordinal()).setCellValue(target.name() + " (" + Msg.target() + ")");
+        targetRow.createCell(CA.ordinal()).setCellValue(target.ca());
+        targetRow.createCell(MG.ordinal()).setCellValue(target.mg());
+        targetRow.createCell(NA.ordinal()).setCellValue(target.na());
+        targetRow.createCell(SO4.ordinal()).setCellValue(target.so4());
+        targetRow.createCell(CL.ordinal()).setCellValue(target.cl());
+        targetRow.createCell(HCO3.ordinal()).setCellValue(target.hco3());
 
         Row deltaRow = getOrCreate(sheet, rowNum++);
         deltaRow.createCell(QTY.ordinal()).setCellValue(Math.abs(recipe.liters() - target.liters));
         deltaRow.createCell(NAME.ordinal()).setCellValue(Msg.delta());
-        deltaRow.createCell(CA.ordinal()).setCellValue(Math.abs(recipe.ca() - target.ca));
-        deltaRow.createCell(MG.ordinal()).setCellValue(Math.abs(recipe.mg() - target.mg));
-        deltaRow.createCell(NA.ordinal()).setCellValue(Math.abs(recipe.na() - target.na));
-        deltaRow.createCell(SO4.ordinal()).setCellValue(Math.abs(recipe.so4() - target.so4));
-        deltaRow.createCell(CL.ordinal()).setCellValue(Math.abs(recipe.cl() - target.cl));
-        deltaRow.createCell(HCO3.ordinal()).setCellValue(Math.abs(recipe.hco3() - target.hco3));
+        deltaRow.createCell(CA.ordinal()).setCellValue(Math.abs(recipe.ca() - target.ca()));
+        deltaRow.createCell(MG.ordinal()).setCellValue(Math.abs(recipe.mg() - target.mg()));
+        deltaRow.createCell(NA.ordinal()).setCellValue(Math.abs(recipe.na() - target.na()));
+        deltaRow.createCell(SO4.ordinal()).setCellValue(Math.abs(recipe.so4() - target.so4()));
+        deltaRow.createCell(CL.ordinal()).setCellValue(Math.abs(recipe.cl() - target.cl()));
+        deltaRow.createCell(HCO3.ordinal()).setCellValue(Math.abs(recipe.hco3() - target.hco3()));
 
         rowNum++;
 
@@ -208,13 +208,13 @@ public class ResultWriter implements IResultWriter {
     private void writeWater(Sheet sheet, int rowNum, Water w) {
         Row row = getOrCreate(sheet, rowNum);
         row.createCell(QTY.ordinal()).setCellValue(w.liters);
-        row.createCell(NAME.ordinal()).setCellValue(w.name);
-        row.createCell(CA.ordinal()).setCellValue(w.ca);
-        row.createCell(MG.ordinal()).setCellValue(w.mg);
-        row.createCell(NA.ordinal()).setCellValue(w.na);
-        row.createCell(SO4.ordinal()).setCellValue(w.so4);
-        row.createCell(CL.ordinal()).setCellValue(w.cl);
-        row.createCell(HCO3.ordinal()).setCellValue(w.hco3);
+        row.createCell(NAME.ordinal()).setCellValue(w.name());
+        row.createCell(CA.ordinal()).setCellValue(w.ca());
+        row.createCell(MG.ordinal()).setCellValue(w.mg());
+        row.createCell(NA.ordinal()).setCellValue(w.na());
+        row.createCell(SO4.ordinal()).setCellValue(w.so4());
+        row.createCell(CL.ordinal()).setCellValue(w.cl());
+        row.createCell(HCO3.ordinal()).setCellValue(w.hco3());
     }
 
     public static Row getOrCreate(Sheet sheet, int rowNum) {

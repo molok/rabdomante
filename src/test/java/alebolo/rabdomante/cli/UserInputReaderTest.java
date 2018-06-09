@@ -18,7 +18,7 @@ public class UserInputReaderTest {
         File file = new File(this.getClass().getResource("/input.xlsx").getFile());
         IUserInputReader it = new UserInputReader(file);
         assertThat(it.waters().size()).isEqualTo(12);
-        assertThat(it.waters()).areAtLeastOne(new Condition<>( w -> WaterProfile.sameProfile(w, WaterProfiles.DISTILLED)
+        assertThat(it.waters()).areAtLeastOne(new Condition<>( w -> IWaterProfile.sameProfile(w, WaterProfiles.DISTILLED)
                                              , "contiene distillata"));
     }
 
@@ -35,6 +35,6 @@ public class UserInputReaderTest {
         IUserInputReader it = new UserInputReader(file);
         Water target = it.target();
 
-        assertThat(WaterProfile.sameProfile(target, new WaterProfile("x", 100, 100, 100, 100, 100, 100))).isTrue();
+        assertThat(IWaterProfile.sameProfile(target, new WaterProfile("x", 100, 100, 100, 100, 100, 100))).isTrue();
     }
 }

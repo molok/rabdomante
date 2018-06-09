@@ -26,7 +26,7 @@ public class SolverTest {
                 10L);
         assertThat(res.isPresent()).isTrue();
         assertThat(res.get().recipe.waters.size()).isEqualTo(1);
-        assertThat(WaterProfile.sameProfile(res.get().recipe.waters.get(0), target)).isTrue();
+        assertThat(IWaterProfile.sameProfile(res.get().recipe.waters.get(0), target)).isTrue();
         assertThat(res.get().recipe.waters.get(0).liters).isEqualTo(target.liters);
         assertThat(res.get().recipe.salts.size()).isEqualTo(0);
     }

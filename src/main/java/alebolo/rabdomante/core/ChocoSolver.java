@@ -46,7 +46,7 @@ public class ChocoSolver implements WaterSolver {
 
         int targetLiters = target.liters;
 
-        Map<WaterProfile, IntVar> waterVars = waterVars(model, availableWaters, targetLiters);
+        Map<IWaterProfile, IntVar> waterVars = waterVars(model, availableWaters, targetLiters);
         Map<SaltProfile, IntVar> saltVars = saltVars(model, availableSalts, target);
 
         IntVar cost = cost(model, targetLiters, target, waterVars, saltVars);
@@ -80,6 +80,7 @@ public class ChocoSolver implements WaterSolver {
                             .filter(sv -> sv.getValue().getValue() != 0)
                             .map(sv -> new Salt(sv.getKey(), sv.getValue().getValue()))
                             .collect(Collectors.toList()),
+                    target,
                     cost.getValue()
             );
 //            solver.printStatistics();
@@ -101,21 +102,21 @@ public class ChocoSolver implements WaterSolver {
         return Iterables.toArray(Iterables.concat(values, values1), IntVar.class);
     }
 
-    private IntVar cost(Model model, int targetLiters, WaterProfile target, Map<WaterProfile, IntVar> waterVars, Map<SaltProfile, IntVar> saltVars) {
+    private IntVar cost(Model model, int targetLiters, IWaterProfile target, Map<? extends IWaterProfile, IntVar> waterVars, Map<SaltProfile, IntVar> saltVars) {
         IntVar zero = model.intVar(0);
-        IntVar sumCaWs = waterSum(waterVars, w1 -> w1.ca).add(sumSalt(saltVars, s -> s.ca).orElse(zero)).intVar();
-        IntVar sumMgWs = waterSum(waterVars, w1 -> w1.mg).add(sumSalt(saltVars, s -> s.mg).orElse(zero)).intVar();
-        IntVar sumNaWs = waterSum(waterVars, w1 -> w1.na).add(sumSalt(saltVars, s -> s.na).orElse(zero)).intVar();
-        IntVar sumSo4Ws = waterSum(waterVars, w1 -> w1.so4).add(sumSalt(saltVars, s -> s.so4).orElse(zero)).intVar();
-        IntVar sumClWs = waterSum(waterVars, w1 -> w1.cl).add(sumSalt(saltVars, s -> s.cl).orElse(zero)).intVar();
-        IntVar sumHco3Ws = waterSum(waterVars, w1 -> w1.hco3).add(sumSalt(saltVars, s -> s.hco3).orElse(zero)).intVar();
+        IntVar sumCaWs = waterSum(waterVars, w1 -> w1.ca()).add(sumSalt(saltVars, s -> s.ca).orElse(zero)).intVar();
+        IntVar sumMgWs = waterSum(waterVars, w1 -> w1.mg()).add(sumSalt(saltVars, s -> s.mg).orElse(zero)).intVar();
+        IntVar sumNaWs = waterSum(waterVars, w1 -> w1.na()).add(sumSalt(saltVars, s -> s.na).orElse(zero)).intVar();
+        IntVar sumSo4Ws = waterSum(waterVars, w1 -> w1.so4()).add(sumSalt(saltVars, s -> s.so4).orElse(zero)).intVar();
+        IntVar sumClWs = waterSum(waterVars, w1 -> w1.cl()).add(sumSalt(saltVars, s -> s.cl).orElse(zero)).intVar();
+        IntVar sumHco3Ws = waterSum(waterVars, w1 -> w1.hco3()).add(sumSalt(saltVars, s -> s.hco3).orElse(zero)).intVar();
 
-        return error(sumCaWs.div(targetLiters).intVar(), target.ca)
-                .add(error(sumMgWs.div(targetLiters).intVar(), target.mg))
-                .add(error(sumNaWs.div(targetLiters).intVar(), target.na))
-                .add(error(sumSo4Ws.div(targetLiters).intVar(), target.so4))
-                .add(error(sumClWs.div(targetLiters).intVar(), target.cl))
-                .add(error(sumHco3Ws.div(targetLiters).intVar(), target.hco3))
+        return error(sumCaWs.div(targetLiters).intVar(), target.ca())
+                .add(error(sumMgWs.div(targetLiters).intVar(), target.mg()))
+                .add(error(sumNaWs.div(targetLiters).intVar(), target.na()))
+                .add(error(sumSo4Ws.div(targetLiters).intVar(), target.so4()))
+                .add(error(sumClWs.div(targetLiters).intVar(), target.cl()))
+                .add(error(sumHco3Ws.div(targetLiters).intVar(), target.hco3()))
                 .intVar();
     }
 
@@ -133,20 +134,20 @@ public class ChocoSolver implements WaterSolver {
            il valore massimo di sodio */
         return Math.min
                 ( s.dg, Stream.of(
-                                ( s.ca == 0 ? 0 : ((target.ca * target.liters) / s.ca) * 2),
-                                ( s.mg == 0 ? 0 : ((target.mg * target.liters) / s.mg) * 2),
-                                ( s.na == 0 ? 0 : ((target.na * target.liters) / s.na) * 2),
-                                ( s.so4 == 0 ? 0 : ((target.so4 * target.liters) / s.so4) * 2),
-                                ( s.cl == 0 ? 0 : ((target.cl * target.liters) / s.cl) * 2),
-                                ( s.hco3 == 0 ? 0 : ((target.hco3 * target.liters) / s.hco3) * 2))
+                                ( s.ca == 0 ? 0 : ((target.ca() * target.liters) / s.ca) * 2),
+                                ( s.mg == 0 ? 0 : ((target.mg() * target.liters) / s.mg) * 2),
+                                ( s.na == 0 ? 0 : ((target.na() * target.liters) / s.na) * 2),
+                                ( s.so4 == 0 ? 0 : ((target.so4() * target.liters) / s.so4) * 2),
+                                ( s.cl == 0 ? 0 : ((target.cl() * target.liters) / s.cl) * 2),
+                                ( s.hco3 == 0 ? 0 : ((target.hco3() * target.liters) / s.hco3) * 2))
                         .mapToInt(i -> i).max().getAsInt());
     }
 
-    private Map<WaterProfile, IntVar> waterVars(Model model, List<Water> waters, int targetLiters) {
-        Map<WaterProfile, IntVar> waterVars = new HashMap<>();
+    private Map<IWaterProfile, IntVar> waterVars(Model model, List<Water> waters, int targetLiters) {
+        Map<IWaterProfile, IntVar> waterVars = new HashMap<>();
         waters.stream()
                 .map(w -> new HashMap.SimpleImmutableEntry<>
-                        (w, model.intVar(w.name + " (L)", range(Math.min(targetLiters, w.liters), 10))))
+                        (w, model.intVar(w.name() + " (L)", range(Math.min(targetLiters, w.liters), 10))))
                 .forEach(e -> waterVars.put(e.getKey(), e.getValue()));
         return waterVars;
     }
@@ -175,7 +176,7 @@ public class ChocoSolver implements WaterSolver {
                 .reduce((a, b) -> a.add(b).intVar());
     }
 
-    private IntVar waterSum(Map<WaterProfile, IntVar> wvs, Function<WaterProfile, Integer> getter) {
+    private <T extends IWaterProfile> IntVar waterSum(Map<T, IntVar> wvs, Function<T, Integer> getter) {
         return wvs.entrySet().stream()
                 .map(wv -> wv.getValue().mul(getter.apply(wv.getKey())).intVar())
                 .reduce((a, b) -> a.add(b).intVar()).get();

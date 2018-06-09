@@ -1,27 +1,15 @@
 package alebolo.rabdomante.core;
 
-import alebolo.rabdomante.Msg;
-import alebolo.rabdomante.cli.RabdoInputException;
-
 import java.util.Objects;
 
-public class WaterProfile {
-    public final int ca;
-    public final int mg;
-    public final int na;
-    public final int so4;
-    public final int cl;
-    public final int hco3;
-    public final String name;
-
-    public static boolean sameProfile(WaterProfile a, WaterProfile b) {
-        return a.ca == b.ca &&
-               a.mg == b.mg &&
-               a.na == b.na &&
-               a.so4 == b.so4 &&
-               a.cl == b.cl &&
-               a.hco3 == b.hco3;
-    }
+public class WaterProfile implements IWaterProfile {
+    private final int ca;
+    private final int mg;
+    private final int na;
+    private final int so4;
+    private final int cl;
+    private final int hco3;
+    private final String name;
 
     public WaterProfile(String name, int ca, int mg, int na, int so4, int cl, int hco3) {
         this.name = name;
@@ -33,25 +21,15 @@ public class WaterProfile {
         this.hco3 = validate(hco3);
     }
 
-    private int validate(int v) {
-        if (v >= 0) {
-            return v;
-        } else if (v == -1) {
-            return 0; // I use -1 for N/A, in the future I may reject this too
-        } else {
-            throw new RabdoInputException(Msg.mineralValueCanTBeLt1Was() +v);
-        }
-    }
-
     @Override public String toString() {
         return "Water{" +
-                "ca=" + ca +
-                ", mg=" + mg +
-                ", na=" + na +
-                ", so4=" + so4 +
-                ", cl=" + cl +
-                ", hco3=" + hco3 +
-                ", name='" + name + '\'' +
+                "ca=" + ca() +
+                ", mg=" + mg() +
+                ", na=" + na() +
+                ", so4=" + so4() +
+                ", cl=" + cl() +
+                ", hco3=" + hco3() +
+                ", name='" + name() + '\'' +
                 '}';
     }
 
@@ -60,17 +38,25 @@ public class WaterProfile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WaterProfile that = (WaterProfile) o;
-        return ca == that.ca &&
-                mg == that.mg &&
-                na == that.na &&
-                so4 == that.so4 &&
-                cl == that.cl &&
-                hco3 == that.hco3 &&
-                Objects.equals(name, that.name);
+        return ca() == that.ca() &&
+                mg() == that.mg() &&
+                na() == that.na() &&
+                so4() == that.so4() &&
+                cl() == that.cl() &&
+                hco3() == that.hco3() &&
+                Objects.equals(name(), that.name());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ca, mg, na, so4, cl, hco3, name);
+        return Objects.hash(ca(), mg(), na(), so4(), cl(), hco3(), name());
     }
+
+    @Override public int ca() { return ca; }
+    @Override public int mg() { return mg; }
+    @Override public int na() { return na; }
+    @Override public int so4() { return so4; }
+    @Override public int cl() { return cl; }
+    @Override public int hco3() { return hco3; }
+    @Override public String name() { return name; }
 }

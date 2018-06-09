@@ -134,7 +134,7 @@ public class WaterSolverTest {
         Water test = new WaterProfileParser().parse(this.getClass().getResourceAsStream("/common_profiles.csv")).get(27);
 
         Water target = new Water(test, 30);
-        System.out.println("name:" + target.name);
+        System.out.println("name:" + target.name());
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater, 10L, (intvars) -> Search.domOverWDegSearch(intvars)).map(s -> s.recipe);
         assertThat(solution).isPresent();
     }
@@ -181,7 +181,7 @@ public class WaterSolverTest {
             double totTime = (System.currentTimeMillis() - totStart) / 1000.;
 
             System.out.println("\n***********************************************");
-            System.out.println(desc + ": " + curr + "/67" + ", last:" + thisTime + ", tot:" + totTime + " [" + target.name + "]");
+            System.out.println(desc + ": " + curr + "/67" + ", last:" + thisTime + ", tot:" + totTime + " [" + target.name() + "]");
             System.out.println("***********************************************\n");
 
             if (thisTime > 60) {
@@ -270,7 +270,8 @@ public class WaterSolverTest {
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater).map(s -> s.recipe);
         assertThat(solution).isPresent();
-        assertThat(solution.get().waters).containsExactly(new Water(WaterProfiles.DISTILLED, 10));
+        assertThat(solution.get().waters.size()).isEqualTo(1);
+        assertThat(solution.get().waters.get(0).sameAs(new Water(WaterProfiles.DISTILLED, 10))).isTrue();
     }
 
     @Test public void not_enough_water() {
@@ -300,7 +301,9 @@ public class WaterSolverTest {
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater).map(s -> s.recipe);
         assertThat(solution).isPresent();
-        assertThat(solution.get().waters).containsOnly(new Water(pa, 15), new Water(pb, 15));
+        assertThat(solution.get().waters.size()).isEqualTo(2);
+        assertThat(solution.get().waters.get(0).sameAs(new Water(pa, 15))).isTrue();
+        assertThat(solution.get().waters.get(1).sameAs(new Water(pb, 15))).isTrue();
         assertThat(solution.get().salts).isEmpty();
     }
 
@@ -314,7 +317,8 @@ public class WaterSolverTest {
 
         Optional<Recipe> solution = new ChocoSolver().solve(target, mySalts, myWater).map(s -> s.recipe);
         assertThat(solution).isPresent();
-        assertThat(solution.get().waters).containsOnly(new Water(WaterProfiles.DISTILLED, 100));
+        assertThat(solution.get().waters.size()).isEqualTo(1);
+        assertThat(solution.get().waters.get(0).sameAs(new Water(WaterProfiles.DISTILLED, 100))).isTrue();
         assertThat(solution.get().salts).containsOnly(new Salt(magicSalt, 300));
     }
 
@@ -362,7 +366,7 @@ public class WaterSolverTest {
     }
 
     @Test public void testRecipe() {
-        Recipe recipe = new Recipe(Arrays.asList(new Water(WaterProfiles.SANTANNA_VIN, 10)), Arrays.asList(), 0);
+        Recipe recipe = new Recipe(Arrays.asList(new Water(WaterProfiles.SANTANNA_VIN, 10)), Arrays.asList(), new Water(WaterProfiles.BOARIO, 20), 0);
         System.out.println(recipe);
     }
 

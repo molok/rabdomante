@@ -37,7 +37,7 @@ public class ResultWriterTest {
                 new WSolution(
                     new Recipe(
                             Arrays.asList(new Water(DISTILLED, 10), new Water(BOARIO, 20)),
-                            Arrays.asList(new Salt(GYPSUM, 10), new Salt(TABLE_SALT, 20)), 100 ),
+                            Arrays.asList(new Salt(GYPSUM, 10), new Salt(TABLE_SALT, 20)), new Water(WaterProfiles.DISTILLED, 20), 100 ),
                         true), 100,
                 new Water(WaterProfiles.DISTILLED, 10));
     }

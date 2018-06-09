@@ -14,7 +14,7 @@ Resources:
     Properties:
       Handler: alebolo.rabdomante.ws.StreamLambdaHandler::handleRequest
       Runtime: java8
-      CodeUri: target/rabdomante-1.2.5-SNAPSHOT.jar
+      CodeUri: target/rabdomante.jar
       MemorySize: 512
       Policies: AWSLambdaBasicExecutionRole
       Timeout: 70

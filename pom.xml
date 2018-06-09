@@ -6,8 +6,9 @@
 
     <groupId>alebolo</groupId>
     <artifactId>rabdomante</artifactId>
-    <version>1.2.5-SNAPSHOT</version>
+    <version>1.2.6-SNAPSHOT</version>
     <url>https://github.com/molok/rabdomante/</url>
+    <packaging>jar</packaging>
 
     <properties>
         <jackson.version>2.9.5</jackson.version>
@@ -128,6 +129,7 @@
     </dependencies>
 
     <build>
+        <finalName>rabdomante</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

@@ -8,11 +8,25 @@ public class Recipe {
     public final List<Water> waters;
     public final List<Salt> salts;
     public final int distanceFromTarget;
+    public final Water recipe;
+    public final Water target;
+    public final Water delta;
 
-    public Recipe(List<Water> waters, List<Salt> salts, int distanceFromTarget) {
+    public Recipe(List<Water> waters, List<Salt> salts, Water target, int distanceFromTarget) {
         this.waters = waters;
         this.salts = salts;
         this.distanceFromTarget = distanceFromTarget;
+        this.target = target;
+        this.recipe = new Water(ca(), mg(), na(), so4(), cl(), hco3(), "recipe", liters());
+        this.delta = new Water(new DeltaWaterProfile(
+                "delta",
+                target.ca() - ca(),
+                target.mg() - mg(),
+                target.na() - na(),
+                target.so4() - so4(),
+                target.cl() - cl(),
+                target.hco3() - hco3() ),
+                target.liters - liters());
     }
 
     @Override
@@ -37,12 +51,12 @@ public class Recipe {
 
     public int liters() { return waters.stream().mapToInt(w1 -> w1.liters).sum(); }
 
-    public int hco3() { return weightedSum(waters, w -> w.hco3, salts, s -> s.hco3, liters()); }
-    public int cl()   { return weightedSum(waters, w -> w.cl, salts, s -> s.cl, liters()); }
-    public int so4()  { return weightedSum(waters, w -> w.so4, salts, s -> s.so4, liters()); }
-    public int na()   { return weightedSum(waters, w -> w.na, salts, s -> s.na, liters()); }
-    public int mg()   { return weightedSum(waters, w -> w.mg, salts, s -> s.mg, liters()); }
-    public int ca()   { return weightedSum(waters, w -> w.ca, salts, s -> s.ca, liters()); }
+    public int hco3() { return weightedSum(waters, w -> w.hco3(), salts, s -> s.hco3, liters()); }
+    public int cl()   { return weightedSum(waters, w -> w.cl(), salts, s -> s.cl, liters()); }
+    public int so4()  { return weightedSum(waters, w -> w.so4(), salts, s -> s.so4, liters()); }
+    public int na()   { return weightedSum(waters, w -> w.na(), salts, s -> s.na, liters()); }
+    public int mg()   { return weightedSum(waters, w -> w.mg(), salts, s -> s.mg, liters()); }
+    public int ca()   { return weightedSum(waters, w -> w.ca(), salts, s -> s.ca, liters()); }
 
     private int weightedSum(List<Water> wvs,
                             Function<Water, Integer> waterGetter,
