@@ -2,7 +2,7 @@ import {CalcResult, Salt, SaltUi, State, Water, WaterUi} from "../model";
 import {Actions, ActionTypes} from "../actions";
 import {asyncFindRecipe} from "../Api";
 
-export const wToUi = (w: Water): WaterUi => { return {...w, visible: false, custom: true} };
+export const wToUi = (w: Water, name?: string): WaterUi => { return {...w, visible: false, custom: true, name: (name) ? name : w.name} };
 export const sToUi = (s: Salt): SaltUi => { return {...s, visible: false, custom: true} };
 
 export const apiMiddleware = (store: {getState(): State, dispatch(action: Actions):void}) => (next: any) => (action: Actions) => {
@@ -22,26 +22,33 @@ export const apiMiddleware = (store: {getState(): State, dispatch(action: Action
                                         salts: (result.recipe) ? result.recipe.salts.map(s => sToUi(s)) : [],
                                         distance: (result.recipe) ? result.recipe.distance : 0,
                                         target: wToUi(result.recipe.target),
-                                        recipe: wToUi(result.recipe.recipe),
-                                        delta: wToUi(result.recipe.delta)
+                                        recipe: wToUi(result.recipe.recipe, "Recipe"),
+                                        delta: wToUi(result.recipe.delta, "Delta")
                                     },
                                     searchCompleted: result.searchCompleted,
                                 }));
                         } else {
+                            store.dispatch(Actions.searchRunning(false));
                             store.dispatch(Actions.findRecipeFailure("No solution found!"));
                         }
                     })
-                .catch(err => store.dispatch(Actions.findRecipeFailure("No solution found: " + err)));
+                .catch(err => {
+                    store.dispatch(Actions.searchRunning(false));
+                    console.log("ERROR API", err);
+                    store.dispatch(Actions.findRecipeFailure("No solution found: " + err))});
         }
         default: next(action);
     }
 };
 
 export const filterMiddleware = (store: {getState(): State, dispatch(action: Actions):void}) => (next: any) => (action: Actions) => {
-    if (store.getState().result.running && action.type !== ActionTypes.FIND_RUNNING) {
-        console.log("action ignored:", action);
-        /* block the UI */
-    } else {
-        next(action)
+    if (store.getState().result.running) {
+        switch(action.type) {
+            case ActionTypes.FIND_RUNNING:
+                next(action);
+            case ActionTypes.CLEAR_STATE:
+                next(action);
+        }
     }
+    next(action);
 };

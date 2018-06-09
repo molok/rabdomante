@@ -50,14 +50,14 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
             <Panel.Body collapsible>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>Nome</Col>
+                        <Col componentClass={ControlLabel} sm={2}>Name</Col>
                         <Col sm={4}>
                             <FormControl name="name" bsSize="small" type="text" placeholder=""
                                          value={s.name}
                                          onChange={() => {}} />
                         </Col>
                         <MineralInput
-                            label="grammi massimi" symbol="g"
+                            label="Decigrams" symbol="dg"
                             value={s.dg}
                             onChange={this.attrChanged.bind(this, idx, "dg")}
                             editable={false} />

@@ -47,7 +47,7 @@ class XRabdo extends Component<RabdoProps, {}> {
             <SolutionSalts salts={solution.recipe.salts} saltChanged={this.props.resultSaltChanged}/>
             <h3>Totals</h3>
             <SolutionWaters waters={recipe} changedWater={this.props.recipeWaterChanged}/>
-            <SolutionWaters waters={delta} changedWater={this.props.deltaWaterChanged}/>
+            <SolutionWaters skipQty waters={delta} changedWater={this.props.deltaWaterChanged}/>
             </>
         )
     }
@@ -80,7 +80,7 @@ class XRabdo extends Component<RabdoProps, {}> {
                         <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/></Button>
                         <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> Custom</Button>
                         <h3>Available Salts</h3>
-                        <Salts salts={this.props.salts} removeSalt={this.props.removeSalt} saltChanged={this.props.saltChanged} />
+                        <Salts supportInfinite salts={this.props.salts} removeSalt={this.props.removeSalt} saltChanged={this.props.saltChanged} />
                         <Button bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <SaltIcon fill="#000000"/></Button>
                     </FormGroup>
 
@@ -114,7 +114,7 @@ class XRabdo extends Component<RabdoProps, {}> {
         e.preventDefault();
         let s:SaltUi = {
             name: "",
-            dg: 0,
+            dg: Number.MAX_SAFE_INTEGER,
             ca: 0,
             mg: 0,
             na: 0,

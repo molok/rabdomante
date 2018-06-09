@@ -8,9 +8,14 @@ import MineralInput from "./MineralInput";
 interface WatersProps {
     waters: Array<WaterUi>
     changedWater: (idx: number, w: WaterUi) => void
+    skipQty?: boolean
 }
 
 export class SolutionWaters extends Component<WatersProps, {}> {
+    public static defaultProps:Partial<WatersProps> = {
+        skipQty: false
+    };
+
     sourceChanged(idx: number, attrName: string, e: React.ChangeEvent<HTMLInputElement>) {
         e.stopPropagation();
         this.props.changedWater(idx, {...this.props.waters[idx], [attrName]: e.target.value});
@@ -28,7 +33,13 @@ export class SolutionWaters extends Component<WatersProps, {}> {
     }
 
     private waterToPanel(idx: number, w: WaterUi) {
-        let qty = (w.l >= 0 ? w.l + "L " : "");
+        let qty;
+        if (this.props.skipQty) {
+            qty = " ";
+        } else {
+            qty = (w.l >= 0 ? w.l + "L " : "");
+        }
+
         return <Panel key={idx} eventKey={idx}
                       className="waterPanel panel-success"
                       expanded={this.props.waters[idx].visible}
@@ -42,7 +53,7 @@ export class SolutionWaters extends Component<WatersProps, {}> {
             <Panel.Body collapsible>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>Nome</Col>
+                        <Col componentClass={ControlLabel} sm={2}>Name</Col>
                         <Col sm={4}>
                             <FormControl name="name" bsSize="small" type="text" placeholder=""
                                          value={w.name} onChange={() => {}} />
@@ -54,7 +65,7 @@ export class SolutionWaters extends Component<WatersProps, {}> {
                             editable={false} />
                     </Row>
                 </FormGroup>
-                <MineralForm water={w} attrChanged={() => {}} editable={false}/>
+                <MineralForm minValue={Number.MIN_SAFE_INTEGER} water={w} attrChanged={() => {}} editable={false}/>
             </Panel.Body>
         </Panel>;
     }

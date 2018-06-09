@@ -21,9 +21,11 @@ interface WSResponse {
     output: WSSolution
 }
 
+export const MAX_INT_32BIT = 2147483647;
+
 const waterToWs = (water: Water): WsWater => {
     return {
-        l: water.l,
+        l: Math.min(water.l, MAX_INT_32BIT),
         name: water.name,
         ca: water.ca,
         mg: water.mg,
@@ -36,7 +38,7 @@ const waterToWs = (water: Water): WsWater => {
 
 const saltToWs = (salt: Salt): WsSalt => {
     return {
-        dg: salt.dg,
+        dg: Math.min(salt.dg, MAX_INT_32BIT),
         name: salt.name,
         ca: salt.ca,
         mg: salt.mg,
@@ -63,5 +65,6 @@ export const asyncFindRecipe = (waters: Array<Water>, salts: Array<Salt>, target
         method: 'POST',
         })
         .then(resp => resp.text())
+        .then(txt => {console.log("API RESPONSE:", txt); return txt;})
         .then(txt => JSON.parse(txt).output)
 };

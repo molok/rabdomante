@@ -16,25 +16,35 @@ interface WatersProps {
     supportInfinite?: boolean
 }
 
-function NameOrSelect(props: any) {
-    const w = props.w;
-    if (w.custom) {
-        return (
-            <>
-            <FormControl name="name" bsSize="small" type="text" placeholder=""
-                         value={w.name}
-                         onChange={props.changedWater}/>
-            </>);
-    } else {
-        let options = KNOWN_WATERS.map((x, idx) => ({ label: x.name, value: idx }));
-        return (
-            <>
-            <Select clearable={false}
-                    options={options}
-                    onChange={props.knownWaterChanged}
-                    value={{label: w.name, value: w.name}}/>
-            </>
-        );
+interface NameOrSelectProps {
+    changedWater: (idx: number, w: WaterUi) => void
+    w: WaterUi
+    idx: number
+    knownWaterChanged(idx: number, prevWater: WaterUi, comboSelection: any): void
+}
+
+class NameOrSelect extends Component<NameOrSelectProps, {}> {
+    render() {
+        const w = this.props.w;
+        if (w.custom) {
+            return (
+                <>
+                    <FormControl name="name" bsSize="small" type="text" placeholder=""
+                                 value={w.name}
+                                 onChange={this.props.changedWater.bind(this)}/>
+                </>);
+        } else {
+            let options = KNOWN_WATERS.map((x, idx) => ({ label: x.name, value: idx }));
+            return (
+                <>
+                    <Select clearable={false}
+                            options={options}
+                            onChange={this.props.knownWaterChanged.bind(this)}
+                            value={options.map(w => w.label).indexOf(w.name)} /* FIXME */
+                    />
+                </>
+            );
+        }
     }
 }
 
@@ -89,7 +99,7 @@ class Waters extends Component<WatersProps, {}> {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
                 <Panel.Title toggle className="clearfix">
-                    <Glyphicon glyph="tint"/> {numberToQtyStr(w.l, "L") + " " + (w.name || "Acqua base #" + (idx + 1))}
+                    <Glyphicon glyph="tint"/> {numberToQtyStr(w.l, "L") + " " + (w.name || "Base Water #" + (idx + 1))}
                     <span className={"pull-right"}>
                         <Button bsSize="xsmall" onClick={this.removeSource.bind(this, idx)}><Glyphicon glyph="remove"/></Button>
                     </span>
@@ -98,10 +108,10 @@ class Waters extends Component<WatersProps, {}> {
             <Panel.Body collapsible>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>Nome</Col>
+                        <Col componentClass={ControlLabel} sm={2}>Name</Col>
                         <Col sm={4}>
                             <NameOrSelect w={w} idx={idx}
-                                          sourceChanged={this.sourceChanged.bind(this, idx, "name")}
+                                          changedWater={this.sourceChanged.bind(this, idx, "name")}
                                           knownWaterChanged={this.knownWaterChanged.bind(this, idx, w)}
                             />
                         </Col>

@@ -47,14 +47,20 @@ function recipeReducer(state: State, action: Actions): State {
         case ActionTypes.TOGGLE_SCROLL_TO_SOLUTION:
             return {...state, result: {...state.result, shouldScrollHere: state.result.shouldScrollHere ? false : true}};
         case ActionTypes.FIND_SUCCESS:
-            return {
+            let show = {
                 ...state,
                 result: {
                     ...state.result,
                     error: null,
                     solution: action.payload ,
                     shouldScrollHere: true
-                }};
+                }
+            };
+            return {
+                ...show,
+                sources: show.sources.map(w => ({...w, visible: false})),
+                salts: show.salts.map(s => ({...s, visible: false}))
+            };
         case ActionTypes.FIND_FAILURE:
             return {...state, result: { ...state.result, error: action.payload, solution: null }};
         case ActionTypes.SOLUTION_SALT_CHANGED:
@@ -119,7 +125,7 @@ function recipeReducer(state: State, action: Actions): State {
 const clearReducer = (state: State, action: Actions) => {
     switch (action.type) {
         case ActionTypes.CLEAR_STATE:
-            return defaultState();
+            return {...defaultState(), result: {...defaultState().result, running: false}};
         default:
             return state
     }

@@ -43,6 +43,9 @@ class MineralInput extends React.Component<MineralInputProps, {}> {
         if (this.props.minValue !== undefined) {
             number = Math.max(this.props.minValue, number);
         }
+        if (isNaN(this.props.value)) {
+            number = this.props.minValue!;
+        }
         return numberToQtyStr(number);
     }
 

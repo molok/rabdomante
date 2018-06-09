@@ -72,7 +72,7 @@ export interface State {
 export const defaultSalt = ():SaltUi => {
     let s:SaltUi = {
         name: "",
-        dg: 1,
+        dg: Number.MAX_SAFE_INTEGER,
         ca: 0,
         mg: 0,
         na: 0,
