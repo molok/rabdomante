@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class Water implements IWaterProfile {
-    public final int liters;
+    public final int l;
     public final IWaterProfile profile;
-    public Water(IWaterProfile profile, int liters) {
+    public Water(IWaterProfile profile, int l) {
         this.profile = profile;
-        this.liters = liters;
+        this.l = l;
     }
 
     public boolean sameAs(Water b) {
         Water a = this;
-        return (a.liters == b.liters) && IWaterProfile.sameProfile(a.profile, b.profile);
+        return (a.l == b.l) && IWaterProfile.sameProfile(a.profile, b.profile);
     }
 
     public Water(
@@ -25,9 +25,9 @@ public class Water implements IWaterProfile {
             @JsonProperty(value = "cl", required = true)   int cl,
             @JsonProperty(value = "hco3", required = true) int hco3,
             @JsonProperty(value = "name", required = true) String name,
-            @JsonProperty(value = "l", required = true)    int liters) {
+            @JsonProperty(value = "l", required = true)    int l) {
         this.profile = new WaterProfile(name, ca, mg, na, so4, cl, hco3);
-        this.liters = liters;
+        this.l = l;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Water implements IWaterProfile {
                 ", cl=" + cl() +
                 ", hco3=" + hco3() +
                 ", name='" + name() + '\'' +
-                ", liters=" + liters +
+                ", l=" + l +
                 '}';
     }
 
@@ -49,11 +49,11 @@ public class Water implements IWaterProfile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Water water = (Water) o;
-        return liters == water.liters &&
+        return l == water.l &&
                 Objects.equals(profile, water.profile);
     }
 
-    @Override public int hashCode() { return Objects.hash(liters, profile); }
+    @Override public int hashCode() { return Objects.hash(l, profile); }
 
     @Override public int ca() { return profile.ca(); }
     @Override public int mg() { return profile.mg(); }
