@@ -31,11 +31,15 @@ it('solution waters', () => {
           sources: [],
           salts: [],
           result: {
+            running: false,
             solution: {
                 recipe: {
                     waters: [],
                     salts: [],
-                    distance: 0
+                    distance: 0,
+                    recipe: null,
+                    delta: null,
+                    target: null
                 },
                 searchCompleted: true
               }, error: null, shouldScrollHere: false }
@@ -50,7 +54,10 @@ it('solution waters', () => {
         { recipe: {
                 waters: [water("water #sol1")],
                 salts: [],
-                distance: 0
+                distance: 0,
+                recipe: null,
+                delta: null,
+                target: null
             },
             searchCompleted: true
         }));

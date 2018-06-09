@@ -43,6 +43,8 @@ function sourceReducer(sources: Array<WaterUi>, action: Actions): Array<WaterUi>
 
 function recipeReducer(state: State, action: Actions): State {
     switch ( action.type ) {
+        case ActionTypes.FIND_RUNNING:
+            return {...state, result: {...state.result, running: action.payload}};
         case ActionTypes.TOGGLE_SCROLL_TO_SOLUTION:
             return {...state, result: {...state.result, shouldScrollHere: state.result.shouldScrollHere ? false : true}};
         case ActionTypes.FIND_SUCCESS:
@@ -87,6 +89,28 @@ function recipeReducer(state: State, action: Actions): State {
                                    (w, i) => i === action.payload.idx ? action.payload.water : w )]}}}}
             } else {
                 return state;
+            }
+        case ActionTypes.DELTA_CHANGED:
+            if (state.result.solution && state.result.solution.recipe.delta) {
+                return {
+                    ...state, result: {
+                        ...state.result,
+                        solution: {
+                            ...state.result.solution,
+                            recipe: {
+                                ...state.result.solution.recipe,
+                                delta: action.payload }}}};
+            }
+        case ActionTypes.RECIPE_CHANGED:
+            if (state.result.solution && state.result.solution.recipe.recipe) {
+                return {
+                    ...state, result: {
+                        ...state.result,
+                        solution: {
+                            ...state.result.solution,
+                            recipe: {
+                                ...state.result.solution.recipe,
+                                recipe: action.payload }}}};
             }
         default:
             return state;

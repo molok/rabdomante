@@ -1,6 +1,6 @@
-import {MineralContent, SaltUi} from "../model/index";
+import {SaltUi} from "../model/index";
 import * as React from "react";
-import {Button, FormControl, Glyphicon, PanelGroup} from "react-bootstrap";
+import {FormControl, PanelGroup} from "react-bootstrap";
 import * as Panel from "react-bootstrap/lib/Panel";
 import * as FormGroup from "react-bootstrap/lib/FormGroup";
 import * as Row from "react-bootstrap/lib/Row";
@@ -9,8 +9,7 @@ import * as ControlLabel from "react-bootstrap/lib/ControlLabel";
 import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
 import {Component} from "react";
-import {KNOWN_SALTS} from "../data/known_salts";
-import Select from 'react-select';
+import {SaltIcon} from "./SaltIcon";
 
 interface SolutionSaltsProps {
     salts: Array<SaltUi>
@@ -39,13 +38,14 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
     }
 
     saltToPanel(idx: number, s: SaltUi) {
+        let qty = (s.dg >= 0 ? s.dg + "g " : "");
         return <Panel key={idx} eventKey={idx}
-                      className="saltPanel"
+                      className="saltPanel panel-success"
                       expanded={this.props.salts[idx].visible}
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><Glyphicon glyph="unchecked"/> {s.name || "Salt #" + (idx + 1)}</Panel.Title>
+                <Panel.Title toggle className="clearfix"><SaltIcon fill="#227442"/> {qty + s.name}</Panel.Title>
             </Panel.Heading>
             <Panel.Body collapsible>
                 <FormGroup>

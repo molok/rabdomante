@@ -11,6 +11,7 @@ import MineralForm from "./MineralForm";
 import {Component} from "react";
 import {KNOWN_SALTS} from "../data/known_salts";
 import Select from 'react-select';
+import {SaltIcon} from "./SaltIcon";
 
 interface SaltsProps {
     salts: Array<SaltUi>
@@ -95,7 +96,7 @@ class Salts extends Component<SaltsProps, {}> {
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><Glyphicon glyph="unchecked"/> {qty + (s.name || "Salt #" + (idx + 1))}
+                <Panel.Title toggle className="clearfix"><SaltIcon fill="#000000"/> {qty + (s.name || "Salt #" + (idx + 1))}
                     <span className={"pull-right"}>
                                 <Button bsSize="xsmall" onClick={this.removeSalt.bind(this, idx)}><Glyphicon
                                     glyph="remove"/></Button>

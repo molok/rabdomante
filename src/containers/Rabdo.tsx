@@ -13,6 +13,7 @@ import {asyncFindRecipe} from "../Api";
 import {SolutionWaters} from "../components/SolutionWaters";
 import {SolutionSalts} from "../components/SolutionSalts";
 import {BottomAnchor} from "../components/BottomAnchor";
+import {SaltIcon} from "../components/SaltIcon";
 
 interface RabdoProps {
     target: WaterUi
@@ -29,6 +30,8 @@ interface RabdoProps {
     removeSalt: (idx: number) => void
     resultWaterChanged: (idx: number, w: WaterUi) => void
     resultSaltChanged: (idx: number, s: SaltUi) => void
+    recipeWaterChanged: (idx: number, w: WaterUi) => void
+    deltaWaterChanged: (idx: number, w: WaterUi) => void
     toggleScrollToSolution: () => void
 }
 
@@ -37,12 +40,22 @@ export const sToUi = (s: Salt): SaltUi => { return {...s, visible: false, custom
 
 class XRabdo extends Component<RabdoProps, {}> {
     renderSolution(solution: CalcResultUi) {
+        let recipe = solution.recipe.recipe ? [solution.recipe.recipe] : [];
+        let delta = solution.recipe.delta ? [solution.recipe.delta] : [];
         return (
             <>
+            <h3>Solution Ingredients</h3>
             <SolutionWaters waters={solution.recipe.waters} changedWater={this.props.resultWaterChanged}/>
             <SolutionSalts salts={solution.recipe.salts} saltChanged={this.props.resultSaltChanged}/>
+            <h3>Totals</h3>
+            <SolutionWaters waters={recipe} changedWater={this.props.recipeWaterChanged}/>
+            <SolutionWaters waters={delta} changedWater={this.props.deltaWaterChanged}/>
             </>
         )
+        // return (<>
+        //     <SolutionWaterTable waters={solution.recipe.waters} />
+        //
+        //     </>)
     }
 
     validLiters(): boolean {
@@ -52,24 +65,28 @@ class XRabdo extends Component<RabdoProps, {}> {
 
     render() {
         let resultComponent = this.props.result.solution ? (<>{this.renderSolution(this.props.result.solution)}</>) : (<></>);
+        let buttonMsg = this.props.result.running ? "Searching for the best combination..." : "Find the best combination";
 
         return (
             <div className="Rabdo container">
                 <PageHeader className={"text-center"}>Rabdomante <small>Water Profile Calculator</small></PageHeader>
                 <Form horizontal>
                     <FormGroup>
+                        <h3>Target</h3>
                         <TargetWater target={this.props.target} targetChanged={this.props.targetChanged} enoughLiters={this.validLiters()}/>
                     </FormGroup>
                     <FormGroup>
+                        <h3>Available Waters</h3>
                         <Waters waters={this.props.sources} removeWater={this.props.removeSource} changedWater={this.props.sourceChanged} enoughLiters={this.validLiters()} />
+                        <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/></Button>
+                        <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> Custom</Button>
+                        <h3>Available Salts</h3>
                         <Salts salts={this.props.salts} removeSalt={this.props.removeSalt} saltChanged={this.props.saltChanged} />
-                        <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> <Glyphicon glyph="list"/></Button>
-                        <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> <Glyphicon glyph="pencil"/></Button>
-                        <Button bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="unchecked"/></Button>
+                        <Button bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <SaltIcon fill="#000000"/></Button>
                     </FormGroup>
 
                     <FormGroup>
-                        <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> Cerca la combinazione migliore</Button>
+                        <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> {buttonMsg}</Button>
                     </FormGroup>
 
                     <FormGroup>
@@ -131,16 +148,21 @@ function mapDispatchToProps (dispatch: Function) {
         saltChanged: (idx: number, s: SaltUi) => { dispatch(Actions.changedSalt(idx, s))},
         removeSalt: (idx: number) => { dispatch(Actions.removeSalt(idx))},
         findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => {
+            dispatch(Actions.searchRunning(true));
             asyncFindRecipe(waters, salts, target)
                 .then(
                 (result: CalcResult) => {
+                    dispatch(Actions.searchRunning(false));
                     if (result && result.recipe) {
                         dispatch(Actions.findRecipeSuccess(
                             {
                                 recipe: {
                                     waters: (result.recipe) ? result.recipe.waters.map(w => wToUi(w)) : [],
                                     salts: (result.recipe) ? result.recipe.salts.map(s => sToUi(s)) : [],
-                                    distance: (result.recipe) ? result.recipe.distance : 0
+                                    distance: (result.recipe) ? result.recipe.distance : 0,
+                                    target: wToUi(result.recipe.target),
+                                    recipe: wToUi(result.recipe.recipe),
+                                    delta: wToUi(result.recipe.delta)
                                 },
                                 searchCompleted: result.searchCompleted,
                             }));
@@ -152,7 +174,9 @@ function mapDispatchToProps (dispatch: Function) {
         },
         resultWaterChanged: (idx: number, w: WaterUi) => { dispatch(Actions.solutionWaterChanged(idx, w))},
         resultSaltChanged: (idx: number, s: SaltUi) => { dispatch(Actions.solutionSaltChanged(idx, s))},
-        toggleScrollToSolution: () => { dispatch(Actions.toggleScrollToSolution())}
+        toggleScrollToSolution: () => { dispatch(Actions.toggleScrollToSolution())},
+        recipeWaterChanged: (idx: number, w: WaterUi) => {dispatch(Actions.recipeWaterChanged(w))},
+        deltaWaterChanged: (idx: number, w: WaterUi) => {dispatch(Actions.deltaWaterChanged(w))},
     }
 }
 

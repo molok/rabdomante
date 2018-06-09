@@ -27,12 +27,18 @@ export interface Recipe {
     readonly waters: Array<Water>,
     readonly salts: Array<Salt>
     readonly distance: number,
+    readonly target: Water,
+    readonly recipe: Water,
+    readonly delta: Water
 }
 
 export interface RecipeUi {
     readonly waters: Array<WaterUi>,
     readonly salts: Array<SaltUi>
     readonly distance: number,
+    readonly target: WaterUi|null,
+    readonly recipe: WaterUi|null,
+    readonly delta: WaterUi|null
 }
 
 export function water(name: string = "",
@@ -50,6 +56,7 @@ export function water(name: string = "",
 }
 
 export interface Result {
+    running: boolean
     solution: CalcResultUi|null,
     error: string|null,
     shouldScrollHere: boolean|null
@@ -83,5 +90,5 @@ export const defaultState:State =
         target: { ...water("target"), l:1 },
         sources: [{...water(), custom: false, l:1}],
         salts: [{...defaultSalt(), dg:1}],
-        result: { solution: null, error: null, shouldScrollHere: false }
+        result: { running: false, solution: null, error: null, shouldScrollHere: false }
     };

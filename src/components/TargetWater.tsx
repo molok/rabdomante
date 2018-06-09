@@ -18,7 +18,7 @@ class TargetWater extends Component<TargetWaterProps, {}> {
             <PanelGroup id="target_water">
             <Panel className={this.props.enoughLiters ? "" : "panel-danger"}>
                 <Panel.Heading>
-                    <Panel.Title ><Glyphicon glyph="flag"/> {qty + "Obiettivo"}</Panel.Title>
+                    <Panel.Title ><Glyphicon glyph="flag"/> {qty + "Target"}</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body>
                     <FormGroup className={this.props.enoughLiters ? "" : "has-error"}>
