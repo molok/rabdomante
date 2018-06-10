@@ -61,7 +61,7 @@ class Salts extends Component<SaltsProps, {}> {
         if (comboSelection == null || comboSelection.value == null) return;
         let x = KNOWN_SALTS[comboSelection.value];
         let newSalt:MineralContent = {
-            name: x.name,
+            name: x.name(),
             ca: x.ca,
             mg: x.mg,
             na: x.na,
@@ -129,7 +129,7 @@ class NameOrSelect extends Component<NameOrSelectProps, {}> {
                                  onChange={this.props.saltChanged.bind(this)}/>
                 </>);
         } else {
-            let options = KNOWN_SALTS.map((x, idx) => ({ label: x.name, value: idx }));
+            let options = KNOWN_SALTS.map((x, idx) => ({ label: x.name(), value: idx }));
             return (
                 <>
                     <Select clearable={false}
