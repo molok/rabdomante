@@ -56,9 +56,6 @@ class XRabdo extends Component<RabdoProps, {}> {
                 <h3>Totals</h3>
                 <SolutionWaters waters={recipe} changedWater={this.props.recipeWaterChanged}/>
                 <SolutionWaters skipQty waters={delta} changedWater={this.props.deltaWaterChanged}/>
-                    <div style={{textAlign: "center"}}>
-                    <small>{"Copyright \u00a9 2018 "}<a href={"mailto:rabdo@alebolo.33mail.com"}>Alessio Bolognino</a></small>
-                    </div>
                 </>
             )
         } else if (result.error) {
@@ -83,7 +80,10 @@ class XRabdo extends Component<RabdoProps, {}> {
 
         return (
             <div className="Rabdo container">
-                <PageHeader className={"text-center"}>Rabdomante <small>Water Profile Calculator</small></PageHeader>
+                <PageHeader className={"text-center"}>
+                    <img style={{verticalAlign: "middle"}} width="40" src={"./images/logo.png"}/>
+                    <span style={{verticalAlign: "middle"}}>Rabdomante </span>
+                    <span><small>Water Profile Calculator</small></span></PageHeader>
                 <Form horizontal>
                     <FormGroup>
                         <h3>Target</h3>
@@ -116,6 +116,9 @@ class XRabdo extends Component<RabdoProps, {}> {
                         <BottomAnchor toggleScroll={this.props.toggleScrollToSolution} shouldScrollToBottom={this.props.result.shouldScrollHere}/>
                     </FormGroup>
                 </Form>
+                <div style={{textAlign: "center"}}>
+                    <small>{"Copyright \u00a9 2018 "}<a href={"mailto:rabdo@alebolo.33mail.com"}>Alessio Bolognino</a></small>
+                </div>
             </div>
         )
     }
