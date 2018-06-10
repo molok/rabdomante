@@ -38,7 +38,7 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
     }
 
     saltToPanel(idx: number, s: SaltUi) {
-        let qty = (s.dg >= 0 ? s.dg + "g " : "");
+        let qty = (s.dg >= 0 ? s.dg + "dg " : "");
         return <Panel key={idx} eventKey={idx}
                       className="saltPanel panel-success"
                       expanded={this.props.salts[idx].visible}

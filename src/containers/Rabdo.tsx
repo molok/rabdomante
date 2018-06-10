@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {State, water, SaltUi, WaterUi, CalcResult, Water, Salt, RecipeUi, CalcResultUi, Result} from "../model/index";
+import {State, water, SaltUi, WaterUi, Result} from "../model/index";
 import {connect} from "react-redux";
-import {Button, ButtonGroup, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
+import {Button, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
 import './Rabdo.css'
 import { Actions } from "../actions";
 import 'react-select/dist/react-select.css'

@@ -1,6 +1,13 @@
 export const infiniteChar = "\u221e";
 
 export function qtyToNumber(svalue: string): number {
+    /* polyfill for IE */
+    if (!String.prototype.startsWith) {
+        String.prototype.startsWith = function(search, pos) {
+            return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
+        };
+    }
+
     var value = svalue;
     if (value.startsWith(infiniteChar) && value.length > 1) {
         value = value.replace(infiniteChar, "");
