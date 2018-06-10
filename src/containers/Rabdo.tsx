@@ -146,14 +146,14 @@ class XRabdo extends Component<RabdoProps, {}> {
 
     addCustomWater(e: any) {
         e.preventDefault();
-        var w = water();
+        var w = water("", Number.MAX_SAFE_INTEGER);
         w.custom = true;
         this.props.addWater(w);
     }
 
     addWater(e: any) {
         e.preventDefault();
-        var w = water();
+        var w = water("", Number.MAX_SAFE_INTEGER);
         w.custom = false;
         this.props.addWater(w);
     }

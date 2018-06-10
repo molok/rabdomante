@@ -2,6 +2,7 @@
   "name": "rabdo",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://s3-eu-west-1.amazonaws.com/rabdo-ui/",
   "dependencies": {
     "@types/lodash": "^4.14.105",
     "@types/prop-types": "^15.5.2",
