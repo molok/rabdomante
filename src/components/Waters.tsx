@@ -7,6 +7,8 @@ import MineralInput from "./MineralInput";
 import Select from 'react-select';
 import KNOWN_WATERS from '../data/known_waters'
 import {numberToQtyStr} from "./utils";
+import {translate} from "./Translate";
+import msg from "../i18n/msg";
 
 interface WatersProps {
     waters: Array<WaterUi>
@@ -29,7 +31,7 @@ class NameOrSelect extends Component<NameOrSelectProps, {}> {
         if (w.custom) {
             return (
                 <>
-                    <FormControl name="name" bsSize="small" type="text" placeholder=""
+                    <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
                                  value={w.name}
                                  onChange={this.props.changedWater.bind(this)}/>
                 </>);
@@ -39,6 +41,7 @@ class NameOrSelect extends Component<NameOrSelectProps, {}> {
                 <>
                     <Select clearable={false}
                             options={options}
+                            placeholder={translate(msg.select)}
                             onChange={this.props.knownWaterChanged.bind(this)}
                             value={options.map(w => w.label).indexOf(w.name)} /* FIXME */
                     />
@@ -99,7 +102,7 @@ class Waters extends Component<WatersProps, {}> {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
                 <Panel.Title toggle className="clearfix">
-                    <Glyphicon glyph="tint"/> {numberToQtyStr(w.l, "L") + " " + (w.name || "Base Water #" + (idx + 1))}
+                    <Glyphicon glyph="tint"/> {numberToQtyStr(w.l, "L") + " " + (w.name || translate(msg.baseWater) + " #" + (idx + 1))}
                     <span className={"pull-right"}>
                         <Button bsSize="xsmall" onClick={this.removeSource.bind(this, idx)}><Glyphicon glyph="remove"/></Button>
                     </span>
@@ -108,7 +111,7 @@ class Waters extends Component<WatersProps, {}> {
             <Panel.Body collapsible>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>Name</Col>
+                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
                         <Col sm={4}>
                             <NameOrSelect w={w} idx={idx}
                                           changedWater={this.sourceChanged.bind(this, idx, "name")}
@@ -117,7 +120,7 @@ class Waters extends Component<WatersProps, {}> {
                         </Col>
                         <div className={this.props.enoughLiters ? "" : "has-warning"}>
                         <MineralInput
-                            label="liters" symbol="L"
+                            label={translate(msg.liters)} symbol="L"
                             value={w.l}
                             onChange={this.attrChanged.bind(this, idx, "l")}
                             minValue={1}

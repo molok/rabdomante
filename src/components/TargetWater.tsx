@@ -4,6 +4,8 @@ import {FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
 import {WaterUi} from "../model/index";
 import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
+import {translate} from "./Translate";
+import msg from "../i18n/msg";
 
 interface TargetWaterProps {
     target: WaterUi,
@@ -18,13 +20,13 @@ class TargetWater extends Component<TargetWaterProps, {}> {
             <PanelGroup id="target_water">
             <Panel className={this.props.enoughLiters ? "" : "panel-danger"}>
                 <Panel.Heading>
-                    <Panel.Title ><Glyphicon glyph="flag"/> {qty + "Target"}</Panel.Title>
+                    <Panel.Title ><Glyphicon glyph="flag"/> {qty + translate(msg.target)}</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body>
                     <FormGroup className={this.props.enoughLiters && this.props.target.l >= 1 ? "" : "has-error"}>
                         <Row>
                             <MineralInput
-                                label="liters" symbol="L"
+                                label={translate(msg.liters)} symbol="L"
                                 value={this.props.target.l}
                                 onChange={this.targetChanged.bind(this, "l")}
                                 editable

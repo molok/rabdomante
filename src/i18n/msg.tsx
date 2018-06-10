@@ -5,19 +5,40 @@ export interface TranslatedMessage {
     it: string,
     en: string
 }
-const messages = {
-    welcome: {
-        it: "Benvenuto",
-        en: "Welcome",
-    },
-    searching: {
-        it: "Ricerca della combinazione migliore...",
-        en: "Searching for the best combination...",
-    },
-    find: {
-        it: "Cerca la combinazione migliore",
-        en: "Find the best combination",
-    },
+const msg = {
+    welcome: { it: "Benvenuto", en: "Welcome", },
+    searching: { it: "Ricerca della combinazione migliore...", en: "Searching for the best combination...", },
+    find: { it: "Cerca la combinazione migliore", en: "Find the best combination", },
+    subtitle: { it: "Water Profile Calculator", en: "Water Profile Calculator" },
+    target: { it: "Obiettivo", en: "Target" },
+    liters: { it: "litri", en: "liters"},
+    calcium: { it: "calcio", en: "calcium"},
+    magnesium: { it: "magnesio", en: "magnesium"},
+    bicarbonates: { it: "bicarbonati", en: "bicarbonates"},
+    sodium: { it: "sodio", en: "sodium"},
+    chloride: { it: "cloruri", en: "chloride"},
+    sulfate: { it: "solfati", en: "sulfate"},
+    availableWaters: {it: "Acque Disponibili", en: "Available Waters"},
+    availableSalts: {it: "Sali Disponibili", en: "Available Salts"},
+    baseWater: {it: "Acqua Base", en: "Base Water"},
+    salt: {it: "Sale", en: "Salt"},
+    decigrams: { it: "Decigrammi", en: "Decigrams"},
+    clearAll: { it: "Azzera tutto", en: "Clear All"},
+    custom: { it: "Personalizzata", en: "Custom"},
+    name: { it: "Nome", en: "Name"},
+    select: { it: "Seleziona...", en: "Select..."},
+    solutionIngredients: { it: "Ingredienti della Soluzione", en: "Solution Ingredients"},
+    totals: { it: "Totali", en: "Totals"},
+    delta: { it: "Distanza dall'obiettivo", en: "Distance from target"},
+    recipe: { it: "Ricetta", en: "Recipe"},
+    tableSalt: { it: "Sale da cucina", en: "Table Salt"},
+    gypsum: { it: "Gypsum", en: "Gypsum"},
+    epsomSalt: { it: "Solfato di Magnesio (Sali di Epsom)", en: "Epsom Salt"},
+    calciumChloride: { it: "Cloruro di Calcio", en: "Calcium Chloride"},
+    bakingSoda: { it: "Bicarbonato di Sodio", en: "Baking Soda"},
+    chalk: { it: "Chalk", en: "Chalk"},
+    picklingLime: { it: "Pickling Lime", en: "Pickling Lime"},
+    magnesiumChloride: { it: "Cloruro di Magnesio", en: "Magnesium Chloride"},
 };
 
 interface FlagProps {
@@ -71,4 +92,4 @@ export class FlagEn extends Component<FlagProps, {}> {
 }
 
 
-export default messages
+export default msg

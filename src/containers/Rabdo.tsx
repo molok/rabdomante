@@ -16,7 +16,7 @@ import {SaltIcon} from "../components/SaltIcon";
 import * as ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import * as Alert from "react-bootstrap/lib/Alert";
 import Translate, {translate} from "../components/Translate";
-import msg, {FlagEn, FlagIta} from "../i18n/messages";
+import msg, {FlagEn, FlagIta} from "../i18n/msg";
 
 interface RabdoProps {
     target: WaterUi
@@ -54,10 +54,10 @@ class XRabdo extends Component<RabdoProps, {}> {
             return (
                 <>
                 {incomplete}
-                <h3>Solution Ingredients</h3>
+                <h3>{translate(msg.solutionIngredients)}</h3>
                 <SolutionWaters waters={solution.recipe.waters} changedWater={this.props.resultWaterChanged}/>
                 <SolutionSalts salts={solution.recipe.salts} saltChanged={this.props.resultSaltChanged}/>
-                <h3>Totals</h3>
+                <h3>{translate(msg.totals)}</h3>
                 <SolutionWaters waters={recipe} changedWater={this.props.recipeWaterChanged}/>
                 <SolutionWaters skipQty waters={delta} changedWater={this.props.deltaWaterChanged}/>
                 </>
@@ -87,7 +87,7 @@ class XRabdo extends Component<RabdoProps, {}> {
                 <PageHeader className={"text-center"}>
                     <img style={{verticalAlign: "middle"}} width="40" src={"./images/logo.png"}/>
                     <span style={{verticalAlign: "middle"}}>Rabdomante </span>
-                    <span><small>Water Profile Calculator</small></span>
+                    <span><small>{translate(msg.subtitle)}</small></span>
                     <span className="pull-right" >
                         <span style={{paddingRight: 5}}>
                             <FlagIta onClick={this.props.changeLang.bind(this, "it")} selected={this.props.lang === "it"}/>
@@ -99,11 +99,11 @@ class XRabdo extends Component<RabdoProps, {}> {
                 </PageHeader>
                 <Form horizontal>
                     <FormGroup>
-                        <h3>Target</h3>
+                        <h3>{translate(msg.target)}</h3>
                         <TargetWater target={this.props.target} targetChanged={this.props.targetChanged} enoughLiters={this.validLiters()}/>
                     </FormGroup>
                     <FormGroup>
-                        <h3>Available Waters</h3>
+                        <h3>{translate(msg.availableWaters)}</h3>
                         <Waters waters={this.props.sources}
                                 removeWater={this.props.removeSource}
                                 changedWater={this.props.sourceChanged}
@@ -111,8 +111,8 @@ class XRabdo extends Component<RabdoProps, {}> {
                                 supportInfinite
                         />
                         <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/></Button>
-                        <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> Custom</Button>
-                        <h3>Available Salts</h3>
+                        <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> {translate(msg.custom)}</Button>
+                        <h3>{translate(msg.availableSalts)}</h3>
                         <Salts supportInfinite salts={this.props.salts} removeSalt={this.props.removeSalt} saltChanged={this.props.saltChanged} />
                         <Button bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <SaltIcon fill="#000000"/></Button>
                     </FormGroup>
@@ -120,7 +120,7 @@ class XRabdo extends Component<RabdoProps, {}> {
                     <FormGroup>
                         <ButtonToolbar>
                             <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> {buttonMsg}</Button>
-                            <Button className="pull-right" bsStyle="danger" onClick={this.clearState.bind(this)}><Glyphicon glyph="repeat"/> Clear all</Button>
+                            <Button className="pull-right" bsStyle="danger" onClick={this.clearState.bind(this)}><Glyphicon glyph="repeat"/> {translate(msg.clearAll)}</Button>
                         </ButtonToolbar>
                     </FormGroup>
 

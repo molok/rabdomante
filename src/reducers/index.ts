@@ -142,11 +142,9 @@ const langReducer = (lang: string|null|undefined, action: Actions): string|null|
             break;
     }
     if (!newLang) {
-        console.log("xxx", newLang)
         newLang = navigator.language.toLowerCase().split("-")[0];
     }
     newLang = (["it", "en"].indexOf(newLang) > -1) ? newLang : "en";
-    console.log("newlang", newLang)
     return newLang;
 };
 

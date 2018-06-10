@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {TranslatedMessage} from '../i18n/messages'
+import {TranslatedMessage} from '../i18n/msg'
 
 interface TranslateProps {
     msg: TranslatedMessage
@@ -21,6 +21,7 @@ export const translate = (msg:TranslatedMessage) => {
     if (!lang) {
         lang = "en";
     }
+
     var res = msg[lang];
     return res ? res : msg + " (translation missing)";
 }

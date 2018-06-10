@@ -4,6 +4,8 @@ import {Col, ControlLabel, FormControl, FormGroup, Glyphicon, Panel, PanelGroup,
 import {WaterUi} from "../model/index";
 import MineralForm from "./MineralForm";
 import MineralInput from "./MineralInput";
+import {translate} from "./Translate";
+import msg from "../i18n/msg";
 
 interface WatersProps {
     waters: Array<WaterUi>
@@ -53,13 +55,13 @@ export class SolutionWaters extends Component<WatersProps, {}> {
             <Panel.Body collapsible>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>Name</Col>
+                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
                         <Col sm={4}>
-                            <FormControl name="name" bsSize="small" type="text" placeholder=""
+                            <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
                                          value={w.name} onChange={() => {}} />
                         </Col>
                         <MineralInput
-                            label="liters" symbol="L"
+                            label={translate(msg.liters)} symbol="L"
                             value={w.l}
                             onChange={() => {}}
                             editable={false} />

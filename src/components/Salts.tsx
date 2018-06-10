@@ -13,6 +13,8 @@ import {KNOWN_SALTS} from "../data/known_salts";
 import Select from 'react-select';
 import {SaltIcon} from "./SaltIcon";
 import {numberToQtyStr, qtyToNumber} from "./utils";
+import {translate} from "./Translate";
+import msg from "../i18n/msg";
 
 interface SaltsProps {
     salts: Array<SaltUi>
@@ -78,7 +80,7 @@ class Salts extends Component<SaltsProps, {}> {
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><SaltIcon fill="#000000"/> {numberToQtyStr(s.dg, "dg") + " " + (s.name || "Salt #" + (idx + 1))}
+                <Panel.Title toggle className="clearfix"><SaltIcon fill="#000000"/> {numberToQtyStr(s.dg, "dg") + " " + (s.name || translate(msg.salt) + " #" + (idx + 1))}
                     <span className={"pull-right"}>
                                 <Button bsSize="xsmall" onClick={this.removeSalt.bind(this, idx)}><Glyphicon
                                     glyph="remove"/></Button>
@@ -88,14 +90,14 @@ class Salts extends Component<SaltsProps, {}> {
             <Panel.Body collapsible>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>Name</Col>
+                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
                         <Col sm={4}>
                             <NameOrSelect w={s} idx={idx}
                                           saltChanged={this.saltChanged.bind(this, idx, "name")}
                                           knownSaltChanged={this.knownSaltChanged.bind(this, idx, s)} />
                         </Col>
                         <MineralInput
-                            label="Decigrams" symbol="dg"
+                            label={translate(msg.decigrams)} symbol="dg"
                             value={s.dg}
                             supportInfinite
                             minValue={1}
@@ -122,7 +124,7 @@ class NameOrSelect extends Component<NameOrSelectProps, {}> {
         if (w.custom) {
             return (
                 <>
-                    <FormControl name="name" bsSize="small" type="text" placeholder=""
+                    <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder={translate(msg.select)}
                                  value={w.name}
                                  onChange={this.props.saltChanged.bind(this)}/>
                 </>);
@@ -132,6 +134,7 @@ class NameOrSelect extends Component<NameOrSelectProps, {}> {
                 <>
                     <Select clearable={false}
                             options={options}
+                            placeholder={translate(msg.select)}
                             onChange={this.props.knownSaltChanged.bind(this)}
                             value={options.map(w => w.label).indexOf(w.name)} /* FIXME */
                     />

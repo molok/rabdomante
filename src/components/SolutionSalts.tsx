@@ -10,6 +10,8 @@ import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
 import {Component} from "react";
 import {SaltIcon} from "./SaltIcon";
+import {translate} from "./Translate";
+import msg from "../i18n/msg";
 
 interface SolutionSaltsProps {
     salts: Array<SaltUi>
@@ -50,14 +52,14 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
             <Panel.Body collapsible>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>Name</Col>
+                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
                         <Col sm={4}>
-                            <FormControl name="name" bsSize="small" type="text" placeholder=""
+                            <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
                                          value={s.name}
                                          onChange={() => {}} />
                         </Col>
                         <MineralInput
-                            label="Decigrams" symbol="dg"
+                            label={translate(msg.decigrams)} symbol="dg"
                             value={s.dg}
                             onChange={this.attrChanged.bind(this, idx, "dg")}
                             editable={false} />

@@ -8,6 +8,7 @@ import {defaultState, State} from "./model";
 import {reducers} from "./reducers/index";
 import {apiMiddleware, filterMiddleware} from "./middlewares";
 import {TranslateConf} from "./components/Translate";
+import {Actions} from "./actions";
 
 const loadState = ():State => {
     try {
@@ -40,6 +41,8 @@ store.subscribe(() => {
 store.subscribe(() => {
     TranslateConf.usrLang = store.getState().lang;
 });
+
+store.dispatch(Actions.loadedFromStorage());
 
 function render() {
     ReactDOM.render(

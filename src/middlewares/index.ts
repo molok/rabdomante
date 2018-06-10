@@ -1,6 +1,8 @@
 import {CalcResult, Salt, SaltUi, State, Water, WaterUi} from "../model";
 import {Actions, ActionTypes} from "../actions";
 import {asyncFindRecipe} from "../Api";
+import {translate} from "../components/Translate";
+import msg from "../i18n/msg";
 
 export const wToUi = (w: Water, name?: string): WaterUi => { return {...w, visible: false, custom: true, name: (name) ? name : w.name} };
 export const sToUi = (s: Salt): SaltUi => { return {...s, visible: false, custom: true} };
@@ -22,8 +24,8 @@ export const apiMiddleware = (store: {getState(): State, dispatch(action: Action
                                         salts: (result.recipe) ? result.recipe.salts.map(s => sToUi(s)) : [],
                                         distance: (result.recipe) ? result.recipe.distance : 0,
                                         target: wToUi(result.recipe.target),
-                                        recipe: wToUi(result.recipe.recipe, "Recipe"),
-                                        delta: wToUi(result.recipe.delta, "Delta")
+                                        recipe: wToUi(result.recipe.recipe, translate(msg.recipe)),
+                                        delta: wToUi(result.recipe.delta, translate(msg.delta))
                                     },
                                     searchCompleted: result.searchCompleted,
                                 }));
@@ -49,6 +51,7 @@ export const filterMiddleware = (store: {getState(): State, dispatch(action: Act
             case ActionTypes.CLEAR_STATE:
                 next(action);
         }
+    } else {
+        next(action);
     }
-    next(action);
 };

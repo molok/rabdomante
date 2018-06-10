@@ -21,6 +21,7 @@ export enum ActionTypes {
     FIND_START = 'FIND_START',
     CLEAR_STATE = 'CLEAR_STATE',
     CHANGE_LANG = 'CHANGE_LANG',
+    LOADED_FROM_STORAGE = 'LOADED_FROM_STORAGE',
 }
 
 export const Actions = {
@@ -45,6 +46,7 @@ export const Actions = {
     findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => createAction(ActionTypes.FIND_START, {waters, salts, target}),
     clearState: () => createAction(ActionTypes.CLEAR_STATE),
     changeLang: (lang:string) => createAction(ActionTypes.CHANGE_LANG, lang),
+    loadedFromStorage: () => createAction(ActionTypes.LOADED_FROM_STORAGE),
 };
 
 export type Actions = ActionUnions<typeof Actions>
