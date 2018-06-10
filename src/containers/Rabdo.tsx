@@ -15,6 +15,8 @@ import {BottomAnchor} from "../components/BottomAnchor";
 import {SaltIcon} from "../components/SaltIcon";
 import * as ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import * as Alert from "react-bootstrap/lib/Alert";
+import Translate, {translate} from "../components/Translate";
+import msg, {FlagEn, FlagIta} from "../i18n/messages";
 
 interface RabdoProps {
     target: WaterUi
@@ -35,6 +37,8 @@ interface RabdoProps {
     deltaWaterChanged: (idx: number, w: WaterUi) => void
     toggleScrollToSolution: () => void
     clearState: () => void
+    changeLang: (lang: string) => void
+    lang: string
 }
 
 class XRabdo extends Component<RabdoProps, {}> {
@@ -76,14 +80,23 @@ class XRabdo extends Component<RabdoProps, {}> {
 
     render() {
         let resultComponent = this.props.result ? (<>{this.renderSolution(this.props.result)}</>) : (<></>);
-        let buttonMsg = this.props.result.running ? "Searching for the best combination..." : "Find the best combination";
+        let buttonMsg = this.props.result.running ? translate(msg.searching) : translate(msg.find);
 
         return (
             <div className="Rabdo container">
                 <PageHeader className={"text-center"}>
                     <img style={{verticalAlign: "middle"}} width="40" src={"./images/logo.png"}/>
                     <span style={{verticalAlign: "middle"}}>Rabdomante </span>
-                    <span><small>Water Profile Calculator</small></span></PageHeader>
+                    <span><small>Water Profile Calculator</small></span>
+                    <span className="pull-right" >
+                        <span style={{paddingRight: 5}}>
+                            <FlagIta onClick={this.props.changeLang.bind(this, "it")} selected={this.props.lang === "it"}/>
+                        </span>
+                        <span>
+                            <FlagEn onClick={this.props.changeLang.bind(this, "en")} selected={this.props.lang === "en"}/>
+                        </span>
+                    </span>
+                </PageHeader>
                 <Form horizontal>
                     <FormGroup>
                         <h3>Target</h3>
@@ -184,7 +197,11 @@ function mapDispatchToProps (dispatch: Function) {
         toggleScrollToSolution: () => { dispatch(Actions.toggleScrollToSolution())},
         recipeWaterChanged: (idx: number, w: WaterUi) => {dispatch(Actions.recipeWaterChanged(w))},
         deltaWaterChanged: (idx: number, w: WaterUi) => {dispatch(Actions.deltaWaterChanged(w))},
-        clearState: () => { dispatch(Actions.clearState())}
+        clearState: () => { dispatch(Actions.clearState())},
+        changeLang: (lang: string) =>  {
+            let xlang = lang.toLowerCase();
+            dispatch(Actions.changeLang(xlang === "gb" ? "en" : xlang))
+        },
     }
 }
 

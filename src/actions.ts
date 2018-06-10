@@ -20,6 +20,7 @@ export enum ActionTypes {
     FIND_RUNNING ='FIND_RUNNING',
     FIND_START = 'FIND_START',
     CLEAR_STATE = 'CLEAR_STATE',
+    CHANGE_LANG = 'CHANGE_LANG',
 }
 
 export const Actions = {
@@ -43,6 +44,7 @@ export const Actions = {
     searchRunning: (v: boolean) => createAction(ActionTypes.FIND_RUNNING, v),
     findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => createAction(ActionTypes.FIND_START, {waters, salts, target}),
     clearState: () => createAction(ActionTypes.CLEAR_STATE),
+    changeLang: (lang:string) => createAction(ActionTypes.CHANGE_LANG, lang),
 };
 
 export type Actions = ActionUnions<typeof Actions>

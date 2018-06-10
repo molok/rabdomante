@@ -129,7 +129,26 @@ const clearReducer = (state: State, action: Actions) => {
         default:
             return state
     }
-}
+};
+
+const langReducer = (lang: string|null|undefined, action: Actions): string|null|undefined => {
+    let newLang;
+    switch (action.type) {
+        case ActionTypes.CHANGE_LANG:
+            newLang = action.payload;
+            break;
+        default:
+            newLang = lang;
+            break;
+    }
+    if (!newLang) {
+        console.log("xxx", newLang)
+        newLang = navigator.language.toLowerCase().split("-")[0];
+    }
+    newLang = (["it", "en"].indexOf(newLang) > -1) ? newLang : "en";
+    console.log("newlang", newLang)
+    return newLang;
+};
 
 function coreReducer(state: State, action: any): State {
     console.log("action", action, "state before:", state);
@@ -141,6 +160,7 @@ function coreReducer(state: State, action: any): State {
         sources: sourceReducer(nextState.sources, action),
         target: targetReducer(nextState.target, action),
         salts: saltReducer(nextState.salts, action),
+        lang: langReducer(nextState.lang, action),
     };
     nextState = {
         ...nextState,

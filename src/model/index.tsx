@@ -67,6 +67,7 @@ export interface State {
     readonly sources: Array<WaterUi>
     readonly salts: Array<SaltUi>
     readonly result: Result
+    readonly lang?: string|null
 }
 
 export const defaultSalt = ():SaltUi => {

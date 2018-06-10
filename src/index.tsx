@@ -7,6 +7,7 @@ import Rabdo from "./containers/Rabdo";
 import {defaultState, State} from "./model";
 import {reducers} from "./reducers/index";
 import {apiMiddleware, filterMiddleware} from "./middlewares";
+import {TranslateConf} from "./components/Translate";
 
 const loadState = ():State => {
     try {
@@ -34,6 +35,10 @@ const saveState = (state: State) => {
 
 store.subscribe(() => {
     saveState(store.getState())
+});
+
+store.subscribe(() => {
+    TranslateConf.usrLang = store.getState().lang;
 });
 
 function render() {
