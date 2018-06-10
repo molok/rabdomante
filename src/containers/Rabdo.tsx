@@ -56,6 +56,9 @@ class XRabdo extends Component<RabdoProps, {}> {
                 <h3>Totals</h3>
                 <SolutionWaters waters={recipe} changedWater={this.props.recipeWaterChanged}/>
                 <SolutionWaters skipQty waters={delta} changedWater={this.props.deltaWaterChanged}/>
+                    <div style={{textAlign: "center"}}>
+                    <small>{"Copyright \u00a9 2018 "}<a href={"mailto:rabdo@alebolo.33mail.com"}>Alessio Bolognino</a></small>
+                    </div>
                 </>
             )
         } else if (result.error) {
