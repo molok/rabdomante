@@ -50,10 +50,10 @@ class MineralInput extends React.Component<MineralInputProps, {}> {
     }
 
     render() {
-        let show = this.titleCase(this.props.label) + (this.props.symbol ? " (" + this.props.symbol + ")" : "");
+        let show = this.titleCase(this.props.label) + " ";
         return (
             <>
-                <Col componentClass={ControlLabel} sm={2}>{show}</Col>
+                <Col componentClass={ControlLabel} sm={2}>{show}<small style={{color: "#666666", fontWeight: "lighter"}}>({this.props.symbol})</small></Col>
                 <Col sm={1}>
                     <FormControl value={this.toUiValue(this.props.value)}
                                  bsSize="small"

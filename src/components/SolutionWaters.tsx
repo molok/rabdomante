@@ -59,7 +59,7 @@ export class SolutionWaters extends Component<WatersProps, {}> {
                                          value={w.name} onChange={() => {}} />
                         </Col>
                         <MineralInput
-                            label="litri" symbol="L"
+                            label="liters" symbol="L"
                             value={w.l}
                             onChange={() => {}}
                             editable={false} />

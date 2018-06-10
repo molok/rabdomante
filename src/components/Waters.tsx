@@ -117,7 +117,7 @@ class Waters extends Component<WatersProps, {}> {
                         </Col>
                         <div className={this.props.enoughLiters ? "" : "has-warning"}>
                         <MineralInput
-                            label="litri" symbol="L"
+                            label="liters" symbol="L"
                             value={w.l}
                             onChange={this.attrChanged.bind(this, idx, "l")}
                             minValue={1}

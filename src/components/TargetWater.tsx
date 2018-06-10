@@ -24,7 +24,7 @@ class TargetWater extends Component<TargetWaterProps, {}> {
                     <FormGroup className={this.props.enoughLiters && this.props.target.l >= 1 ? "" : "has-error"}>
                         <Row>
                             <MineralInput
-                                label="litri" symbol="L"
+                                label="liters" symbol="L"
                                 value={this.props.target.l}
                                 onChange={this.targetChanged.bind(this, "l")}
                                 editable
