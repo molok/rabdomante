@@ -1,6 +1,7 @@
-# rabdomante
+Rabdomante
+==========
 
-Rabdomante (Rhabdomancer in Italian) is a Java application that helps you finding the optimal mix of waters and salts to match a target water profile: 
+Rabdomante (Rhabdomancer in Italian) is an application that helps you finding the optimal mix of waters and salts to match a target water profile: 
 given a list of waters and salts rabdomante finds the combination closest to the target.
 
 The distance from the target profile is derived from this components:
@@ -11,6 +12,15 @@ The distance from the target profile is derived from this components:
 * Sulfate (SO4)
 * Chloride (Cl)
 * Bicarbonates (HCO3)
+
+## Demo
+
+You can see it in action here: https://molok.github.io/
+
+In this version the computing time is capped to 30 seconds, so it might not give the optimal
+result if given a lot of variables.
+
+## Code
 
 It started as a CLI application, then I added a desktop application (JavaFX).
 Then I realized it would be most useful on the web so, so I created a REST API 
@@ -34,4 +44,4 @@ Mostyl useful for homebrewing, maybe more. It supports the English and Italian l
 
 Rabdomante is released under the AGPL3, if you need a less restrictive license feel free to contact me at [alessio.bolognino+rabdo@gmail.com](mailto:alessio.bolognino+rabdo@gmail.com)
 
-Under the hood rabdomante uses [Choco Solver](https://github.com/chocoteam/choco-solver)
+Under the hood rabdomante uses the excellent [Choco Solver](https://github.com/chocoteam/choco-solver)
