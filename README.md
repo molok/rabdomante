@@ -15,7 +15,7 @@ The distance from the target profile is derived from this components:
 
 ## Demo
 
-You can see it in action here: https://molok.github.io/
+You can see it in action here: [molok.github.io](https://molok.github.io)
 
 In this version the computing time is capped to 30 seconds, so it might not give the optimal
 result if given a lot of variables.
