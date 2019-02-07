@@ -2,10 +2,10 @@ import * as React from 'react';
 import {Component} from 'react';
 import {State, water, SaltUi, WaterUi, Result} from "../model/index";
 import {connect} from "react-redux";
-import {Button, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
+import {Button, Form, FormGroup, ButtonGroup, Container} from "react-bootstrap";
 import './Rabdo.css'
 import { Actions } from "../actions";
-import 'react-select/dist/react-select.css'
+// import 'react-select/dist/react-select.css'
 import TargetWater from "../components/TargetWater";
 import Waters from "../components/Waters";
 import Salts from "../components/Salts";
@@ -13,10 +13,10 @@ import {SolutionWaters} from "../components/SolutionWaters";
 import {SolutionSalts} from "../components/SolutionSalts";
 import {BottomAnchor} from "../components/BottomAnchor";
 import {SaltIcon} from "../components/SaltIcon";
-import * as ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
-import * as Alert from "react-bootstrap/lib/Alert";
-import Translate, {translate} from "../components/Translate";
+import {translate} from "../components/Translate";
 import msg, {FlagEn, FlagIta} from "../i18n/msg";
+import Alert from "react-bootstrap/Alert";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 interface RabdoProps {
     target: WaterUi
@@ -41,14 +41,14 @@ interface RabdoProps {
     lang: string
 }
 
-class XRabdo extends Component<RabdoProps, {}> {
+class XRabdo extends Component<RabdoProps, State> {
     renderSolution(result: Result) {
         if (result.solution) {
             let solution = result.solution;
             let recipe = solution.recipe.recipe ? [solution.recipe.recipe] : [];
             let delta = solution.recipe.delta ? [solution.recipe.delta] : [];
             let incomplete  = solution.searchCompleted ? <></> :
-                              <Alert bsStyle="warning">
+                              <Alert variant="warning">
                                   <p>Search was interrupted for taking too long, the result might no be optimal</p>
                               </Alert>;
             return (
@@ -64,7 +64,7 @@ class XRabdo extends Component<RabdoProps, {}> {
             )
         } else if (result.error) {
             return (
-                <Alert bsStyle="danger">
+                <Alert variant="danger">
                     <p>Problem: {result.error}</p>
                 </Alert>
             )
@@ -84,7 +84,7 @@ class XRabdo extends Component<RabdoProps, {}> {
 
         return (
             <div className="Rabdo container">
-                <PageHeader className={"text-center"}>
+                <Container className={"text-center"}>
                     <img style={{verticalAlign: "middle"}} width="40" src={"./images/logo.png"}/>
                     <span style={{verticalAlign: "middle"}}>Rabdomante </span>
                     <span><small>{translate(msg.subtitle)}</small></span>
@@ -96,8 +96,8 @@ class XRabdo extends Component<RabdoProps, {}> {
                             <FlagEn onClick={this.props.changeLang.bind(this, "en")} selected={this.props.lang === "en"}/>
                         </span>
                     </span>
-                </PageHeader>
-                <Form horizontal>
+                </Container>
+                <Form>
                     <FormGroup>
                         <h3>{translate(msg.target)}</h3>
                         <TargetWater target={this.props.target} targetChanged={this.props.targetChanged} enoughLiters={this.validLiters()}/>
@@ -110,18 +110,19 @@ class XRabdo extends Component<RabdoProps, {}> {
                                 enoughLiters={this.validLiters()}
                                 supportInfinite
                         />
-                        <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/></Button>
-                        <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> {translate(msg.custom)}</Button>
+
+                        <Button size="sm" onClick={this.addWater.bind(this)}><FontAwesomeIcon icon="plus"/> <FontAwesomeIcon icon="tint"/></Button>
+                        <Button size="sm" onClick={this.addCustomWater.bind(this)}><FontAwesomeIcon icon="plus"/> <FontAwesomeIcon icon="tint"/> {translate(msg.custom)}</Button>
                         <h3>{translate(msg.availableSalts)}</h3>
                         <Salts supportInfinite salts={this.props.salts} removeSalt={this.props.removeSalt} saltChanged={this.props.saltChanged} />
-                        <Button bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <SaltIcon fill="#000000"/></Button>
+                        <Button size="sm" onClick={this.addSalt.bind(this)}><FontAwesomeIcon icon="plus"/> <SaltIcon fill="#000000"/></Button>
                     </FormGroup>
 
                     <FormGroup>
-                        <ButtonToolbar>
-                            <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> {buttonMsg}</Button>
-                            <Button className="pull-right" bsStyle="danger" onClick={this.clearState.bind(this)}><Glyphicon glyph="repeat"/> {translate(msg.clearAll)}</Button>
-                        </ButtonToolbar>
+                        <ButtonGroup>
+                            <Button type="submit" variant="primary"  onClick={this.findRecipe.bind(this)}><FontAwesomeIcon icon="play"/> {buttonMsg}</Button>
+                            <Button className="pull-right" variant="danger" onClick={this.clearState.bind(this)}><FontAwesomeIcon icon="repeat"/> {translate(msg.clearAll)}</Button>
+                        </ButtonGroup>
                     </FormGroup>
 
                     <FormGroup>
@@ -205,9 +206,5 @@ function mapDispatchToProps (dispatch: Function) {
     }
 }
 
-let Rabdo = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(XRabdo);
-
-export default Rabdo;
+// @ts-ignore
+export default connect( mapStateToProps, mapDispatchToProps )(XRabdo);

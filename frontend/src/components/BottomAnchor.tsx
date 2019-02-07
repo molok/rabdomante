@@ -7,7 +7,7 @@ interface BottomAnchorProps {
 }
 
 export class BottomAnchor extends Component<BottomAnchorProps> {
-    private node: HTMLDivElement | null;
+    private node: HTMLDivElement | null = null;
     render() {
         return <div ref={node => this.node = node} />
     }

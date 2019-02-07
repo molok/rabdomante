@@ -1,5 +1,6 @@
 import {defaultState, SaltUi, State, WaterUi} from "../model/index";
 import {Actions, ActionTypes} from "../actions";
+import {Reducer} from "redux";
 
 function saltReducer(salts: Array<SaltUi>, action: Actions): Array<SaltUi> {
     switch (action.type) {
@@ -151,7 +152,7 @@ const langReducer = (lang: string|null|undefined, action: Actions): string|null|
 function coreReducer(state: State, action: any): State {
     console.log("action", action, "state before:", state);
 
-    var nextState = clearReducer(state, action);
+    let nextState:State = clearReducer(state, action);
 
     nextState = {
         ...nextState,
@@ -169,6 +170,6 @@ function coreReducer(state: State, action: any): State {
     return nextState;
 }
 
-export function reducers (state: State, action: any): State {
+export function reducers (state: State = defaultState(), action: any): State {
     return coreReducer(state, action);
 }

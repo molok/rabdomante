@@ -1,11 +1,13 @@
 import * as React from 'react'
 import {Component} from 'react';
-import {Col, ControlLabel, FormControl, FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
+import {Col, FormLabel, FormControl, FormGroup, Container, Row} from "react-bootstrap";
 import {WaterUi} from "../model/index";
 import MineralForm from "./MineralForm";
 import MineralInput from "./MineralInput";
 import {translate} from "./Translate";
 import msg from "../i18n/msg";
+import Card from "react-bootstrap/Card";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 interface WatersProps {
     waters: Array<WaterUi>
@@ -28,9 +30,9 @@ export class SolutionWaters extends Component<WatersProps, {}> {
             .map((w: WaterUi, idx: number) => this.waterToPanel(idx, w));
 
         return (
-            <PanelGroup id="solution_waters">
+            <Container id="solution_waters">
                 {res}
-            </PanelGroup>
+            </Container>
         );
     }
 
@@ -42,22 +44,21 @@ export class SolutionWaters extends Component<WatersProps, {}> {
             qty = (w.l >= 0 ? w.l + "L " : "");
         }
 
-        return <Panel key={idx} eventKey={idx}
+        return <Card key={idx}
                       className="waterPanel panel-success"
-                      expanded={this.props.waters[idx].visible}
-                      onToggle={(ignored: any) => {
-                      }}>
-            <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix">
-                    <Glyphicon glyph="tint"/> {qty + w.name}
-                </Panel.Title>
-            </Panel.Heading>
-            <Panel.Body collapsible>
+                      // expanded={this.props.waters[idx].visible}
+                      >
+            <Card.Header onClick={this.togglePanel.bind(this, idx)}>
+                <Card.Title className="clearfix">
+                    <FontAwesomeIcon icon="tint"/> {qty + w.name}
+                </Card.Title>
+            </Card.Header>
+            <Card.Body>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
+                        <Col as={FormLabel} sm={2}>{translate(msg.name)}</Col>
                         <Col sm={4}>
-                            <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
+                            <FormControl name={translate(msg.name)} size="sm" type="text" placeholder=""
                                          value={w.name} onChange={() => {}} />
                         </Col>
                         <MineralInput
@@ -68,8 +69,8 @@ export class SolutionWaters extends Component<WatersProps, {}> {
                     </Row>
                 </FormGroup>
                 <MineralForm minValue={Number.MIN_SAFE_INTEGER} water={w} attrChanged={() => {}} editable={false}/>
-            </Panel.Body>
-        </Panel>;
+            </Card.Body>
+        </Card>;
     }
 
     togglePanel(idx: number, e: any) {

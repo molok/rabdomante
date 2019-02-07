@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
+import {FormGroup, Container, Card, Row} from "react-bootstrap";
 import {WaterUi} from "../model/index";
 import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
@@ -17,12 +17,12 @@ class TargetWater extends Component<TargetWaterProps, {}> {
     render() {
         let qty = (this.props.target.l >= 0 ? this.props.target.l + "L " : "");
         return (
-            <PanelGroup id="target_water">
-            <Panel className={this.props.enoughLiters ? "" : "panel-danger"}>
-                <Panel.Heading>
-                    <Panel.Title ><Glyphicon glyph="flag"/> {qty + translate(msg.target)}</Panel.Title>
-                </Panel.Heading>
-                <Panel.Body>
+            <Container id="target_water">
+            <Card className={this.props.enoughLiters ? "" : "panel-danger"}>
+                <Card.Header>
+                    <Card.Title>{qty + translate(msg.target)}</Card.Title>
+                </Card.Header>
+                <Card.Body>
                     <FormGroup className={this.props.enoughLiters && this.props.target.l >= 1 ? "" : "has-error"}>
                         <Row>
                             <MineralInput
@@ -39,9 +39,9 @@ class TargetWater extends Component<TargetWaterProps, {}> {
                         attrChanged={this.targetChanged.bind(this)}
                         editable
                     />
-                </Panel.Body>
-            </Panel>
-        </PanelGroup>
+                </Card.Body>
+            </Card>
+        </Container>
         )
     }
 

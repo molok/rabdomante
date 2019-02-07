@@ -1,11 +1,6 @@
 import {SaltUi} from "../model/index";
 import * as React from "react";
-import {FormControl, PanelGroup} from "react-bootstrap";
-import * as Panel from "react-bootstrap/lib/Panel";
-import * as FormGroup from "react-bootstrap/lib/FormGroup";
-import * as Row from "react-bootstrap/lib/Row";
-import * as Col from "react-bootstrap/lib/Col";
-import * as ControlLabel from "react-bootstrap/lib/ControlLabel";
+import {FormControl, Container, Card, FormGroup, Row, Col, FormLabel} from "react-bootstrap";
 import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
 import {Component} from "react";
@@ -24,9 +19,9 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
             .map((s: SaltUi, idx: number) => this.saltToPanel(idx, s));
 
         return (
-            <PanelGroup id="salts">
+            <Container id="salts">
                 {res}
-            </PanelGroup>
+            </Container>
         );
     }
 
@@ -41,20 +36,20 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
 
     saltToPanel(idx: number, s: SaltUi) {
         let qty = (s.dg >= 0 ? s.dg + "dg " : "");
-        return <Panel key={idx} eventKey={idx}
+        return <Card key={idx}
                       className="saltPanel panel-success"
-                      expanded={this.props.salts[idx].visible}
-                      onToggle={(ignored: any) => {
-                      }}>
-            <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><SaltIcon fill="#227442"/> {qty + s.name}</Panel.Title>
-            </Panel.Heading>
-            <Panel.Body collapsible>
+                      // expanded={this.props.salts[idx].visible}
+                      // onToggle={(ignored: any) => { // }}
+        >
+            <Card.Header onClick={this.togglePanel.bind(this, idx)}>
+                <Card.Title className="clearfix"><SaltIcon fill="#227442"/> {qty + s.name}</Card.Title>
+            </Card.Header>
+            <Card.Body>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
+                        <Col as={FormLabel} sm={2}>{translate(msg.name)}</Col>
                         <Col sm={4}>
-                            <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
+                            <FormControl name={translate(msg.name)} size="sm" type="text" placeholder=""
                                          value={s.name}
                                          onChange={() => {}} />
                         </Col>
@@ -66,7 +61,7 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
                     </Row>
                 </FormGroup>
                 <MineralForm water={s} attrChanged={this.attrChanged.bind(this, idx)} editable={false}/>
-            </Panel.Body>
-        </Panel>;
+            </Card.Body>
+        </Card>;
     }
 }

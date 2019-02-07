@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {Button, Col, ControlLabel, FormControl, FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
 import {WaterUi} from "../model/index";
 import MineralForm from "./MineralForm";
 import MineralInput from "./MineralInput";
@@ -9,6 +8,12 @@ import KNOWN_WATERS from '../data/known_waters'
 import {numberToQtyStr} from "./utils";
 import {translate} from "./Translate";
 import msg from "../i18n/msg";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import {FormControl, FormGroup, FormLabel, Row} from "react-bootstrap";
+import Card from "react-bootstrap/Card";
+import Container from "react-bootstrap/Container";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 interface WatersProps {
     waters: Array<WaterUi>
@@ -31,19 +36,20 @@ class NameOrSelect extends Component<NameOrSelectProps, {}> {
         if (w.custom) {
             return (
                 <>
-                    <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
+                    <FormControl name={translate(msg.name)} size="sm" type="text" placeholder=""
                                  value={w.name}
-                                 onChange={this.props.changedWater.bind(this)}/>
+                                 // onChange={this.props.changedWater.bind(this)}
+                    />
                 </>);
         } else {
             let options = KNOWN_WATERS.map((x, idx) => ({ label: x.name, value: idx }));
             return (
                 <>
-                    <Select clearable={false}
+                    <Select //clearable={false}
                             options={options}
                             placeholder={translate(msg.select)}
-                            onChange={this.props.knownWaterChanged.bind(this)}
-                            value={options.map(w => w.label).indexOf(w.name)} /* FIXME */
+                            // onChange={this.props.knownWaterChanged.bind(this)}
+                            // value={options.map(w => w.label).indexOf(w.name)} /* FIXME */
                     />
                 </>
             );
@@ -72,9 +78,9 @@ class Waters extends Component<WatersProps, {}> {
             .map((w: WaterUi, idx: number) => this.waterToPanel(idx, w));
 
         return (
-            <PanelGroup id="source_waters">
+            <Container id="source_waters">
                 {res}
-            </PanelGroup>
+            </Container>
         );
     }
 
@@ -95,26 +101,27 @@ class Waters extends Component<WatersProps, {}> {
     }
 
     private waterToPanel(idx: number, w: WaterUi) {
-        return <Panel key={idx} eventKey={idx}
+        return <Card key={idx}
                       className={"waterPanel" + (this.props.enoughLiters ? "" : " panel-warning")}
-                      expanded={this.props.waters[idx].visible}
-                      onToggle={(ignored: any) => {
-                      }}>
-            <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix">
-                    <Glyphicon glyph="tint"/> {numberToQtyStr(w.l, "L") + " " + (w.name || translate(msg.baseWater) + " #" + (idx + 1))}
+                      // expanded={this.props.waters[idx].visible}
+                      // onToggle={(ignored: any) => { }}
+                >
+            <Card.Header onClick={this.togglePanel.bind(this, idx)}>
+                <Card.Title className="clearfix">
+                    <FontAwesomeIcon icon="tint"/> {numberToQtyStr(w.l, "L") + " " + (w.name || translate(msg.baseWater) + " #" + (idx + 1))}
                     <span className={"pull-right"}>
-                        <Button bsSize="xsmall" onClick={this.removeSource.bind(this, idx)}><Glyphicon glyph="remove"/></Button>
+                        <Button size="sm" onClick={this.removeSource.bind(this, idx)}><FontAwesomeIcon icon="times"/></Button>
                     </span>
-                </Panel.Title>
-            </Panel.Heading>
-            <Panel.Body collapsible>
+                </Card.Title>
+            </Card.Header>
+            <Card.Body>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
+                        <Col as={FormLabel} sm={2}>{translate(msg.name)}</Col>
                         <Col sm={4}>
                             <NameOrSelect w={w} idx={idx}
-                                          changedWater={this.sourceChanged.bind(this, idx, "name")}
+                                             changedWater={_ => {}}
+                                          // changedWater={this.sourceChanged.bind(this, idx, "name")}
                                           knownWaterChanged={this.knownWaterChanged.bind(this, idx, w)}
                             />
                         </Col>
@@ -130,8 +137,8 @@ class Waters extends Component<WatersProps, {}> {
                     </Row>
                 </FormGroup>
                 <MineralForm water={w} attrChanged={this.attrChanged.bind(this, idx)} editable={w.custom}/>
-            </Panel.Body>
-        </Panel>;
+            </Card.Body>
+        </Card>;
     }
 
     attrChanged(idx: number, attrName: string, value: any) {

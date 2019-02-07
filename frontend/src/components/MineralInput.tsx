@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {ChangeEvent} from 'react';
-import { Col, ControlLabel, FormControl } from "react-bootstrap";
+import {ChangeEvent, FormEvent} from 'react';
+import { Col, FormLabel, FormControl } from "react-bootstrap";
 import {isInfinite, numberToQtyStr, qtyToNumber} from "./utils";
 
 interface MineralInputProps {
@@ -34,12 +34,12 @@ class MineralInput extends React.Component<MineralInputProps, {}> {
         return Math.round(number);
     }
 
-    changed(e: ChangeEvent<HTMLInputElement>) {
+    changed(e: any) {
         this.props.onChange(this.toNum(e.target.value));
     }
 
     toUiValue(it:number):string {
-        var number = it;
+        let number = it;
         if (this.props.minValue !== undefined) {
             number = Math.max(this.props.minValue, number);
         }
@@ -53,10 +53,10 @@ class MineralInput extends React.Component<MineralInputProps, {}> {
         let show = this.titleCase(this.props.label) + " ";
         return (
             <>
-                <Col componentClass={ControlLabel} sm={2}>{show}<small style={{color: "#666666", fontWeight: "lighter"}}>({this.props.symbol})</small></Col>
+                <Col as={FormLabel} sm={2}>{show}<small style={{color: "#666666", fontWeight: "lighter"}}>({this.props.symbol})</small></Col>
                 <Col sm={1}>
                     <FormControl value={this.toUiValue(this.props.value)}
-                                 bsSize="small"
+                                 size="sm"
                                  type={isInfinite(this.props.value) ? "text" : "number"}
                                  placeholder=""
                                  disabled={!this.props.editable}

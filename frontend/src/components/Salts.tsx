@@ -1,20 +1,17 @@
 import {MineralContent, SaltUi} from "../model/index";
 import * as React from "react";
-import {Button, FormControl, Glyphicon, PanelGroup} from "react-bootstrap";
-import * as Panel from "react-bootstrap/lib/Panel";
-import * as FormGroup from "react-bootstrap/lib/FormGroup";
-import * as Row from "react-bootstrap/lib/Row";
-import * as Col from "react-bootstrap/lib/Col";
-import * as ControlLabel from "react-bootstrap/lib/ControlLabel";
+import {Button, Card, Col, FormControl, FormGroup, FormLabel, Row} from "react-bootstrap";
 import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
 import {Component} from "react";
 import {KNOWN_SALTS} from "../data/known_salts";
-import Select from 'react-select';
 import {SaltIcon} from "./SaltIcon";
-import {numberToQtyStr, qtyToNumber} from "./utils";
+import {numberToQtyStr} from "./utils";
 import {translate} from "./Translate";
 import msg from "../i18n/msg";
+import Container from "react-bootstrap/Container";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Select from "react-select";
 
 interface SaltsProps {
     salts: Array<SaltUi>
@@ -31,9 +28,9 @@ class Salts extends Component<SaltsProps, {}> {
             .map((s: SaltUi, idx: number) => this.saltToPanel(idx, s));
 
         return (
-            <PanelGroup id="salts">
+            <Container id="salts">
                 {res}
-            </PanelGroup>
+            </Container>
         );
     }
 
@@ -74,26 +71,24 @@ class Salts extends Component<SaltsProps, {}> {
 
     saltToPanel(idx: number, s: SaltUi) {
         // let qty = (s.dg >= 0 ? s.dg + "g " : "");
-        return <Panel key={idx} eventKey={idx}
+        return <Card key={idx}
                       className="saltPanel"
-                      expanded={this.props.salts[idx].visible}
-                      onToggle={(ignored: any) => {
-                      }}>
-            <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><SaltIcon fill="#000000"/> {numberToQtyStr(s.dg, "dg") + " " + (s.name || translate(msg.salt) + " #" + (idx + 1))}
+                      >
+            <Card.Header onClick={this.togglePanel.bind(this, idx)}>
+                <Card.Title className="clearfix"><SaltIcon fill="#000000"/> {numberToQtyStr(s.dg, "dg") + " " + (s.name || translate(msg.salt) + " #" + (idx + 1))}
                     <span className={"pull-right"}>
-                                <Button bsSize="xsmall" onClick={this.removeSalt.bind(this, idx)}><Glyphicon
-                                    glyph="remove"/></Button>
+                                <Button size="sm" onClick={this.removeSalt.bind(this, idx)}><FontAwesomeIcon icon="times"/></Button>
                             </span>
-                </Panel.Title>
-            </Panel.Heading>
-            <Panel.Body collapsible>
+                </Card.Title>
+            </Card.Header>
+            <Card.Body>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
+                        <Col as={FormLabel} sm={2}>{translate(msg.name)}</Col>
                         <Col sm={4}>
                             <NameOrSelect w={s} idx={idx}
-                                          saltChanged={this.saltChanged.bind(this, idx, "name")}
+                                          saltChanged={__ => {}}
+                                          // saltChanged={this.saltChanged.bind(this, idx, "name")}
                                           knownSaltChanged={this.knownSaltChanged.bind(this, idx, s)} />
                         </Col>
                         <MineralInput
@@ -106,8 +101,8 @@ class Salts extends Component<SaltsProps, {}> {
                     </Row>
                 </FormGroup>
                 <MineralForm water={s} attrChanged={this.attrChanged.bind(this, idx)} editable={s.custom}/>
-            </Panel.Body>
-        </Panel>;
+            </Card.Body>
+        </Card>;
     }
 }
 
@@ -124,19 +119,20 @@ class NameOrSelect extends Component<NameOrSelectProps, {}> {
         if (w.custom) {
             return (
                 <>
-                    <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder={translate(msg.select)}
+                    <FormControl name={translate(msg.name)} size="sm" type="text" placeholder={translate(msg.select)}
                                  value={w.name}
-                                 onChange={this.props.saltChanged.bind(this)}/>
+                                 // onChange={this.props.saltChanged.bind(this)}
+                    />
                 </>);
         } else {
             let options = KNOWN_SALTS.map((x, idx) => ({ label: x.name(), value: idx }));
             return (
                 <>
-                    <Select clearable={false}
+                    <Select //clearable={false}
                             options={options}
                             placeholder={translate(msg.select)}
-                            onChange={this.props.knownSaltChanged.bind(this)}
-                            value={options.map(w => w.label).indexOf(w.name)} /* FIXME */
+                            // onChange={this.props.knownSaltChanged.bind(this)}
+                            // value={options.map(w => w.label).indexOf(w.name)} /* FIXME */
                     />
                 </>
             );
