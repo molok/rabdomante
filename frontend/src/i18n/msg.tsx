@@ -6,6 +6,54 @@ export interface TranslatedMessage {
     en: string
 }
 const msg = {
+    intro: { it: "Questo calcolatore ti permette di miscelare acque diverse utilizzando anche additivi minerali (sali) " +
+            "per ottenere l'acqua più vicina al tuo obiettivo, ti aiuta a calcolare ad esempio come mischiare l'acqua del " +
+            "supermercato con quella del rubinetto per ottenere il profilo desiderato; potresti anche scoprire che combinando" +
+            " tre diverse acque del supermercato non ti serve alcuna aggiunta di minerali, magari difficili da reperire.",
+        en: "This calculator allows you to mix different waters also using mineral additives (salts) to get the water " +
+            "closest to your target, it helps you calculate, for example, how to mix supermarket water with tap water " +
+            "to obtain the desired profile; you may also find that by combining three different supermarket waters " +
+            "you do not need any addition of minerals, often difficult to find"},
+    intro1: {
+        it: "Per prima cosa inserisci nella sezione Obiettivo quanta acqua ti serve e il suo profilo, ossia il suo contenuto di minerali. Il profilo ideale cambia a seconda della " +
+            "birra che vuoi brassare, io per sceglierlo di solito uso ",
+        en: "First enter in the Target section how much water you need and its profile, i.e. its mineral content. " +
+            "The ideal profile changes according to the beer you want to brew, I usually rely on "},
+    intro2: {
+        it: "Una volta selezionato il tuo obiettivo devi elencare le acque che hai a disposizione, " +
+            "io ad esempio seleziono quelle presenti nel supermercato vicino casa, oltre all'acqua di rete." +
+            " Se non specifichi i litri viene considerata una fonte illimitata (indicato dal simbolo ∞), se invece hai " +
+            "solo pochi litri a disposizione puoi specificarlo. I dati dell'acqua di rete sono solitamente pubblici, a volte" +
+            " basta richiederli al proprio Comune.",
+        en: "Once you have selected your target, you must list the waters you have available, for example, " +
+            "I select the ones present in the supermarket near my home, in addition to my tap water. " +
+            "If you do not specify the liters, it is considered an unlimited source (indicated by the symbol ∞), if instead you " +
+            "have only a few liters available you can specify it. The tap water data are usually public, " +
+            "you may need to request them from your Municipality"
+    },
+    intro3: {
+        it: "Dopo aver inserito tutte le acque disponibili, devi selezionare i sali che vuoi usare, anche in questo " +
+            "caso puoi fare a meno di inserire la quantità massima di utilizzo, però è importante che selezioni i sali" +
+            " che hai a disposizione, in modo che il calcolatore ne tenga conto nella ricetta.",
+        en: "After entering all the available waters, you must select the salts you want to use, even in this case you " +
+            "can do without entering the maximum amount of use, however it is important that you select the salts you " +
+            "have available, so that the calculator will take into account in the recipe."
+    },
+    intro4: {
+        it: "Clicca il bottone per cercare la combinazione migliore, potrai vedere le quantità dei vari " +
+            "ingredienti da usare, il profilo finale della ricetta e la differenza " +
+            "rispetto all'obiettivo che avevi impostato.",
+        en: "Click the button to find the best combination, you will be able to see the quantities of the " +
+            "various ingredients to be used, the final profile of the recipe and the difference " +
+            "compared to the target profile you had set."
+    },
+    intro5: {
+        it: "Se hai domande o suggerimenti mi puoi scrivere a rabdo@alebolo.33mail.com",
+        en: "If you have questions or suggestions you can write me at rabdo@alebolo.33mail.com "
+    },
+    addWater: { it: "Aggiungi un'acqua commerciale", en: "Select an italian water"},
+    addCustomWater: { it: "Aggiungi un'acqua", en: "Add another water source"},
+    addSalt: { it: "Aggiungi dei sali", en: "Add salt"},
     welcome: { it: "Benvenuto", en: "Welcome", },
     searching: { it: "Ricerca della combinazione migliore...", en: "Searching for the best combination...", },
     find: { it: "Cerca la combinazione migliore", en: "Find the best combination", },

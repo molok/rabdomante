@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {Component} from 'react';
+import {Component, Fragment} from 'react';
 import {State, water, SaltUi, WaterUi, Result} from "../model/index";
 import {connect} from "react-redux";
-import {Button, Form, FormGroup, Glyphicon, PageHeader} from "react-bootstrap";
+import {Button, Form, FormGroup, Glyphicon, PageHeader, Badge} from "react-bootstrap";
 import './Rabdo.css'
 import { Actions } from "../actions";
 import 'react-select/dist/react-select.css'
@@ -15,7 +15,7 @@ import {BottomAnchor} from "../components/BottomAnchor";
 import {SaltIcon} from "../components/SaltIcon";
 import * as ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import * as Alert from "react-bootstrap/lib/Alert";
-import Translate, {translate} from "../components/Translate";
+import Translate, {translate, TranslateConf} from "../components/Translate";
 import msg, {FlagEn, FlagIta} from "../i18n/msg";
 
 interface RabdoProps {
@@ -45,8 +45,8 @@ class XRabdo extends Component<RabdoProps, {}> {
     renderSolution(result: Result) {
         if (result.solution) {
             let solution = result.solution;
-            let recipe = solution.recipe.recipe ? [solution.recipe.recipe] : [];
-            let delta = solution.recipe.delta ? [solution.recipe.delta] : [];
+            let recipe = solution.recipe.recipe ? [{...solution.recipe.recipe, visible: true}] : [];
+            let delta = solution.recipe.delta ? [{...solution.recipe.delta, visible: true}] : [];
             let incomplete  = solution.searchCompleted ? <></> :
                               <Alert bsStyle="warning">
                                   <p>Search was interrupted for taking too long, the result might no be optimal</p>
@@ -99,6 +99,16 @@ class XRabdo extends Component<RabdoProps, {}> {
                 </PageHeader>
                 <Form horizontal>
                     <FormGroup>
+                        <h4>{translate(msg.intro)}</h4>
+                        <h4><Badge>1</Badge>  {translate(msg.intro1)}<a href={"https://www.brunwater.com"}>Bru'n Water</a></h4>
+                        <h4><Badge>2</Badge>  {translate(msg.intro2)}</h4>
+                        <h4><Badge>3</Badge>  {translate(msg.intro3)}</h4>
+                        <h4><Badge>4</Badge>  {translate(msg.intro4)}</h4>
+                        <br/>
+                        <h4>{translate(msg.intro5)}</h4>
+                    </FormGroup>
+
+                    <FormGroup>
                         <h3>{translate(msg.target)}</h3>
                         <TargetWater target={this.props.target} targetChanged={this.props.targetChanged} enoughLiters={this.validLiters()}/>
                     </FormGroup>
@@ -110,11 +120,15 @@ class XRabdo extends Component<RabdoProps, {}> {
                                 enoughLiters={this.validLiters()}
                                 supportInfinite
                         />
-                        <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/></Button>
-                        <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> {translate(msg.custom)}</Button>
+                        {TranslateConf.usrLang === "it" ?
+                            <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/>
+                                <Glyphicon glyph="tint"/> {translate(msg.addWater)}</Button>
+                            : <Fragment/>
+                        }
+                        <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> {translate(msg.addCustomWater)}</Button>
                         <h3>{translate(msg.availableSalts)}</h3>
                         <Salts supportInfinite salts={this.props.salts} removeSalt={this.props.removeSalt} saltChanged={this.props.saltChanged} />
-                        <Button bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <SaltIcon fill="#000000"/></Button>
+                        <Button bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <SaltIcon fill="#000000"/> {translate(msg.addSalt)}</Button>
                     </FormGroup>
 
                     <FormGroup>
