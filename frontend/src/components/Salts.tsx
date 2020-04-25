@@ -87,7 +87,7 @@ class Salts extends Component<SaltsProps, {}> {
                             </span>
                 </Panel.Title>
             </Panel.Heading>
-            <Panel.Body collapsible>
+            <Panel.Body collapsible style={{marginLeft: '15px', marginRight: '15px'}}>
                 <FormGroup>
                     <Row>
                         <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>

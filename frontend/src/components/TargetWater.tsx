@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
+import {Col, FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
 import {WaterUi} from "../model/index";
 import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
@@ -22,7 +22,7 @@ class TargetWater extends Component<TargetWaterProps, {}> {
                 <Panel.Heading>
                     <Panel.Title ><Glyphicon glyph="flag"/> {qty + translate(msg.target)}</Panel.Title>
                 </Panel.Heading>
-                <Panel.Body>
+                <Panel.Body style={{marginLeft: '15px', marginRight: '15px'}}>
                     <FormGroup className={this.props.enoughLiters && this.props.target.l >= 1 ? "" : "has-error"}>
                         <Row>
                             <MineralInput

@@ -97,7 +97,7 @@ class XRabdo extends Component<RabdoProps, {}> {
                         </span>
                     </span>
                 </PageHeader>
-                <Form horizontal>
+                <Form horizontal style={{marginLeft: '15px', marginRight: '15px'}}>
                     <FormGroup>
                         <h4>{translate(msg.intro)}</h4>
                         <h4><Badge>1</Badge>  {translate(msg.intro1)}<a href={"https://www.brunwater.com"}>Bru'n Water</a></h4>
