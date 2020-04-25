@@ -51,12 +51,6 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
             <Panel.Body collapsible style={{marginLeft: '15px', marginRight: '15px'}}>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
-                        <Col sm={4}>
-                            <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
-                                         value={s.name}
-                                         onChange={() => {}} />
-                        </Col>
                         <MineralInput
                             label={translate(msg.decigrams)} symbol="dg"
                             value={s.dg}

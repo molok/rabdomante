@@ -89,8 +89,8 @@ class Salts extends Component<SaltsProps, {}> {
             <Panel.Body collapsible style={{marginLeft: '15px', marginRight: '15px'}}>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
-                        <Col sm={4}>
+                        <Col componentClass={ControlLabel} md={2} xs={6}>{translate(msg.name)}</Col>
+                        <Col md={4} xs={6}>
                             <NameOrSelect w={s} idx={idx}
                                           saltChanged={this.saltChanged.bind(this, idx, "name")}
                                           knownSaltChanged={this.knownSaltChanged.bind(this, idx, s)} />
