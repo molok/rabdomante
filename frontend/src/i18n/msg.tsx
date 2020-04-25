@@ -61,7 +61,7 @@ const msg = {
     welcome: { it: "Benvenuto", en: "Welcome", },
     searching: { it: "Creazione in corso...", en: "Searching in progress...", },
     find: { it: "Crea la ricetta", en: "Find the best combination", },
-    subtitle: { it: "Water Profile Calculator", en: "Water Profile Calculator" },
+    subtitle: { it: "Brewing Water Profile Calculator", en: "Brewing Water Profile Calculator" },
     target: { it: "Obiettivo", en: "Target" },
     liters: { it: "litri", en: "liters"},
     calcium: { it: "calcio", en: "calcium"},
