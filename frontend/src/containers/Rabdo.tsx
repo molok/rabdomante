@@ -12,10 +12,9 @@ import Salts from "../components/Salts";
 import {SolutionWaters} from "../components/SolutionWaters";
 import {SolutionSalts} from "../components/SolutionSalts";
 import {BottomAnchor} from "../components/BottomAnchor";
-import {SaltIcon} from "../components/SaltIcon";
 import * as ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import * as Alert from "react-bootstrap/lib/Alert";
-import Translate, {translate, TranslateConf} from "../components/Translate";
+import {translate, TranslateConf} from "../components/Translate";
 import msg, {FlagEn, FlagIta} from "../i18n/msg";
 
 interface RabdoProps {
@@ -26,6 +25,7 @@ interface RabdoProps {
     findRecipe: (waters: Array<WaterUi>, salts: Array<SaltUi>, target: WaterUi) => void
     addWater: (w: WaterUi) => void
     sourceChanged: (idx: number, w: WaterUi) => void
+    sourceEndFocus: () => void
     targetChanged: (w: WaterUi) => void
     removeSource: (idx: number) => void
     addSalt: (s: SaltUi) => void
@@ -55,11 +55,14 @@ class XRabdo extends Component<RabdoProps, {}> {
                 <>
                 {incomplete}
                 <h3>{translate(msg.solutionIngredients)}</h3>
+                    <h4>{translate(msg.infoSolutionIngredients)}</h4>
                 <SolutionWaters waters={solution.recipe.waters} changedWater={this.props.resultWaterChanged}/>
                 <SolutionSalts salts={solution.recipe.salts} saltChanged={this.props.resultSaltChanged}/>
                 <h3>{translate(msg.totals)}</h3>
-                <SolutionWaters waters={recipe} changedWater={this.props.recipeWaterChanged}/>
-                <SolutionWaters skipQty waters={delta} changedWater={this.props.deltaWaterChanged}/>
+                <h4>{translate(msg.infoTotal)}</h4>
+                <SolutionWaters skipName waters={recipe} changedWater={this.props.recipeWaterChanged}/>
+                <h4>{translate(msg.infoDelta)}</h4>
+                <SolutionWaters skipName skipQty waters={delta} changedWater={this.props.deltaWaterChanged}/>
                 </>
             )
         } else if (result.error) {
@@ -100,38 +103,38 @@ class XRabdo extends Component<RabdoProps, {}> {
                 <Form horizontal style={{marginLeft: '15px', marginRight: '15px'}}>
                     <FormGroup>
                         <h4>{translate(msg.intro)}</h4>
-                        <h4><Badge>1</Badge>  {translate(msg.intro1)}<a href={"https://www.brunwater.com"}>Bru'n Water</a></h4>
-                        <h4><Badge>2</Badge>  {translate(msg.intro2)}</h4>
-                        <h4><Badge>3</Badge>  {translate(msg.intro3)}</h4>
-                        <h4><Badge>4</Badge>  {translate(msg.intro4)}</h4>
-                        <br/>
-                        <h4>{translate(msg.intro5)}</h4>
                     </FormGroup>
 
                     <FormGroup>
                         <h3>{translate(msg.target)}</h3>
+                        <h4><Badge>1</Badge>  {translate(msg.intro1)}<a href={"https://www.brunwater.com"}>Bru'n Water</a></h4>
+                        <h4>{translate(msg.intro1b)}</h4>
                         <TargetWater target={this.props.target} targetChanged={this.props.targetChanged} enoughLiters={this.validLiters()}/>
                     </FormGroup>
                     <FormGroup>
                         <h3>{translate(msg.availableWaters)}</h3>
+                        <h4><Badge>2</Badge>  {translate(msg.intro2)}</h4>
                         <Waters waters={this.props.sources}
                                 removeWater={this.props.removeSource}
                                 changedWater={this.props.sourceChanged}
                                 enoughLiters={this.validLiters()}
+                                sourceEndFocus={this.props.sourceEndFocus}
                                 supportInfinite
                         />
                         {TranslateConf.usrLang === "it" ?
-                            <Button bsSize="small" onClick={this.addWater.bind(this)}><Glyphicon glyph="plus"/>
+                            <Button bsStyle={'info'} bsSize="small" onClick={this.addWater.bind(this)} style={{marginRight: '1rem', marginBottom: '1rem'}}><Glyphicon glyph="plus"/>
                                 <Glyphicon glyph="tint"/> {translate(msg.addWater)}</Button>
                             : <Fragment/>
                         }
-                        <Button bsSize="small" onClick={this.addCustomWater.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> {translate(msg.addCustomWater)}</Button>
+                        <Button bsStyle={'info'} bsSize="small" onClick={this.addCustomWater.bind(this)} style={{marginBottom: '1rem'}}><Glyphicon glyph="plus"/> <Glyphicon glyph="tint"/> {translate(msg.addCustomWater)}</Button>
                         <h3>{translate(msg.availableSalts)}</h3>
+                        <h4><Badge>3</Badge>  {translate(msg.intro3)}</h4>
                         <Salts supportInfinite salts={this.props.salts} removeSalt={this.props.removeSalt} saltChanged={this.props.saltChanged} />
-                        <Button bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <SaltIcon fill="#000000"/> {translate(msg.addSalt)}</Button>
+                        <Button bsStyle={'info'} bsSize="small" onClick={this.addSalt.bind(this)}><Glyphicon glyph="plus"/> <Glyphicon glyph="th-large"/> {translate(msg.addSalt)}</Button>
                     </FormGroup>
 
                     <FormGroup>
+                        <h4><Badge>4</Badge>  {translate(msg.intro4)}</h4>
                         <ButtonToolbar>
                             <Button type="submit" bsStyle="primary"  onClick={this.findRecipe.bind(this)}><Glyphicon glyph="play"/> {buttonMsg}</Button>
                             <Button className="pull-right" bsStyle="danger" onClick={this.clearState.bind(this)}><Glyphicon glyph="repeat"/> {translate(msg.clearAll)}</Button>
@@ -141,10 +144,11 @@ class XRabdo extends Component<RabdoProps, {}> {
                     <FormGroup>
                         {resultComponent}
                         <BottomAnchor toggleScroll={this.props.toggleScrollToSolution} shouldScrollToBottom={this.props.result.shouldScrollHere}/>
+                        <h5>{translate(msg.intro5)}</h5>
                     </FormGroup>
                 </Form>
                 <div style={{textAlign: "center"}}>
-                    <small>{"Copyright \u00a9 2018 "}<a href={"mailto:rabdo@alebolo.33mail.com"}>Alessio Bolognino</a></small>
+                    <small>{"Copyright \u00a9 2018-2020 "}<a href={"mailto:rabdo@alebolo.33mail.com"}>Alessio Bolognino</a></small>
                 </div>
             </div>
         )
@@ -157,6 +161,7 @@ class XRabdo extends Component<RabdoProps, {}> {
 
     findRecipe(e: any) {
         e.preventDefault();
+        this.props.sourceEndFocus()
         this.props.findRecipe(this.props.sources, this.props.salts, this.props.target);
     }
 
@@ -200,6 +205,7 @@ function mapDispatchToProps (dispatch: Function) {
     return {
         addWater: (w :WaterUi) => { dispatch(Actions.addWater(w))},
         sourceChanged: (idx: number, w: WaterUi) => { dispatch(Actions.changedWater(idx, w))},
+        sourceEndFocus: () => { dispatch(Actions.sourceEndFocus())},
         targetChanged: (w: WaterUi) => { dispatch(Actions.targetChanged(w))},
         removeSource: (idx: number) => { dispatch(Actions.removeWater(idx))},
         addSalt: (s: SaltUi) => { dispatch(Actions.addSalt(s))},

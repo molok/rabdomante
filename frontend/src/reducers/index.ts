@@ -28,11 +28,12 @@ function targetReducer(target: WaterUi, action: Actions): WaterUi {
 
 function sourceReducer(sources: Array<WaterUi>, action: Actions): Array<WaterUi> {
     switch ( action.type ) {
+        case ActionTypes.SOURCE_END_FOCUS:
+            return sources.map((w, idx) => w.name === "" ? {...w, name: `#${idx+1}`} : w)
+        case ActionTypes.WATER_CHANGED:
+            return sources.map((w, i) => i === action.payload.idx ? action.payload.water : w);
         case ActionTypes.WATER_ADD:
             return [...sources, action.payload];
-        case ActionTypes.WATER_CHANGED:
-            return sources.map(
-                (w, i) => i === action.payload.idx ? action.payload.water : w);
         case ActionTypes.WATER_REMOVE:
             return sources.filter((_, idx) => idx !== action.payload);
         default:

@@ -26,7 +26,8 @@ class MineralForm extends Component<MineralFormProps, {}> {
                         <MineralInput label={translate(msg.calcium)} symbol="Ca" value={this.props.water.ca}
                                       onChange={this.props.attrChanged.bind(this.props, "ca")}
                                       editable={this.props.editable}
-                                      minValue={this.props.minValue} />
+                                      minValue={this.props.minValue}
+                        />
                         <MineralInput label={translate(msg.magnesium)} symbol="Mg" value={this.props.water.mg}
                                       onChange={this.props.attrChanged.bind(this.props, "mg")}
                                       editable={this.props.editable}
@@ -35,10 +36,6 @@ class MineralForm extends Component<MineralFormProps, {}> {
                                       onChange={this.props.attrChanged.bind(this.props, "na")}
                                       editable={this.props.editable}
                                       minValue={this.props.minValue} />
-                    </Row>
-                </FormGroup>
-                <FormGroup>
-                    <Row>
                         <MineralInput label={translate(msg.sulfate)} symbol={"SO\u2084\u00B2\u207B"} value={this.props.water.so4}
                                       onChange={this.props.attrChanged.bind(this.props, "so4")}
                                       editable={this.props.editable}

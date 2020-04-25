@@ -11,7 +11,6 @@ import MineralForm from "./MineralForm";
 import {Component} from "react";
 import {KNOWN_SALTS} from "../data/known_salts";
 import Select from 'react-select';
-import {SaltIcon} from "./SaltIcon";
 import {numberToQtyStr, qtyToNumber} from "./utils";
 import {translate} from "./Translate";
 import msg from "../i18n/msg";
@@ -80,7 +79,7 @@ class Salts extends Component<SaltsProps, {}> {
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><SaltIcon fill="#000000"/> {numberToQtyStr(s.dg, "dg") + " " + (s.name || translate(msg.salt) + " #" + (idx + 1))}
+                <Panel.Title toggle className="clearfix"><Glyphicon glyph="th-large"/> {numberToQtyStr(s.dg, "dg") + " " + (s.name || translate(msg.salt) + " #" + (idx + 1))}
                     <span className={"pull-right"}>
                                 <Button bsSize="xsmall" onClick={this.removeSalt.bind(this, idx)}><Glyphicon
                                     glyph="remove"/></Button>

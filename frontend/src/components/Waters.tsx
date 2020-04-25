@@ -14,12 +14,14 @@ interface WatersProps {
     waters: Array<WaterUi>
     removeWater: (idx: number) => void
     changedWater: (idx: number, w: WaterUi) => void
+    sourceEndFocus: () => void,
     enoughLiters: boolean
     supportInfinite?: boolean
 }
 
 interface NameOrSelectProps {
     changedWater: (idx: number, w: WaterUi) => void
+    waterNameEndFocus: (idx: number, w: WaterUi) => void
     w: WaterUi
     idx: number
     knownWaterChanged(idx: number, prevWater: WaterUi, comboSelection: any): void
@@ -31,8 +33,9 @@ class NameOrSelect extends Component<NameOrSelectProps, {}> {
         if (w.custom) {
             return (
                 <>
-                    <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
+                    <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder={w.name}
                                  value={w.name}
+                                 onBlur={this.props.waterNameEndFocus.bind(this)}
                                  onChange={this.props.changedWater.bind(this)}/>
                 </>);
         } else {
@@ -55,6 +58,9 @@ class Waters extends Component<WatersProps, {}> {
     public static defaultProps:Partial<WatersProps> = {
         supportInfinite: false
     };
+    sourceEndFocus() {
+        this.props.sourceEndFocus()
+    }
     sourceChanged(idx: number, attrName: string, e: React.ChangeEvent<HTMLInputElement>) {
         console.log("changedWater!");
         e.stopPropagation();
@@ -102,7 +108,7 @@ class Waters extends Component<WatersProps, {}> {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
                 <Panel.Title toggle className="clearfix">
-                    <Glyphicon glyph="tint"/> {numberToQtyStr(w.l, "L") + " " + (w.name || translate(msg.baseWater) + " #" + (idx + 1))}
+                    <Glyphicon glyph="tint"/> {numberToQtyStr(w.l, "L") + " " + (w.name)}
                     <span className={"pull-right"}>
                         <Button bsSize="xsmall" onClick={this.removeSource.bind(this, idx)}><Glyphicon glyph="remove"/></Button>
                     </span>
@@ -111,13 +117,16 @@ class Waters extends Component<WatersProps, {}> {
             <Panel.Body collapsible style={{marginLeft: '15px', marginRight: '15px'}}>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
-                        <Col sm={4}>
+                        <Col componentClass={ControlLabel} md={2} xs={6}>{translate(msg.name)}</Col>
+                        <Col md={4} xs={6}>
                             <NameOrSelect w={w} idx={idx}
                                           changedWater={this.sourceChanged.bind(this, idx, "name")}
                                           knownWaterChanged={this.knownWaterChanged.bind(this, idx, w)}
+                                          waterNameEndFocus={this.sourceEndFocus.bind(this)}
                             />
                         </Col>
+                    </Row>
+                    <Row>
                         <div className={this.props.enoughLiters ? "" : "has-warning"}>
                         <MineralInput
                             label={translate(msg.liters)} symbol="L"

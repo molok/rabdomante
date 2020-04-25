@@ -7,6 +7,7 @@ export enum ActionTypes {
     SALT_ADD = 'SALT_ADD',
     SALT_CHANGED = 'SALT_CHANGED',
     WATER_REMOVE = 'WATER_REMOVE',
+    SOURCE_END_FOCUS = 'SOURCE_END_FOCUS',
     WATER_CHANGED = 'WATER_CHANGED',
     WATER_ADD = 'WATER_ADD',
     TARGET_CHANGED = 'TARGET_CHANGED',
@@ -30,6 +31,7 @@ export const Actions = {
     changedSalt: (idx: number, salt: SaltUi) => createAction(ActionTypes.SALT_CHANGED, { idx, salt }),
     addWater: (w: WaterUi) => createAction(ActionTypes.WATER_ADD, w),
     changedWater: (idx: number, water: WaterUi) => createAction(ActionTypes.WATER_CHANGED, { idx, water }),
+    sourceEndFocus: () => createAction(ActionTypes.SOURCE_END_FOCUS, { }),
     removeWater: (idx: number) => createAction(ActionTypes.WATER_REMOVE, idx),
 
     targetChanged: (water: WaterUi) => createAction(ActionTypes.TARGET_CHANGED, water),

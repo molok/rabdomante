@@ -15,10 +15,14 @@ const msg = {
             "to obtain the desired profile; you may also find that by combining three different supermarket waters " +
             "you do not need any addition of minerals, often difficult to find"},
     intro1: {
-        it: "Per prima cosa inserisci nella sezione Obiettivo quanta acqua ti serve e il suo profilo, ossia il suo contenuto di minerali. Il profilo ideale cambia a seconda della " +
+        it: "Per prima cosa inserisci quanta acqua ti serve e il suo profilo, ossia il suo contenuto di minerali. Il profilo ideale cambia a seconda della " +
             "birra che vuoi brassare, io per sceglierlo di solito uso ",
-        en: "First enter in the Target section how much water you need and its profile, i.e. its mineral content. " +
+        en: "First enter how much water you need and its profile, i.e. its mineral content. " +
             "The ideal profile changes according to the beer you want to brew, I usually rely on "},
+    intro1b: {
+        it: "Le quantità dei minerali sono da inserire in mg/L (ppm)",
+        en: "Mineral quantities are to be entered in mg/L (ppm)",
+    },
     intro2: {
         it: "Una volta selezionato il tuo obiettivo devi elencare le acque che hai a disposizione, " +
             "io ad esempio seleziono quelle presenti nel supermercato vicino casa, oltre all'acqua di rete." +
@@ -55,8 +59,8 @@ const msg = {
     addCustomWater: { it: "Aggiungi un'acqua", en: "Add another water source"},
     addSalt: { it: "Aggiungi dei sali", en: "Add salt"},
     welcome: { it: "Benvenuto", en: "Welcome", },
-    searching: { it: "Ricerca della combinazione migliore...", en: "Searching for the best combination...", },
-    find: { it: "Cerca la combinazione migliore", en: "Find the best combination", },
+    searching: { it: "Creazione in corso...", en: "Searching in progress...", },
+    find: { it: "Crea la ricetta", en: "Find the best combination", },
     subtitle: { it: "Water Profile Calculator", en: "Water Profile Calculator" },
     target: { it: "Obiettivo", en: "Target" },
     liters: { it: "litri", en: "liters"},
@@ -87,6 +91,22 @@ const msg = {
     chalk: { it: "Chalk", en: "Chalk"},
     picklingLime: { it: "Pickling Lime", en: "Pickling Lime"},
     magnesiumChloride: { it: "Cloruro di Magnesio", en: "Magnesium Chloride"},
+    infoSolutionIngredients: {
+        it: "Queste sono le quantità ideali per creare l'acqua più vicina possibile al tuo obiettivo, " +
+            "se un ingrediente tra quelli che hai selezionato non è presente nella ricetta vuol dire che " +
+            "non era utile nel raggiungere il profilo obiettivo",
+        en: "These are the optimal quantities to create the water as close as possible to your goal, " +
+            "if one of the ingredients you have selected is not present in the recipe, it means that " +
+            "it was not useful in reaching the target profile"
+    },
+    infoTotal: {
+        it: "Questo è il profilo dell'acqua creata miscelando gli ingredienti nelle quantità riportate qui sopra",
+        en: "This is the profile of the water created by mixing the ingredients in the quantities shown above"
+    },
+    infoDelta: {
+        it: "Di seguito è riportata la differenza tra il profilo obiettivo e quello trovato dal calcolatore",
+        en: "The difference between the target profile and that found by the calculator is shown below"
+    }
 };
 
 interface FlagProps {

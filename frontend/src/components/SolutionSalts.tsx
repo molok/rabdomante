@@ -1,6 +1,6 @@
 import {SaltUi} from "../model/index";
 import * as React from "react";
-import {FormControl, PanelGroup} from "react-bootstrap";
+import {FormControl, Glyphicon, PanelGroup} from "react-bootstrap";
 import * as Panel from "react-bootstrap/lib/Panel";
 import * as FormGroup from "react-bootstrap/lib/FormGroup";
 import * as Row from "react-bootstrap/lib/Row";
@@ -9,7 +9,6 @@ import * as ControlLabel from "react-bootstrap/lib/ControlLabel";
 import MineralInput from "./MineralInput";
 import MineralForm from "./MineralForm";
 import {Component} from "react";
-import {SaltIcon} from "./SaltIcon";
 import {translate} from "./Translate";
 import msg from "../i18n/msg";
 
@@ -47,9 +46,9 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><SaltIcon fill="#227442"/> {qty + s.name}</Panel.Title>
+                <Panel.Title toggle className="clearfix"><Glyphicon glyph="th-large"/> {qty + s.name}</Panel.Title>
             </Panel.Heading>
-            <Panel.Body collapsible>
+            <Panel.Body collapsible style={{marginLeft: '15px', marginRight: '15px'}}>
                 <FormGroup>
                     <Row>
                         <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>

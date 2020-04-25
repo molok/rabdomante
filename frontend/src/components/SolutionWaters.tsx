@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Component} from 'react';
+import {Component, Fragment} from 'react';
 import {Col, ControlLabel, FormControl, FormGroup, Glyphicon, Panel, PanelGroup, Row} from "react-bootstrap";
 import {WaterUi} from "../model/index";
 import MineralForm from "./MineralForm";
@@ -11,11 +11,13 @@ interface WatersProps {
     waters: Array<WaterUi>
     changedWater: (idx: number, w: WaterUi) => void
     skipQty?: boolean
+    skipName?: boolean
 }
 
 export class SolutionWaters extends Component<WatersProps, {}> {
     public static defaultProps:Partial<WatersProps> = {
-        skipQty: false
+        skipQty: false,
+        skipName: true
     };
 
     sourceChanged(idx: number, attrName: string, e: React.ChangeEvent<HTMLInputElement>) {
@@ -52,14 +54,20 @@ export class SolutionWaters extends Component<WatersProps, {}> {
                     <Glyphicon glyph="tint"/> {qty + w.name}
                 </Panel.Title>
             </Panel.Heading>
-            <Panel.Body collapsible>
+            <Panel.Body collapsible  style={{marginLeft: '15px', marginRight: '15px'}}>
                 <FormGroup>
                     <Row>
-                        <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
-                        <Col sm={4}>
-                            <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
-                                         value={w.name} onChange={() => {}} />
-                        </Col>
+                        {this.props.skipName
+                            ? <Fragment></Fragment>
+                            : <Fragment>
+                            <Col componentClass={ControlLabel} sm={2}>{translate(msg.name)}</Col>
+                            <Col sm={4}>
+                                <FormControl name={translate(msg.name)} bsSize="small" type="text" placeholder=""
+                                             value={w.name} onChange={() => {
+                                }}/>
+                            </Col>
+                            </Fragment>
+                        }
                         <MineralInput
                             label={translate(msg.liters)} symbol="L"
                             value={w.l}
