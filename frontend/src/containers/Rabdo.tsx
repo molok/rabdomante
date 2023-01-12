@@ -207,6 +207,7 @@ function mapDispatchToProps (dispatch: Function) {
         sourceChanged: (idx: number, w: WaterUi) => { dispatch(Actions.changedWater(idx, w))},
         sourceEndFocus: () => { dispatch(Actions.sourceEndFocus())},
         targetChanged: (w: WaterUi) => { dispatch(Actions.targetChanged(w))},
+        waterProfileChanged: (w: WaterUi) => { dispatch(Actions.targetChanged(w))},
         removeSource: (idx: number) => { dispatch(Actions.removeWater(idx))},
         addSalt: (s: SaltUi) => { dispatch(Actions.addSalt(s))},
         saltChanged: (idx: number, s: SaltUi) => { dispatch(Actions.changedSalt(idx, s))},
