@@ -1,11 +1,24 @@
 import {CalcResult, Salt, SaltUi, State, Water, WaterUi} from "../model";
 import {Actions, ActionTypes} from "../actions";
-import {asyncFindRecipe} from "../Api";
+import {asyncFindRecipe, WsSalt} from "../Api";
 import {translate} from "../components/Translate";
 import msg from "../i18n/msg";
 
 export const wToUi = (w: Water, name?: string): WaterUi => { return {...w, visible: false, custom: true, name: (name) ? name : w.name} };
-export const sToUi = (s: Salt): SaltUi => { return {...s, visible: false, custom: true} };
+export const sToUi = (s: WsSalt): SaltUi => {
+    return {
+        g: s.dg / 10,
+        visible: false,
+        custom: true,
+        name: s.name,
+        ca: s.ca,
+        mg: s.mg,
+        na: s.na,
+        so4: s.so4,
+        cl: s.cl,
+        hco3: s.hco3
+    }
+};
 
 export const apiMiddleware = (store: {getState(): State, dispatch(action: Actions):void}) => (next: any) => (action: Actions) => {
     switch (action.type) {

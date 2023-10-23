@@ -72,14 +72,14 @@ class Salts extends Component<SaltsProps, {}> {
     }
 
     saltToPanel(idx: number, s: SaltUi) {
-        // let qty = (s.dg >= 0 ? s.dg + "g " : "");
+        // let qty = (s.g >= 0 ? s.g + "g " : "");
         return <Panel key={idx} eventKey={idx}
                       className="saltPanel"
                       expanded={this.props.salts[idx].visible}
                       onToggle={(ignored: any) => {
                       }}>
             <Panel.Heading onClick={this.togglePanel.bind(this, idx)}>
-                <Panel.Title toggle className="clearfix"><Glyphicon glyph="th-large"/> {numberToQtyStr(s.dg, "dg") + " " + (s.name || translate(msg.salt) + " #" + (idx + 1))}
+                <Panel.Title toggle className="clearfix"><Glyphicon glyph="th-large"/> {numberToQtyStr(s.g, "g") + " " + (s.name || translate(msg.salt) + " #" + (idx + 1))}
                     <span className={"pull-right"}>
                                 <Button bsSize="xsmall" onClick={this.removeSalt.bind(this, idx)}><Glyphicon
                                     glyph="remove"/></Button>
@@ -96,11 +96,11 @@ class Salts extends Component<SaltsProps, {}> {
                                           knownSaltChanged={this.knownSaltChanged.bind(this, idx, s)} />
                         </Col>
                         <MineralInput
-                            label={translate(msg.decigrams)} symbol="dg"
-                            value={s.dg}
+                            label={translate(msg.grams)} symbol="g"
+                            value={s.g}
                             supportInfinite
                             minValue={1}
-                            onChange={this.attrChanged.bind(this, idx, "dg")}
+                            onChange={this.attrChanged.bind(this, idx, "g")}
                             editable={true} />
                     </Row>
                 </FormGroup>

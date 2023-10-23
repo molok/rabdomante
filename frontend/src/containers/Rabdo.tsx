@@ -169,7 +169,7 @@ class XRabdo extends Component<RabdoProps, {}> {
         e.preventDefault();
         let s:SaltUi = {
             name: "",
-            dg: Number.MAX_SAFE_INTEGER,
+            g: Number.MAX_SAFE_INTEGER,
             ca: 0,
             mg: 0,
             na: 0,

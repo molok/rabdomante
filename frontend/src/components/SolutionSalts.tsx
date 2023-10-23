@@ -39,7 +39,7 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
     }
 
     saltToPanel(idx: number, s: SaltUi) {
-        let qty = (s.dg >= 0 ? s.dg + "dg " : "");
+        let qty = (s.g >= 0 ? s.g + "g " : "");
         return <Panel key={idx} eventKey={idx}
                       className="saltPanel panel-success"
                       expanded={this.props.salts[idx].visible}
@@ -52,9 +52,9 @@ export class SolutionSalts extends Component<SolutionSaltsProps, {}> {
                 <FormGroup>
                     <Row>
                         <MineralInput
-                            label={translate(msg.decigrams)} symbol="dg"
-                            value={s.dg}
-                            onChange={this.attrChanged.bind(this, idx, "dg")}
+                            label={translate(msg.grams)} symbol="g"
+                            value={s.g}
+                            onChange={this.attrChanged.bind(this, idx, "g")}
                             editable={false} />
                     </Row>
                 </FormGroup>

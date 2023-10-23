@@ -2,8 +2,18 @@ import 'isomorphic-fetch'
 
 import {CalcResult, Recipe, Salt, Water} from "./model";
 
-interface WsWater extends Water { }
-interface WsSalt extends Salt { } /* TODO dg -> g & g -> dg */
+export interface WsWater extends Water { }
+
+export interface WsSalt {
+    dg: number,
+    name: string,
+    ca: number,
+    mg: number,
+    na: number,
+    so4: number,
+    cl: number,
+    hco3: number,
+}
 
 interface WSInput {
     target: WsWater,
@@ -38,7 +48,7 @@ const waterToWs = (water: Water): WsWater => {
 
 const saltToWs = (salt: Salt): WsSalt => {
     return {
-        dg: Math.min(salt.dg, MAX_INT_32BIT),
+        dg: Math.min(10 * salt.g, MAX_INT_32BIT),
         name: salt.name,
         ca: salt.ca,
         mg: salt.mg,

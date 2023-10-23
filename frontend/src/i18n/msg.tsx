@@ -75,6 +75,7 @@ const msg = {
     baseWater: {it: "Acqua Base", en: "Base Water"},
     salt: {it: "Sale", en: "Salt"},
     decigrams: { it: "Decigrammi", en: "Decigrams"},
+    grams: { it: "Grammi", en: "Grams"},
     clearAll: { it: "Azzera tutto", en: "Clear All"},
     custom: { it: "Personalizzata", en: "Custom"},
     name: { it: "Nome", en: "Name"},

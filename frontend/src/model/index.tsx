@@ -1,3 +1,5 @@
+import {WsSalt, WsWater} from "../Api";
+
 export interface MineralContent {
     name: string,
     ca: number,
@@ -9,7 +11,7 @@ export interface MineralContent {
 }
 
 export interface UiIngredient { visible: boolean, custom: boolean }
-export interface Salt extends MineralContent { dg: number }
+export interface Salt extends MineralContent { g: number }
 export interface Water extends MineralContent { l: number }
 export interface SaltUi extends UiIngredient, Salt { }
 export interface WaterUi extends UiIngredient, Water { }
@@ -24,12 +26,12 @@ export interface CalcResultUi {
     readonly searchCompleted: boolean
 }
 export interface Recipe {
-    readonly waters: Array<Water>,
-    readonly salts: Array<Salt>
+    readonly waters: Array<WsWater>,
+    readonly salts: Array<WsSalt>
     readonly distance: number,
-    readonly target: Water,
-    readonly recipe: Water,
-    readonly delta: Water
+    readonly target: WsWater,
+    readonly recipe: WsWater,
+    readonly delta: WsWater
 }
 
 export interface RecipeUi {
@@ -73,7 +75,7 @@ export interface State {
 export const defaultSalt = ():SaltUi => {
     let s:SaltUi = {
         name: "",
-        dg: Number.MAX_SAFE_INTEGER,
+        g: Number.MAX_SAFE_INTEGER,
         ca: 0,
         mg: 0,
         na: 0,
@@ -89,6 +91,6 @@ export const defaultSalt = ():SaltUi => {
 export const defaultState = ():State =>(
     { target: { ...water("target"), l:20 },
       sources: [{...water("#1"), custom: true, l:Number.MAX_SAFE_INTEGER}],
-      salts: [{...defaultSalt(), dg:Number.MAX_SAFE_INTEGER}],
+      salts: [{...defaultSalt(), g:Number.MAX_SAFE_INTEGER}],
       result: { running: false, solution: null, error: null, shouldScrollHere: false }
     });
