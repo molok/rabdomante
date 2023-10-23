@@ -19,8 +19,8 @@
     "redux": "^4.0.0"
   },
   "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts-ts start",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
   },
